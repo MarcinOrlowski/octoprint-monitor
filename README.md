@@ -7,9 +7,10 @@
  * [Features](#features)
  * [Screenshots](#screenshots)
  * [State icons](#state-icons)
- * [Configuration](#configuration)
  * [Installation](#installation)
  * [Upgrading](#upgrading)
+ * [Configuration](#configuration)
+ * [Troubleshooting](#troubleshooting)
  * [License](#license)
  * [Changelog](CHANGES.md)
 
@@ -76,6 +77,12 @@ can be scaled down, as seen of the above images). You can even disable the icon 
 `OctoPrint Monitor` installed as desktop widget. Printer is in `Idle` state, and widget is configured to NOT
 update webcam view in such case (hence 'STOPPED' mark next to screenshot timestamp).
 
+### Printing desktop widget ###
+
+![Desktop widget #2](img/desktop2.png)
+
+Widget now shows additional infomation related to ongoing printing job.
+
 ---
 
 ## State icons ##
@@ -121,6 +128,33 @@ most cases it will tell that OctoPrint instance is down or that `OctoPrint Monit
 indicates that `OctoPrint Monitor` is simply unable to correctly determine what is the current state of your printer.
 This should only happened during plasmoid's start-up  phase, as it shows "Unknown" state icon unless first API call
 is successful. If you see this during normal usage, please fill a bug report as it should not really happen.
+
+---
+
+## Installation ##
+
+Download `octoprint-monitor.plasmoid` file from Release section. Then you can install it either
+via Panel's GUI, by clicking "Add widgets", then "Get new widgets..." on the bottom
+of newly opened widget chooser, then click "Install from local file..." and eventually selecting
+downloaded `octoprint-monitor.plasmoid` file.
+
+Alternatively you can install it from command line, by using `kpackagetool5` in your terminal:
+
+    kpackagetool5 --install /PATH/TO/DOWNLOADED/octoprint-monitor.plasmoid 
+
+## Upgrading ##
+
+If you already have `OctoPrint Monitor` installed and just downloaded newer `octoprint-monitor.plasmoid` file,
+use `--upgrade` switch of `kpackagetool5` to upgrade your current installation and keep your settings intact:
+
+    kpackagetool5 --upgrade /PATH/TO/DOWNLOADED/octoprint-monitor.plasmoid
+
+**NOTE:** Sometimes, due to Plasma internals, newly installed version may not be instantly seen working,
+so you may want to convince Plasma by doing manual reload:
+
+    kquitapp plasmashell && kstart5 plasmashell
+    
+**NOTE:** this will **NOT** log you out nor affects any other apps. 
 
 ---
 
@@ -219,30 +253,17 @@ Configure OctoPrint API access here.
 
 ---
 
-## Installation ##
 
-Download `octoprint-monitor.plasmoid` file from Release section. Then you can install it either
-via Panel's GUI, by clicking "Add widgets", then "Get new widgets..." on the bottom
-of newly opened widget chooser, then click "Install from local file..." and eventually selecting
-downloaded `octoprint-monitor.plasmoid` file.
+## Troubleshooting ##
 
-Alternatively you can install it from command line, by using `kpackagetool5` in your terminal:
+### Widget stuck in "Connecting" state ###
 
-    kpackagetool5 --install /PATH/TO/DOWNLOADED/octoprint-monitor.plasmoid 
-
-## Upgrading ##
-
-If you already have `OctoPrint Monitor` installed and just downloaded newer `octoprint-monitor.plasmoid` file,
-use `--upgrade` switch of `kpackagetool5` to upgrade your current installation and keep your settings intact:
-
-    kpackagetool5 --upgrade /PATH/TO/DOWNLOADED/octoprint-monitor.plasmoid
-
-**NOTE:** Sometimes, due to Plasma internals, newly installed version may not be instantly seen working,
-so you may want to convince Plasma by doing manual reload:
-
-    kquitapp plasmashell && kstart5 plasmashell
-    
-**NOTE:** this will **NOT** log you out nor affects any other apps. 
+In most cases this means that widget is not configred correctly. Either you haven't
+done this yet or configuration you provided is incorrect (i.e. wrong API key, incorrect
+API URL). In either case, please press right mouse button over installed widget, then select
+"Configure OctoPrint Monitor..." form context menu and make sure your config is right.
+Widget will automatically continue once correct settings are applied.
+   
 
 ---
 
