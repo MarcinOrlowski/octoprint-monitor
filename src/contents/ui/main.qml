@@ -191,8 +191,8 @@ Item {
                 case bucket_paused: desc = 'Print job is PAUSED now.'; break;
                 case bucket_idle: desc = 'Printer is operational and idle.'; break;
                 case bucket_disconnected: desc = 'OctoPrint is not connected to the printer.'; break;
-    //            case bucket_working: ""
-    //            case bucket_error: "error"
+//              case bucket_working: ""
+//              case bucket_error: "error"
                 case 'unavailable': desc = 'Unable to connect to OctoPrint API.'; break;
                 case 'connecting': desc = 'Connecting to OctoPrint API.'; break;
             }
@@ -223,14 +223,13 @@ Item {
         main.printerConnected = printerConnected;
 
         if (state != octoState) {
-//            console.debug('OctoState Changed: new: "' + state + '", previous: "' + octoState + '", before: "' + previousOctoState + '"');
+//          console.debug('OctoState Changed: new: "' + state + '", previous: "' + octoState + '", before: "' + previousOctoState + '"');
             main.previousOctoState = main.octoState
+
             main.octoState = state;
             updateOctoStateDescription();
 
             main.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat);
-
-            // FIXME :Icon is currently always based on printer state
             main.octoStateIcon = getOctoStateIcon();
         }
     }
@@ -289,24 +288,23 @@ Item {
 
         xhr.onreadystatechange = (function () {
             // We only care about DONE readyState.
-            if (xhr.readyState !== 4) {
-                return;
-            }
+            if (xhr.readyState !== 4) return;
 
             // Ensure we managed to talk to the API
             main.apiConnected = (xhr.status !== 0);
 
-            if (xhr.status !== 0) {
-//            console.debug('ResponseText: "' + xhr.responseText + '"');
+            if (xhr.status === 200) {
+//              console.debug('ResponseText: "' + xhr.responseText + '"');
                 try {
                     parseJobStatusResponse(JSON.parse(xhr.responseText));
                 } catch (error) {
                     console.debug('Error handling API job state response.');
                     console.debug(error);
-//                    console.debug('ResponseText: ' + xhr.responseText);
                 }
+                updateOctoState();
+            } else {
+                console.debug('Unexpected job response status code (' + xhr.status + ').');
             }
-            updateOctoState();
         });
         xhr.send();
     }
@@ -331,25 +329,13 @@ Item {
 
 		main.jobFileName = Util.getString(resp.job.file.display);
 
-		if (Util.isVal(resp.progress.completion)) {
-        	main.jobCompletion = Util.roundFloat(resp.progress.completion);
-		} else {
-			main,jobCompletion = 0;
-		}
+       	main.jobCompletion = (Util.isVal(resp.progress.completion)) ? Util.roundFloat(resp.progress.completion) : 0;
 
 		var jobPrintTime = resp.progress.printTime
-		if (Util.isVal(jobPrintTime)) {
-			main.jobPrintTime = Util.secondsToString(jobPrintTime)
-		} else {
-			main.jobPrintTime = "???"
-		}
+		main.jobPrintTime = (Util.isVal(jobPrintTime)) ? Util.secondsToString(jobPrintTime) : '???';
 
 		var printTimeLeft = resp.progress.printTimeLeft
-		if (Util.isVal(printTimeLeft)) {
-			main.jobPrintTimeLeft = Util.secondsToString(printTimeLeft)
-		} else {
-			main.jobPrintTimeLeft = "???"
-		}
+        main.jobPrintTimeLeft = (Util.isVal(printTimeLeft)) ? Util.secondsToString(printTimeLeft) : '???';
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -365,41 +351,55 @@ Item {
 
         xhr.onreadystatechange = (function () {
             // We only care about DONE readyState.
-            if (xhr.readyState !== 4) {
-                return;
-            }
+            if (xhr.readyState !== 4) return;
 
             // Ensure we managed to talk to the API
             main.apiConnected = (xhr.status !== 0);
-            if (xhr.status !== 0) {
-                try {
-                    parsePrinterStateResponse(JSON.parse(xhr.responseText));
-                } catch (error) {
-                    main.pf_cancelling = false;
-                    main.pf_closedOrError = false;
-                    main.pf_error = false;
-                    main.pf_finishing = false;
-                    main.pf_operational = false;
-                    main.pf_paused = false;
-                    main.pf_pausing = false;
-                    main.pf_printing = false
-                    main.pf_ready = false;
-                    main.pf_resuming = false;
 
-                    // This is nasty hack for lame OctoPrint API that returns plain string
-                    // when printer is disconnected instead of proper JSON formatted response.
-                    if (xhr.responseText != 'Printer is not operational') {
-                        console.debug('Error handling API printer state response.');
-                        console.debug('Error caught: ' + error);
-//                        console.debug('ResponseText: "' + xhr.responseText + '"');
-
+            switch (xhr.status) {
+                case 200:
+//                  console.debug('ResponseText: "' + xhr.responseText + '"');
+                    try {
+                        parsePrinterStateResponse(JSON.parse(xhr.responseText));
+                    } catch (error) {
+                        setPrinterFlags(false);
                         main.pf_error = true;
                     }
-                }
+                    break;
+                case 409:
+                    // Printer is not operational
+                    setPrinterFlags(false);
+                    break;
+                default:
+                    console.debug('Unexpected printer response status code (' + xhr.status + ').');
+                    main.pf_error = true;
+                    break;
             }
             updateOctoState();
         });
         xhr.send();
+    }
+
+    /**
+    ** Sets pf_* flags to given bool value. Just for DRY.
+    **
+    ** Arguments:
+    **  state: true/false to set all flags to.
+    **
+    ** Returns:
+    **  void
+    */
+    function setPrinterFlags(state) {
+        main.pf_cancelling = state;
+        main.pf_closedOrError = state;
+        main.pf_finishing = state;
+        main.pf_operational = state;
+        main.pf_paused = state;
+        main.pf_pausing = state;
+        main.pf_printing = state
+        main.pf_ready = state;
+        main.pf_resuming = state;
+        main.pf_error = state;
     }
 
 	/*
