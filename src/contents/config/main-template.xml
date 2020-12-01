@@ -6,13 +6,13 @@
 
     <group name="Connection">
         <entry name="api_url" type="String">
-            <default></default>
+            <default>{OCTOPRINT_API_URL}</default>
         </entry>
         <entry name="api_key" type="String">
-            <default></default>
+            <default>{OCTOPRINT_API_KEY}</default>
         </entry>
         <entry name="cameraViewSnapshotUrl" type="String">
-            <default></default>
+            <default>{OCTOPRINT_SNAPSHOT_URL}</default>
         </entry>
         <entry name="statusPollInterval" type="Int">
             <default>15</default>
