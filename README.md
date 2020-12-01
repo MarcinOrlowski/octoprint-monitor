@@ -94,6 +94,11 @@ help you instantly know the state with just quick look. Detailed information are
 
 You can face following icons, which representing different type of state.
 
+### Configuration ###
+
+![Configuration](img/state-configuration.png) The **Configuration** state means plasmoid is yet not configured. The base
+miminum it requires is OctoPrint API URL and API access key. See [configuration](#configuration) for more information.
+
 ### Idle ###
 ![Idle](img/state-idle.png) The **Idle** state means connection to API is good and printer is 
 currently connected to OctoPrint but is not printing anything, sitting idle and wasting electricity.
