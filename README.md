@@ -133,7 +133,7 @@ is successful. If you see this during normal usage, please fill a bug report as 
 
 ## Installation ##
 
-Download `octoprint-monitor.plasmoid` file from Release section. Then you can install it either
+Download `octoprint-monitor.plasmoid` file from [project Release section](https://github.com/MarcinOrlowski/octoprint-monitor/releases_. Then you can install it either
 via Panel's GUI, by clicking "Add widgets", then "Get new widgets..." on the bottom
 of newly opened widget chooser, then click "Install from local file..." and eventually selecting
 downloaded `octoprint-monitor.plasmoid` file.
@@ -152,7 +152,7 @@ use `--upgrade` switch of `kpackagetool5` to upgrade your current installation a
 **NOTE:** Sometimes, due to Plasma internals, newly installed version may not be instantly seen working,
 so you may want to convince Plasma by doing manual reload:
 
-    kquitapp plasmashell && kstart5 plasmashell
+    kquitapp5 plasmashell && kstart5 plasmashell
     
 **NOTE:** this will **NOT** log you out nor affects any other apps. 
 
