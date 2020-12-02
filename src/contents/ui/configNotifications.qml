@@ -18,8 +18,8 @@ import org.kde.kirigami 2.5 as Kirigami
 ColumnLayout {
     width: childrenRect.width
 
-	property alias cfg_notificationsEnabled:		notificationsEnabled.checked
-	property alias cfg_useNotifySend:		notificationsUseNotifySend.checked
+	property alias cfg_notificationsEnabled:	notificationsEnabled.checked
+	property alias cfg_useNotifySend:		    notificationsUseNotifySend.checked
 
     GroupBox {
         title: i18n("Desktop notifications")

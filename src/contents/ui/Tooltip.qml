@@ -38,7 +38,7 @@ Item {
             text: {
                 var state = main.octoState;
                 if (main.jobInProgress) {
-                    state += " " + main.jobCompletion + "%";
+                    state += ` ${main.jobCompletion}%`
                 }
                 return state;
             }
@@ -60,7 +60,7 @@ Item {
 			textFormat: Text.PlainText
 			maximumLineCount: 1
 			wrapMode: Text.NoWrap
-            text: i18n('State changed') + ': ' + lastOctoStateChangeStamp
+            text: i18n('State changed') + `: ${lastOctoStateChangeStamp}`
             font.pixelSize: Qt.application.font.pixelSize * 0.8
             visible: lastOctoStateChangeStamp != ''
 		}
@@ -79,11 +79,9 @@ Item {
 
         GridLayout {
 		    id: tooltipTemperatures
-
 			width: parent.width
 			Layout.fillWidth: true
 			columns: 2
-
 			visible: main.printerConnected && main.apiConnected
 
 			PlasmaComponents.Label {
@@ -96,14 +94,14 @@ Item {
 				Layout.alignment: Qt.AlignRight
 				maximumLineCount: 1
 				wrapMode: Text.NoWrap
-				text: main.p_bed_actual + '°'
+				text: `${main.p_bed_actual}°'
 				visible: main.p_bed_target == 0 || main.p_bed_actual == main.p_bed_target
 			}
 			PlasmaComponents.Label {
 				Layout.alignment: Qt.AlignRight
 				maximumLineCount: 1
 				wrapMode: Text.NoWrap
-				text: main.p_bed_actual + '° of ' + main.p_bed_target + '°'
+				text: `${main.p_bed_actual}° of ${main.p_bed_target}°`
 				visible: main.p_bed_target > 0 && main.p_bed_actual != main.p_bed_target
 			}
 
@@ -116,14 +114,14 @@ Item {
 				Layout.alignment: Qt.AlignRight
 				maximumLineCount: 1
 				wrapMode: Text.NoWrap
-				text: main.p_he0_actual + '°'
+				text: `${main.p_he0_actual}°`
 				visible: main.p_he0_target == 0 || main.p_he0_actual == main.p_he0_target
 			}
 			PlasmaComponents.Label {
 				Layout.alignment: Qt.AlignRight
 				maximumLineCount: 1
 				wrapMode: Text.NoWrap
-				text: main.p_he0_actual + '° of ' + main.p_he0_target + '°'
+				text: `${main.p_he0_actual}° of ${main.p_he0_target}°`
 				visible: main.p_he0_target > 0 && main.p_he0_actual != main.p_he0_target
 			}
 		} // GridLayout

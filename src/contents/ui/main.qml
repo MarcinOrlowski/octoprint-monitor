@@ -103,7 +103,7 @@ Item {
                 // Do not query Job state if we can tell there's no running job
                 var buckets = [ main.bucket_error, main.bucket_idle, main.bucket_disconnected ];
                 if (buckets.includes(getPrinterStateBucket()) === false) {
-                    getJobStateFromApi();
+                    getJobStateFromApi()
                 }
             }
         }
@@ -140,12 +140,12 @@ Item {
     // ------------------------------------------------------------------------------------------------------------------------
 
     // Printer status buckets
-    property string bucket_unknown: "unknown"
-    property string bucket_working: "working"
-    property string bucket_paused: "paused"
-    property string bucket_error: "error"
-    property string bucket_idle: "idle"
-    property string bucket_disconnected: "disconnected"
+    readonly property string bucket_unknown: "unknown"
+    readonly property string bucket_working: "working"
+    readonly property string bucket_paused: "paused"
+    readonly property string bucket_error: "error"
+    readonly property string bucket_idle: "idle"
+    readonly property string bucket_disconnected: "disconnected"
 
     /*
     ** Returns name of printer state's bucket.
@@ -157,17 +157,17 @@ Item {
         var bucket = undefined;
 
         if ( main.pf_cancelling || main.pf_finishing || main.pf_printing || main.pf_pausing ) {
-            bucket = main.bucket_working;
+            bucket = main.bucket_working
         } else if ( main.pf_closedOrError || main.pf_error ) {
-            bucket = main.bucket_error;
+            bucket = main.bucket_error
         } else if ( main.pf_operational || main.pf_ready ) {
-            bucket = main.bucket_idle;
+            bucket = main.bucket_idle
         } else if ( main.pf_paused ) {
             bucket = main.bucket_paused;
         }
 
         if (bucket == undefined) {
-            bucket = main.bucket_disconnected;
+            bucket = main.bucket_disconnected
         }
 
         return bucket;
@@ -247,29 +247,29 @@ Item {
     **  void
     */
     function postNotification() {
-        var current = main.octoStateBucket;
-        var previous = main.previousOctoStateBucket;
-        var post = false;
-        var expireTimeout = 0;
+        var current = main.octoStateBucket
+        var previous = main.previousOctoStateBucket
+        var post = false
+        var expireTimeout = 0
 
         if (!plasmoid.configuration.notificationsEnabled) return
 
         if (current != previous) {
             // switching back from working to anything but paused
-            post = !post && (previous == bucket_working && current != bucket_paused);
+            post = !post && (previous == bucket_working && current != bucket_paused)
 
             // switching from from anything to working
             if (!post && (current == bucket_working)) {
-                post = true;
-                expireTimeout = 15000;
+                post = true
+                expireTimeout = 15000
             }
         }
 
-//        console.debug('post: ' + post + ', prev: ' + previous + ', current: ' + current + ', expTimeout: ' + expireTimeout);
+//        console.debug(`post: ${post}, prev: ${previous}, current: ${current}, expTimeout: ${expireTimeout}`);
         if (post) notificationManager.post({
             'title': Plasmoid.title,
             'icon': main.octoStateIcon,
-            'summary': "State changed from '" + main.previousOctoState + "' to '" + main.octoState + "'.",
+            'summary': `State changed from '${main.previousOctoState}' to '${main.octoState}'.`,
             'body': main.octoStateDescription,
             'expireTimeout': expireTimeout,
         });
@@ -285,37 +285,38 @@ Item {
         // calculate new octoState. If different from previous one, check what happened
         // (i.e. was printing is idle) -> print successful
 
-        var jobInProgress = false;
-        var printerConnected = isPrinterConnected();
-        var currentStateBucket = getPrinterStateBucket();
-        var currentState = currentStateBucket;
+        var jobInProgress = false
+        var printerConnected = isPrinterConnected()
+        var currentStateBucket = getPrinterStateBucket()
+        var currentState = currentStateBucket
 
-        main.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '');
+        main.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '')
 
         if (main.apiConnected) {
-            jobInProgress = isJobInProgress();
+            jobInProgress = isJobInProgress()
             if (jobInProgress && main.jobState == "printing") {
-                currentState = main.jobState;
+                currentState = main.jobState
             }
         } else {
-            currentState = (!main.apiAccessConfigured) ? 'configuration' : 'unavailable';
+            currentState = (!main.apiAccessConfigured) ? 'configuration' : 'unavailable'
         }
 
-        main.jobInProgress = jobInProgress;
-        main.printerConnected = printerConnected;
+        main.jobInProgress = jobInProgress
+        main.printerConnected = printerConnected
 
+        console.debug(`currentState: ${currentState}, previous: ${main.previousOctoState}`);
         if (currentState != main.previousOctoState) {
-            main.previousOctoState = main.octoState;
-            main.previousOctoStateBucket = main.octoStateBucket;
+            main.previousOctoState = main.octoState
+            main.previousOctoStateBucket = main.octoStateBucket
 
-            main.octoState = currentState;
-            main.octoStateBucket = currentStateBucket;
-            updateOctoStateDescription();
+            main.octoState = currentState
+            main.octoStateBucket = currentStateBucket
+            updateOctoStateDescription()
 
-            main.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat);
-            main.octoStateIcon = getOctoStateIcon();
+            main.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
+            main.octoStateIcon = getOctoStateIcon()
 
-            postNotification();
+            postNotification()
         }
     }
 
@@ -327,14 +328,14 @@ Item {
 	**	string: path to plasmoid's icon file
 	*/
 	function getOctoStateIcon() {
-   	    var bucket = 'dead';
+   	    var bucket = 'dead'
 	    if (!main.apiAccessConfigured) {
-	        bucket = 'configuration';
+	        bucket = 'configuration'
 	    } else if (main.apiConnected) {
-            bucket = getPrinterStateBucket();
+            bucket = getPrinterStateBucket()
         }
 
-        return plasmoid.file("", "images/state-" + bucket + ".png");
+        return plasmoid.file("", `images/state-${bucket}.png`)
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -347,18 +348,18 @@ Item {
     **  Configured instance of XMLHttpRequest.
     */
     function getXhr(req) {
-        var apiUrl = plasmoid.configuration.api_url;
-        var apiKey = plasmoid.configuration.api_key;
+        var apiUrl = plasmoid.configuration.api_url
+        var apiKey = plasmoid.configuration.api_key
 
 		if ( apiUrl + apiKey == "" ) return null;
 
-        var xhr = new XMLHttpRequest();
-        var url = apiUrl + "/" + req;
-        xhr.open('GET', url);
-        xhr.setRequestHeader("Host", apiUrl);
-        xhr.setRequestHeader("X-Api-Key", apiKey);
+        var xhr = new XMLHttpRequest()
+        var url = `${apiUrl}/${req}`
+        xhr.open('GET', url)
+        xhr.setRequestHeader("Host", apiUrl)
+        xhr.setRequestHeader("X-Api-Key", apiKey)
 
-        return xhr;
+        return xhr
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -370,34 +371,34 @@ Item {
 	**	void
     */
 	function getJobStateFromApi() {
-	    var xhr = getXhr('job');
+	    var xhr = getXhr('job')
 
         if (xhr === null) {
-            updateOctoState();
-            return;
+            updateOctoState()
+            return
         }
 
         xhr.onreadystatechange = (function () {
             // We only care about DONE readyState.
-            if (xhr.readyState !== 4) return;
+            if (xhr.readyState !== 4) return
 
             // Ensure we managed to talk to the API
-            main.apiConnected = (xhr.status !== 0);
+            main.apiConnected = (xhr.status !== 0)
 
             if (xhr.status === 200) {
-//              console.debug('ResponseText: "' + xhr.responseText + '"');
+//                console.debug(`ResponseText: "${xhr.responseText}"`)
                 try {
-                    parseJobStatusResponse(JSON.parse(xhr.responseText));
+                    parseJobStatusResponse(JSON.parse(xhr.responseText))
                 } catch (error) {
-                    console.debug('Error handling API job state response.');
-                    console.debug(error);
+                    console.debug('Error handling API job state response.')
+                    console.debug(error)
                 }
-                updateOctoState();
+                updateOctoState()
             } else {
-                console.debug('Unexpected job response status code (' + xhr.status + ').');
+                console.debug(`Unexpected job response status code ('${xhr.status}').`)
             }
         });
-        xhr.send();
+        xhr.send()
     }
 
 	/*
@@ -410,23 +411,23 @@ Item {
 	**	void
 	*/
 	function parseJobStatusResponse(resp) {
-		var state = resp.state.split(/[ ,]+/)[0];
+		var state = resp.state.split(/[ ,]+/)[0]
 
-		main.jobState = state.toLowerCase();
+		main.jobState = state.toLowerCase()
 
 		var stateSplit = resp.state.match(/(.+)\s+\((.*)\)/)
-		main.jobStateDescription = (stateSplit !== null) ? stateSplit[2] : '';
-		updateOctoStateDescription();
+		main.jobStateDescription = (stateSplit !== null) ? stateSplit[2] : ''
+		updateOctoStateDescription()
 
-		main.jobFileName = Util.getString(resp.job.file.display);
+		main.jobFileName = Util.getString(resp.job.file.display)
 
-       	main.jobCompletion = (Util.isVal(resp.progress.completion)) ? Util.roundFloat(resp.progress.completion) : 0;
+       	main.jobCompletion = (Util.isVal(resp.progress.completion)) ? Util.roundFloat(resp.progress.completion) : 0
 
 		var jobPrintTime = resp.progress.printTime
-		main.jobPrintTime = (Util.isVal(jobPrintTime)) ? Util.secondsToString(jobPrintTime) : '???';
+		main.jobPrintTime = (Util.isVal(jobPrintTime)) ? Util.secondsToString(jobPrintTime) : '???'
 
 		var printTimeLeft = resp.progress.printTimeLeft
-        main.jobPrintTimeLeft = (Util.isVal(printTimeLeft)) ? Util.secondsToString(printTimeLeft) : '???';
+        main.jobPrintTimeLeft = (Util.isVal(printTimeLeft)) ? Util.secondsToString(printTimeLeft) : '???'
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -438,42 +439,42 @@ Item {
 	**	void
     */
     function getPrinterStateFromApi() {
-        var xhr = getXhr('printer');
+        var xhr = getXhr('printer')
 
         if (xhr === null) {
-            updateOctoState();
-            return;
+            updateOctoState()
+            return
         }
 
         xhr.onreadystatechange = (function () {
             // We only care about DONE readyState.
-            if (xhr.readyState !== 4) return;
+            if (xhr.readyState !== 4) return
 
             // Ensure we managed to talk to the API
-            main.apiConnected = (xhr.status !== 0);
+            main.apiConnected = (xhr.status !== 0)
 
             switch (xhr.status) {
                 case 200:
-//                  console.debug('ResponseText: "' + xhr.responseText + '"');
+//                  console.debug(`ResponseText: "'${xhr.responseText}'"`)
                     try {
-                        parsePrinterStateResponse(JSON.parse(xhr.responseText));
+                        parsePrinterStateResponse(JSON.parse(xhr.responseText))
                     } catch (error) {
-                        setPrinterFlags(false);
-                        main.pf_error = true;
+                        setPrinterFlags(false)
+                        main.pf_error = true
                     }
-                    break;
+                    break
                 case 409:
                     // Printer is not operational
-                    setPrinterFlags(false);
-                    break;
+                    setPrinterFlags(false)
+                    break
                 default:
-                    console.debug('Unexpected printer response status code (' + xhr.status + ').');
-                    main.pf_error = true;
-                    break;
+                    console.debug(`Unexpected printer response status code ('${xhr.status}').`)
+                    main.pf_error = true
+                    break
             }
             updateOctoState();
         });
-        xhr.send();
+        xhr.send()
     }
 
     /**
@@ -486,16 +487,16 @@ Item {
     **  void
     */
     function setPrinterFlags(state) {
-        main.pf_cancelling = state;
-        main.pf_closedOrError = state;
-        main.pf_finishing = state;
-        main.pf_operational = state;
-        main.pf_paused = state;
-        main.pf_pausing = state;
+        main.pf_cancelling = state
+        main.pf_closedOrError = state
+        main.pf_finishing = state
+        main.pf_operational = state
+        main.pf_paused = state
+        main.pf_pausing = state
         main.pf_printing = state
-        main.pf_ready = state;
-        main.pf_resuming = state;
-        main.pf_error = state;
+        main.pf_ready = state
+        main.pf_resuming = state
+        main.pf_error = state
     }
 
 	/*
@@ -508,30 +509,30 @@ Item {
 	**	void
 	*/
 	function parsePrinterStateResponse(resp) {
-		main.pf_cancelling = resp.state.flags.cancelling;
-		main.pf_closedOrError = resp.state.flags.closedOrError;
-		main.pf_error = resp.state.flags.error;
-		main.pf_finishing = resp.state.flags.finishing;
-		main.pf_operational = resp.state.flags.operational;
-		main.pf_paused = resp.state.flags.paused;
-		main.pf_pausing = resp.state.flags.pausing;
-		main.pf_printing = resp.state.flags.printing;
-		main.pf_ready = resp.state.flags.ready;
-		main.pf_resuming = resp.state.flags.resuming;
+		main.pf_cancelling = resp.state.flags.cancelling
+		main.pf_closedOrError = resp.state.flags.closedOrError
+		main.pf_error = resp.state.flags.error
+		main.pf_finishing = resp.state.flags.finishing
+		main.pf_operational = resp.state.flags.operational
+		main.pf_paused = resp.state.flags.paused
+		main.pf_pausing = resp.state.flags.pausing
+		main.pf_printing = resp.state.flags.printing
+		main.pf_ready = resp.state.flags.ready
+		main.pf_resuming = resp.state.flags.resuming
 
 		// Textural representation of printer state as returned by API
-		main.printer_state = resp.state.text;
+		main.printer_state = resp.state.text
 
 		// temepratures
-		main.p_bed_actual = Util.getFloat(resp.temperature.bed.actual);
-		main.p_bed_offset = Util.getFloat(resp.temperature.bed.offset);
-		main.p_bed_target = Util.getFloat(resp.temperature.bed.target);
+		main.p_bed_actual = Util.getFloat(resp.temperature.bed.actual)
+		main.p_bed_offset = Util.getFloat(resp.temperature.bed.offset)
+		main.p_bed_target = Util.getFloat(resp.temperature.bed.target)
 
 		// hot-ends
 		// FIXME: check for more than one
-		main.p_he0_actual = Util.getFloat(resp.temperature.tool0.actual);
-		main.p_he0_offset = Util.getFloat(resp.temperature.tool0.offset);
-		main.p_he0_target = Util.getFloat(resp.temperature.tool0.target);
+		main.p_he0_actual = Util.getFloat(resp.temperature.tool0.actual)
+		main.p_he0_offset = Util.getFloat(resp.temperature.tool0.offset)
+		main.p_he0_target = Util.getFloat(resp.temperature.tool0.target)
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------

@@ -4,6 +4,9 @@
 
 ## CHANGE LOG ##
 
+* v1.1.1 (2020-12-03)
+   * Improved docs
+
 * v1.1.0 (2020-12-02)
    * Added support for desktop notifications
 
