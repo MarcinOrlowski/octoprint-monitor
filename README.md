@@ -223,6 +223,7 @@ Full layout is being used when `OctoPrint Monitor` is used as regular desktop wi
    - **Camera update intervals** - specify how frequently you want webcam snapshot view
    to be updated. You may want to increase the interval, to reduce network traffic and
    drop the load off OctoPrint.
+ - **Camera view control**
    - **Stop camera polling for state buckets** - if enabled, camera snapshot polling
    will stop if printer enters selected states. You may want to i.e. enable this
    option for i.e. "Idle" and "Disconnected" states as most likely there will be nothing
