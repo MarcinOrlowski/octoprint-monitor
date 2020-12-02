@@ -118,4 +118,14 @@
         </entry>
     </group>
 
+    <group name="Notifications">
+        <entry name="notificationsEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+
+        <entry name="notificationsUseNotifySend" type="Bool">
+            <default>false</default>
+        </entry>
+    </group>
+
 </kcfg>
