@@ -109,6 +109,34 @@ Item {
         }
 	}
 
+	NotificationManager {
+	    id: notificationManager
+    }
+
+    PlasmaCore.DataSource {
+        id: executable
+        engine: "executable"
+        connectedSources: []
+        property var callbacks: ({})
+        onNewData: {
+            var stdout = data["stdout"]
+
+            if (callbacks[sourceName] !== undefined) {
+                callbacks[sourceName](stdout);
+            }
+
+            exited(sourceName, stdout)
+            disconnectSource(sourceName) // cmd finished
+        }
+        function exec(cmd, onNewDataCallback) {
+            if (onNewDataCallback !== undefined){
+                callbacks[cmd] = onNewDataCallback
+            }
+            connectSource(cmd)
+        }
+        signal exited(string sourceName, string stdout)
+    }
+
     // ------------------------------------------------------------------------------------------------------------------------
 
     // Printer status buckets
@@ -181,10 +209,14 @@ Item {
     // ------------------------------------------------------------------------------------------------------------------------
 
     property string octoState: "connecting"
+    property string octoStateBucket: "connecting"
+    // FIXME we should have SVG icons here
+    property string octoStateIcon: plasmoid.file("", "images/state-unknown.png")
     property string octoStateDescription: 'Connecting to OctoPrint API.'
     property string lastOctoStateChangeStamp: ""
+
     property string previousOctoState: ""
-    property string octoStateIcon: plasmoid.file("", "images/state-unknown.png")
+    property string previousOctoStateBucket: ""
 
     function updateOctoStateDescription() {
         var desc = main.jobStateDescription;
@@ -206,37 +238,84 @@ Item {
         main.octoStateDescription = desc;
     }
 
+    /*
+    ** Constructs and posts desktop notification reflecting curent state.
+    ** NOTE: This method must be called AFTER the state changed as it uses
+    ** octoStateBucket and previousOctoStateBuckets for its logic
+    **
+    ** Returns:
+    **  void
+    */
+    function postNotification() {
+        var current = main.octoStateBucket;
+        var previous = main.previousOctoStateBucket;
+        var post = false;
+        var expireTimeout = 0;
+
+        if (!plasmoid.configuration.notificationsEnabled) return
+
+        if (current != previous) {
+            // switching back from working to anything but paused
+            post = !post && (previous == bucket_working && current != bucket_paused);
+
+            // switching from from anything to working
+            if (!post && (current == bucket_working)) {
+                post = true;
+                expireTimeout = 15000;
+            }
+        }
+
+//        console.debug('post: ' + post + ', prev: ' + previous + ', current: ' + current + ', expTimeout: ' + expireTimeout);
+        if (post) notificationManager.post({
+            'title': Plasmoid.title,
+            'icon': main.octoStateIcon,
+            'summary': "State changed from '" + main.previousOctoState + "' to '" + main.octoState + "'.",
+            'body': main.octoStateDescription,
+            'expireTimeout': expireTimeout,
+        });
+    }
+
+    /*
+    ** Calculates current octoState. Updates internal data if state changes.
+    **
+    ** Returns:
+    **  void
+    */
     function updateOctoState() {
         // calculate new octoState. If different from previous one, check what happened
         // (i.e. was printing is idle) -> print successful
 
         var jobInProgress = false;
         var printerConnected = isPrinterConnected();
-        var state = getPrinterStateBucket();
+        var currentStateBucket = getPrinterStateBucket();
+        var currentState = currentStateBucket;
 
         main.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '');
 
         if (main.apiConnected) {
             jobInProgress = isJobInProgress();
             if (jobInProgress && main.jobState == "printing") {
-                state = main.jobState;
+                currentState = main.jobState;
             }
         } else {
-            state = (!main.apiAccessConfigured) ? 'configuration' : 'unavailable';
+            currentState = (!main.apiAccessConfigured) ? 'configuration' : 'unavailable';
         }
 
         main.jobInProgress = jobInProgress;
         main.printerConnected = printerConnected;
 
-        if (state != octoState) {
-//          console.debug('OctoState Changed: new: "' + state + '", previous: "' + octoState + '", before: "' + previousOctoState + '"');
-            main.previousOctoState = main.octoState
+        if (currentState != main.previousOctoState) {
+            main.previousOctoState = main.octoState;
+            main.previousOctoStateBucket = main.octoStateBucket;
 
-            main.octoState = state;
+            main.octoState = currentState;
+            main.octoStateBucket = currentStateBucket;
             updateOctoStateDescription();
 
             main.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat);
             main.octoStateIcon = getOctoStateIcon();
+
+            postNotification();
         }
     }
 
@@ -248,12 +327,13 @@ Item {
 	**	string: path to plasmoid's icon file
 	*/
 	function getOctoStateIcon() {
-	    var bucket = 'dead';
+   	    var bucket = 'dead';
 	    if (!main.apiAccessConfigured) {
 	        bucket = 'configuration';
 	    } else if (main.apiConnected) {
             bucket = getPrinterStateBucket();
         }
+
         return plasmoid.file("", "images/state-" + bucket + ".png");
 	}
 
