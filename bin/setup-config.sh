@@ -27,6 +27,17 @@ op_snapshot_url=
 
 if [[ "$#" -gt 0 ]]; then
 	echo "Populating config with env vars: ${cfg_config_file}"
+
+	for name in OCTOPRINT_API_URL OCTOPRINT_API_KEY OCTOPRINT_SNAPSHOT_URL; do
+		val="$(eval echo "\${${name}}")"
+		if [[ -z "${val}" ]]; then
+			echo "*** ${name} env variable is not set properly."
+			exit 1
+		fi
+
+		echo "  ${name}=\"${val}\""
+	done
+
 	op_api_url=$(escape "${OCTOPRINT_API_URL}")
 	op_api_key=$(escape "${OCTOPRINT_API_KEY}")
 	op_snapshot_url=$(escape "${OCTOPRINT_SNAPSHOT_URL}")
