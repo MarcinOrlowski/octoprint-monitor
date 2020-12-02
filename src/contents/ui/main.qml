@@ -140,12 +140,12 @@ Item {
     // ------------------------------------------------------------------------------------------------------------------------
 
     // Printer status buckets
-    property string bucket_unknown: "unknown"
-    property string bucket_working: "working"
-    property string bucket_paused: "paused"
-    property string bucket_error: "error"
-    property string bucket_idle: "idle"
-    property string bucket_disconnected: "disconnected"
+    readonly property string bucket_unknown: "unknown"
+    readonly property string bucket_working: "working"
+    readonly property string bucket_paused: "paused"
+    readonly property string bucket_error: "error"
+    readonly property string bucket_idle: "idle"
+    readonly property string bucket_disconnected: "disconnected"
 
     /*
     ** Returns name of printer state's bucket.
