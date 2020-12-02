@@ -16,8 +16,7 @@ QtObject {
         var useNotifySend = plasmoid.configuration.notificationsUseNotifySend
 
         console.debug('useNotifySend: ' + useNotifySend);
-//        if (useNotifySend) {
-if(true){
+        if (useNotifySend) {
             var params = ['--app-name="' + args.title + '"']
             if (args.icon) params.push('--icon="' + args.icon + '"');
             if (args.expireTimeout) params.push('--expire-time=' + args.expireTimeout);
@@ -37,7 +36,7 @@ if(true){
             operation.appIcon = args.icon || ""
             operation.summary = args.summary || ""
             operation.body = args.body || ""
-            if (typeof args.expireTimeout !== undefined) {
+            if (typeof args.expireTimeout !== undefined && args.expireTimeout !== 0) {
                 operation.expireTimeout = args.expireTimeout
             }
             service.startOperationCall(operation)
