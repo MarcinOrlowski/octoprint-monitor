@@ -239,37 +239,39 @@ Item {
     }
 
     /*
-    ** Constructs and posts desktop notification
+    ** Constructs and posts desktop notification reflecting curent state.
+    ** NOTE: This method must be called AFTER the state changed as it uses
+    ** octoStateBucket and previousOctoStateBuckets for its logic
     **
     ** Returns:
     **  void
     */
     function postNotification() {
-        var cs = main.octoStateBucket;
-        var ps = main.previousOctoStateBucket;
+        var current = main.octoStateBucket;
+        var previous = main.previousOctoStateBucket;
         var post = false;
         var expireTimeout = 0;
 
         if (!plasmoid.configuration.notificationsEnabled) return
 
-        if (cs != ps) {
+        if (current != previous) {
             // switching back from working to anything but paused
-            post = !post && (ps == bucket_working && cs != bucket_paused);
+            post = !post && (previous == bucket_working && current != bucket_paused);
 
             // switching from from anything to working
-            if (!post && (cs == bucket_working)) {
+            if (!post && (current == bucket_working)) {
                 post = true;
                 expireTimeout = 15000;
             }
         }
 
-        console.debug('post: ' + post + ', prev: ' + ps + ', current: ' + cs);
+//        console.debug('post: ' + post + ', prev: ' + previous + ', current: ' + current + ', expTimeout: ' + expireTimeout);
         if (post) notificationManager.post({
             'title': Plasmoid.title,
             'icon': main.octoStateIcon,
             'summary': "State changed from '" + main.previousOctoState + "' to '" + main.octoState + "'.",
             'body': main.octoStateDescription,
-            'expireTimeout': expireTimeout
+            'expireTimeout': expireTimeout,
         });
     }
 

@@ -36,7 +36,7 @@ QtObject {
             operation.appIcon = args.icon || ""
             operation.summary = args.summary || ""
             operation.body = args.body || ""
-            if (typeof args.expireTimeout !== undefined && args.expireTimeout !== 0) {
+            if (typeof args.expireTimeout !== undefined) {
                 operation.expireTimeout = args.expireTimeout
             }
             service.startOperationCall(operation)
