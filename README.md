@@ -8,7 +8,7 @@
  * [Screenshots](#screenshots)
  * [State icons](docs/states.md)
  * [Installation and configuration](docs/setup.md)
- * [Troubleshooting](#troubleshooting)
+ * [Troubleshooting](docs/troubles.md)
  * [License](#license)
  * [Changelog](CHANGES.md)
 
@@ -84,17 +84,6 @@ update webcam view in such case (hence 'STOPPED' mark next to screenshot timesta
 ![Desktop widget #2](img/desktop2.png)
 
 Widget now shows additional infomation related to ongoing printing job.
-
----
-
-## Troubleshooting ##
-
-### Widget stuck in "Connecting" state ###
-
-In most cases this means that widget is not configred correctly. Either you haven't done this yet or
-configuration you provided is incorrect (i.e. wrong API key, incorrect API URL). In either case, please
-press right mouse button over installed widget, then select "Configure OctoPrint Monitor..." form context
-menu and make sure your config is right. Widget will automatically continue once correct settings are applied.
 
 ---
 

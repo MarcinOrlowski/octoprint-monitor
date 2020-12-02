@@ -3,7 +3,15 @@
 
 ## Table of contents ##
 
- * [State icons](docs/#states.md)
+ * [Main page](../README.md)
+   * [Introduction](../README.md#introduction)
+   * [Features](../README.md#features)
+   * [Screenshots](../README.md#screenshots)
+   * **State icons**
+   * [Installation and configuration](setup.md)
+   * [Troubleshooting](troubles.md)
+   * [License](../README.md#license)
+   * [Changelog](../CHANGES.md)
 
 ---
 
