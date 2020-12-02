@@ -20,12 +20,17 @@ ConfigModel {
     }
     ConfigCategory {
         name: i18n("Full layout")
-        icon: "view-visible"
+        icon: "widget-alternatives"
         source: "configFullRepresentation.qml"
     }
     ConfigCategory {
+        name: i18n("Notifications")
+        icon: "notifications"
+        source: "configNotifications.qml"
+    }
+    ConfigCategory {
         name: i18n("OctoPrint API")
-        icon: "network-connect"
+        icon: "configure"
         source: "configApi.qml"
     }
     ConfigCategory {
