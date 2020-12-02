@@ -4,7 +4,7 @@
 
 ## CHANGE LOG ##
 
-* @dev
+* v1.1.0 (2020-12-02)
    * Added support for desktop notifications
    * Added `Configuration` state indicating lack of widget required configuration.
    * Improved API response handling.
