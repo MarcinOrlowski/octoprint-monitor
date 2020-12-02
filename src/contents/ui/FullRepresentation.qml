@@ -44,33 +44,33 @@ GridLayout {
 
         onTriggered: {
             if (!main.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
-                fullContainer.cameraViewTimerState = i18n("STOPPED");
-                return;
+                fullContainer.cameraViewTimerState = i18n("STOPPED")
+                return
             } else {
-                fullContainer.cameraViewTimerState = `@${plasmoid.configuration.cameraViewUpdateInterval} secs`;
+                fullContainer.cameraViewTimerState = `@${plasmoid.configuration.cameraViewUpdateInterval} secs`
             }
 
-			var targetImageView = (cameraViewStack.currentIndex === 0) ? cameraView0 : cameraView1;
-			targetImageView.source = plasmoid.configuration.cameraViewSnapshotUrl;
+			var targetImageView = (cameraViewStack.currentIndex === 0) ? cameraView0 : cameraView1
+			targetImageView.source = plasmoid.configuration.cameraViewSnapshotUrl
 
 			function finishImage() {
 				if (targetImageView.status === Component.Ready) {
-					targetImageView.statusChanged.disconnect(finishImage);
-			        cameraViewStack.currentIndex = (cameraViewStack.currentIndex+1) % 2;
+					targetImageView.statusChanged.disconnect(finishImage)
+			        cameraViewStack.currentIndex = (cameraViewStack.currentIndex+1) % 2
 
-                    var stamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat);
+                    var stamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
                     if (cameraViewStack.currentIndex === 0) {
-                        cameraView0Stamp = stamp;
+                        cameraView0Stamp = stamp
                     } else {
-                        cameraView1Stamp = stamp;
+                        cameraView1Stamp = stamp
                     }
 				}
 			}
 
 			if (targetImageView.status === Component.Loading) {
-				targetImageView.statusChanged.connect(finishImage);
+				targetImageView.statusChanged.connect(finishImage)
 			} else {
-				finishImage();
+				finishImage()
 			}
 		}
 	}
@@ -85,9 +85,9 @@ GridLayout {
     **  bool: False if camera view poll should stop.
     */
     function isCameraViewPollActive() {
-        if (!plasmoid.configuration.stopCameraPollForBuckets) return true;
+        if (!plasmoid.configuration.stopCameraPollForBuckets) return true
 
-        var result = true;
+        var result = true
         switch (getPrinterStateBucket()) {
             case main.bucket_idle: result = !plasmoid.configuration.stopCameraPollForBucketIdle; break;
             case main.bucket_unknown: result = !plasmoid.configuration.stopCameraPollForBucketUnknown; break;
@@ -96,7 +96,7 @@ GridLayout {
             case main.bucket_error: result = !plasmoid.configuration.stopCameraPollForBucketError; break;
             case main.bucket_disconnected: result = !plasmoid.configuration.stopCameraPollForBucketDisconnected; break;
         }
-        return result;
+        return result
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -134,7 +134,7 @@ GridLayout {
                     text: {
                         var state = main.octoState;
                         if (main.jobInProgress) {
-                            state += ` ${main.jobCompletion}%`;
+                            state += ` ${main.jobCompletion}%`
                         }
                         return state;
                     }

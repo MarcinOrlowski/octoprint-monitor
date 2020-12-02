@@ -64,10 +64,10 @@ GridLayout {
     **  bool: False if current state bucket should not be shown
     */
     function isStateBucketShown() {
-        if (!plasmoid.configuration.compactLayoutShowBucketName) return false;
-        if (!plasmoid.configuration.compactLayoutHideBuckets) return true;
+        if (!plasmoid.configuration.compactLayoutShowBucketName) return false
+        if (!plasmoid.configuration.compactLayoutHideBuckets) return true
 
-        var result = true;
+        var result = true
         switch (getPrinterStateBucket()) {
             case main.bucket_idle: result = !plasmoid.configuration.compactLayoutHideBucketIdle; break;
             case main.bucket_unknown: result = !plasmoid.configuration.compactLayoutHideBucketUnknown; break;
@@ -76,7 +76,7 @@ GridLayout {
             case main.bucket_error: result = !plasmoid.configuration.compactLayoutHideBucketError; break;
             case main.bucket_disconnected: result = !plasmoid.configuration.compactLayoutHideBucketDisconnected; break;
         }
-        return result;
+        return result
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -92,12 +92,12 @@ GridLayout {
         clip: true
         visible: {
             // If all is set hidden we will force icon display anyway.
-            var visibility = plasmoid.configuration.compactLayoutStateIconEnabled;
+            var visibility = plasmoid.configuration.compactLayoutStateIconEnabled
             if (!visibility) {
                 if (!plasmoid.configuration.compactLayoutStateEnabled
                     && !plasmoid.configuration.compactLayoutPercentageEnabled
                     && !plasmoid.configuration.compactLayoutVerticalProgressBarEnabled) {
-                    visibility = true;
+                    visibility = true
                 }
             }
             return visibility;
@@ -108,7 +108,7 @@ GridLayout {
             if (plasmoid.configuration.compactLayoutCustomIconSizeEnabled && (compactContainer.width !== undefined)) {
                 size = Math.min(plasmoid.configuration.compactLayoutCustomIconSize, threshold)
             }
-            return size;
+            return size
         }
         Layout.maximumHeight: {
             var threshold = (plasmoid.formFactor == PlasmaCore.Types.Vertical) ? compactContainer.width : compactContainer.height;
@@ -116,7 +116,7 @@ GridLayout {
             if (plasmoid.configuration.compactLayoutCustomIconSizeEnabled && (compactContainer.height !== undefined)) {
                 size = Math.min(plasmoid.configuration.compactLayoutCustomIconSize, threshold)
             }
-            return size;
+            return size
         }
     } // Image
 
@@ -128,10 +128,10 @@ GridLayout {
         font.capitalization: Font.Capitalize
         text: {
             var state = "";
-            if(isStateBucketShown()) state += main.octoState;
+            if(isStateBucketShown()) state += main.octoState
             if (main.jobInProgress && plasmoid.configuration.compactLayoutPercentageEnabled) {
-                if (state != '') state += ' ';
-                state += `${main.jobCompletion}%`;
+                if (state != '') state += ' '
+                state += `${main.jobCompletion}%`
             }
             return state;
         }
@@ -141,7 +141,7 @@ GridLayout {
     PlasmaComponents.ProgressBar {
         visible: {
             return plasmoid.formFactor == PlasmaCore.Types.Vertical
-                && plasmoid.configuration.compactLayoutVerticalProgressBarEnabled && main.jobInProgress;
+                && plasmoid.configuration.compactLayoutVerticalProgressBarEnabled && main.jobInProgress
         }
         Layout.maximumWidth: compactContainer.width
         height: 4

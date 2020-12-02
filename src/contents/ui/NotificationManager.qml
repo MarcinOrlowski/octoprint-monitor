@@ -15,19 +15,19 @@ QtObject {
     function post(args) {
         var useNotifySend = plasmoid.configuration.notificationsUseNotifySend
 
-        console.debug(`useNotifySend: ${useNotifySend}`);
+        console.debug(`useNotifySend: ${useNotifySend}`)
         if (useNotifySend) {
             var params = [`--app-name="${args.title}"`]
-            if (args.icon) params.push(`--icon="${args.icon}"`);
-            if (args.expireTimeout) params.push(`--expire-time=${args.expireTimeout}`);
+            if (args.icon) params.push(`--icon="${args.icon}"`)
+            if (args.expireTimeout) params.push(`--expire-time=${args.expireTimeout}`)
             // FIXME we need to shell escape these two!
-            if (args.summary) params.push('"' + args.summary.replace(/\"/g, '') + '"');
-            if (args.body) params.push('"' + args.body.replace(/\"/g, '') + '"');
+            if (args.summary) params.push('"' + args.summary.replace(/\"/g, '') + '"')
+            if (args.body) params.push('"' + args.body.replace(/\"/g, '') + '"')
 
 //            console.debug(JSON.stringify(args))
             var cmd='notify-send ' + params.join(' ')
-            console.debug(`cmd: ${cmd}`);
-            executable.exec(cmd);
+            console.debug(`cmd: ${cmd}`)
+            executable.exec(cmd)
         } else {
             // https://github.com/KDE/plasma-workspace/blob/master/dataengines/notifications/notifications.operations
             var service = dataSource.serviceForSource("notification")
