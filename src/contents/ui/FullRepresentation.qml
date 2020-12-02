@@ -47,7 +47,7 @@ GridLayout {
                 fullContainer.cameraViewTimerState = i18n("STOPPED");
                 return;
             } else {
-                fullContainer.cameraViewTimerState = '@' + plasmoid.configuration.cameraViewUpdateInterval + ' secs';
+                fullContainer.cameraViewTimerState = `@${plasmoid.configuration.cameraViewUpdateInterval} secs`;
             }
 
 			var targetImageView = (cameraViewStack.currentIndex === 0) ? cameraView0 : cameraView1;
@@ -134,7 +134,7 @@ GridLayout {
                     text: {
                         var state = main.octoState;
                         if (main.jobInProgress) {
-                            state += " " + main.jobCompletion + "%";
+                            state += ` ${main.jobCompletion}%`;
                         }
                         return state;
                     }
@@ -149,14 +149,14 @@ GridLayout {
                 PlasmaComponents.Label {
                     fontSizeMode: Text.Fit
                     minimumPixelSize: 8
-                    text: i18n('Print time') + ': ' + main.jobPrintTime
+                    text: i18n('Print time') + `: ${main.jobPrintTime}`
                     font.pixelSize: Qt.application.font.pixelSize * 0.8
                     visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime
                 }
                 PlasmaComponents.Label {
                     fontSizeMode: Text.Fit
                     minimumPixelSize: 8
-                    text: i18n('ETA') + ': ' + main.jobPrintTimeLeft
+                    text: i18n('ETA') + `: ${main.jobPrintTimeLeft}`
                     font.pixelSize: Qt.application.font.pixelSize * 0.8
                     visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft
                 }
@@ -185,7 +185,6 @@ GridLayout {
         ColumnLayout {
             width: fullContainer.width
             Layout.minimumWidth: fullContainer.width
-//            Layout.maximumWidth: fullContainer.width
 
             Image {
                 id: cameraView0
@@ -208,7 +207,7 @@ GridLayout {
                 elide: Text.ElideRight
                 wrapMode: Text.NoWrap
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
-                text: (cameraView0Stamp != '') ? cameraView0Stamp + ' (' + cameraViewTimerState + ')' : ''
+                text: (cameraView0Stamp != '') ? `${cameraView0Stamp} (${cameraViewTimerState})` : ''
             }
         }
 
@@ -237,7 +236,7 @@ GridLayout {
                 fontSizeMode: Text.Fit
                 elide: Text.ElideRight
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
-                text: (cameraView1Stamp != '') ? cameraView1Stamp + ' (' + cameraViewTimerState + ')' : ''
+                text: (cameraView1Stamp != '') ? `${cameraView1Stamp} (${cameraViewTimerState})` : ''
             }
         }
     } // StackLayout

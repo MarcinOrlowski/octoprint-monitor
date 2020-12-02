@@ -265,11 +265,11 @@ Item {
             }
         }
 
-//        console.debug('post: ' + post + ', prev: ' + previous + ', current: ' + current + ', expTimeout: ' + expireTimeout);
+//        console.debug(`post: ${post}, prev: ${previous}, current: ${current}, expTimeout: ${expireTimeout}`);
         if (post) notificationManager.post({
             'title': Plasmoid.title,
             'icon': main.octoStateIcon,
-            'summary': "State changed from '" + main.previousOctoState + "' to '" + main.octoState + "'.",
+            'summary': `State changed from '${main.previousOctoState}' to '${main.octoState}'.`,
             'body': main.octoStateDescription,
             'expireTimeout': expireTimeout,
         });
@@ -304,6 +304,7 @@ Item {
         main.jobInProgress = jobInProgress;
         main.printerConnected = printerConnected;
 
+        console.debug(`currentState: ${currentState}, previous: ${main.previousOctoState}`);
         if (currentState != main.previousOctoState) {
             main.previousOctoState = main.octoState;
             main.previousOctoStateBucket = main.octoStateBucket;
@@ -334,7 +335,7 @@ Item {
             bucket = getPrinterStateBucket();
         }
 
-        return plasmoid.file("", "images/state-" + bucket + ".png");
+        return plasmoid.file("", `images/state-${bucket}.png`);
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -353,7 +354,7 @@ Item {
 		if ( apiUrl + apiKey == "" ) return null;
 
         var xhr = new XMLHttpRequest();
-        var url = apiUrl + "/" + req;
+        var url = `${apiUrl}/${req}`
         xhr.open('GET', url);
         xhr.setRequestHeader("Host", apiUrl);
         xhr.setRequestHeader("X-Api-Key", apiKey);
@@ -385,7 +386,7 @@ Item {
             main.apiConnected = (xhr.status !== 0);
 
             if (xhr.status === 200) {
-//              console.debug('ResponseText: "' + xhr.responseText + '"');
+//                console.debug(`ResponseText: "${xhr.responseText}"`);
                 try {
                     parseJobStatusResponse(JSON.parse(xhr.responseText));
                 } catch (error) {
@@ -394,7 +395,7 @@ Item {
                 }
                 updateOctoState();
             } else {
-                console.debug('Unexpected job response status code (' + xhr.status + ').');
+                console.debug(`Unexpected job response status code ('${xhr.status}').`);
             }
         });
         xhr.send();
@@ -454,7 +455,7 @@ Item {
 
             switch (xhr.status) {
                 case 200:
-//                  console.debug('ResponseText: "' + xhr.responseText + '"');
+//                  console.debug(`ResponseText: "'${xhr.responseText}'"`);
                     try {
                         parsePrinterStateResponse(JSON.parse(xhr.responseText));
                     } catch (error) {
@@ -467,7 +468,7 @@ Item {
                     setPrinterFlags(false);
                     break;
                 default:
-                    console.debug('Unexpected printer response status code (' + xhr.status + ').');
+                    console.debug(`Unexpected printer response status code ('${xhr.status}').`);
                     main.pf_error = true;
                     break;
             }

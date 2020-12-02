@@ -106,7 +106,7 @@ GridLayout {
             var threshold = (plasmoid.formFactor == PlasmaCore.Types.Horizontal) ? compactContainer.height : compactContainer.width;
             var size = threshold;
             if (plasmoid.configuration.compactLayoutCustomIconSizeEnabled && (compactContainer.width !== undefined)) {
-                size = Math.min(plasmoid.configuration.compactLayoutCustomIconSize, threshold);
+                size = Math.min(plasmoid.configuration.compactLayoutCustomIconSize, threshold)
             }
             return size;
         }
@@ -114,7 +114,7 @@ GridLayout {
             var threshold = (plasmoid.formFactor == PlasmaCore.Types.Vertical) ? compactContainer.width : compactContainer.height;
             var size = threshold;
             if (plasmoid.configuration.compactLayoutCustomIconSizeEnabled && (compactContainer.height !== undefined)) {
-                size = Math.min(plasmoid.configuration.compactLayoutCustomIconSize, threshold);
+                size = Math.min(plasmoid.configuration.compactLayoutCustomIconSize, threshold)
             }
             return size;
         }
@@ -130,12 +130,12 @@ GridLayout {
             var state = "";
             if(isStateBucketShown()) state += main.octoState;
             if (main.jobInProgress && plasmoid.configuration.compactLayoutPercentageEnabled) {
-                if (state != "") state += " ";
-                state += main.jobCompletion + "%";
+                if (state != '') state += ' ';
+                state += `${main.jobCompletion}%`;
             }
             return state;
         }
-        visible: plasmoid.configuration.compactLayoutStateTextLineEnabled && compactOctoStateLine.text != ""
+        visible: plasmoid.configuration.compactLayoutStateTextLineEnabled && compactOctoStateLine.text != ''
     }
 
     PlasmaComponents.ProgressBar {
