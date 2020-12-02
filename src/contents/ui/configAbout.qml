@@ -36,7 +36,7 @@ ColumnLayout {
             textFormat: Text.RichText
             text:
 "<center>
-<h2>OctoPrint Monitor v1.0.0</h2><br />
+<h2>OctoPrint Monitor v1.0.1</h2><br />
 &copy;2020 by Marcin Orlowski<br />
 <br />
 <a href=\"https://github/com/marcinorlowski/octoprint-monitor\">https://github/com/marcinorlowski/octoprint-monitor</a>
