@@ -4,6 +4,11 @@
 
 ## CHANGE LOG ##
 
+* v1.0.1 (2020-12-01)
+   * Added `Configuration` state indicating lack of widget required configuration.
+   * Improved API response handling.
+   * Scaled state icons down to reduce plasmoid size
+   * Corected layout of "Full layout" config panel
+
 * v1.0.0 (2020-12-01)
    * Initial public release
-

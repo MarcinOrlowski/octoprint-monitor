@@ -72,6 +72,9 @@ Item {
     // Indicates we were able to successfuly connect to OctoPrint API
     property bool apiConnected: false
 
+    // Tells if plasmoid API access is already confugred.
+    property bool apiAccessConfigured: false;
+
     // ------------------------------------------------------------------------------------------------------------------------
 
     property bool firstApiRequest: true
@@ -195,6 +198,8 @@ Item {
 //              case bucket_error: "error"
                 case 'unavailable': desc = 'Unable to connect to OctoPrint API.'; break;
                 case 'connecting': desc = 'Connecting to OctoPrint API.'; break;
+
+                case 'configuration': desc = 'Widget is not configured!'; break;
             }
         }
 
@@ -209,14 +214,15 @@ Item {
         var printerConnected = isPrinterConnected();
         var state = getPrinterStateBucket();
 
+        main.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '');
+
         if (main.apiConnected) {
             jobInProgress = isJobInProgress();
             if (jobInProgress && main.jobState == "printing") {
                 state = main.jobState;
             }
         } else {
-            state = 'unavailable';
-
+            state = (!main.apiAccessConfigured) ? 'configuration' : 'unavailable';
         }
 
         main.jobInProgress = jobInProgress;
@@ -243,7 +249,9 @@ Item {
 	*/
 	function getOctoStateIcon() {
 	    var bucket = 'dead';
-	    if (main.apiConnected) {
+	    if (!main.apiAccessConfigured) {
+	        bucket = 'configuration';
+	    } else if (main.apiConnected) {
             bucket = getPrinterStateBucket();
         }
         return plasmoid.file("", "images/state-" + bucket + ".png");
@@ -262,9 +270,7 @@ Item {
         var apiUrl = plasmoid.configuration.api_url;
         var apiKey = plasmoid.configuration.api_key;
 
-		if ( apiUrl + apiKey == "" ) {
-		    throw new Error('Error: API access is not configured.');
-		}
+		if ( apiUrl + apiKey == "" ) return null;
 
         var xhr = new XMLHttpRequest();
         var url = apiUrl + "/" + req;
@@ -285,6 +291,11 @@ Item {
     */
 	function getJobStateFromApi() {
 	    var xhr = getXhr('job');
+
+        if (xhr === null) {
+            updateOctoState();
+            return;
+        }
 
         xhr.onreadystatechange = (function () {
             // We only care about DONE readyState.
@@ -348,6 +359,11 @@ Item {
     */
     function getPrinterStateFromApi() {
         var xhr = getXhr('printer');
+
+        if (xhr === null) {
+            updateOctoState();
+            return;
+        }
 
         xhr.onreadystatechange = (function () {
             // We only care about DONE readyState.

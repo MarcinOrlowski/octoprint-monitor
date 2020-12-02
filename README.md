@@ -94,6 +94,11 @@ help you instantly know the state with just quick look. Detailed information are
 
 You can face following icons, which representing different type of state.
 
+### Configuration ###
+
+![Configuration](img/state-configuration.png) The **Configuration** state means plasmoid is yet not configured. The base
+miminum it requires is OctoPrint API URL and API access key. See [configuration](#configuration) for more information.
+
 ### Idle ###
 ![Idle](img/state-idle.png) The **Idle** state means connection to API is good and printer is 
 currently connected to OctoPrint but is not printing anything, sitting idle and wasting electricity.
@@ -218,6 +223,7 @@ Full layout is being used when `OctoPrint Monitor` is used as regular desktop wi
    - **Camera update intervals** - specify how frequently you want webcam snapshot view
    to be updated. You may want to increase the interval, to reduce network traffic and
    drop the load off OctoPrint.
+ - **Camera view control**
    - **Stop camera polling for state buckets** - if enabled, camera snapshot polling
    will stop if printer enters selected states. You may want to i.e. enable this
    option for i.e. "Idle" and "Disconnected" states as most likely there will be nothing

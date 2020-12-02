@@ -41,7 +41,7 @@ ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            CheckBox {
+            PlasmaComponents.CheckBox {
                 id: cameraViewEnabled
                 Kirigami.FormData.label: i18n("Enable camera snapshot view") + ':'
             }
@@ -63,6 +63,16 @@ ColumnLayout {
 
                 Kirigami.FormData.label: i18n("Camera update interval (seconds)") + ':'
             }
+        }
+    }
+
+    GroupBox {
+        title: i18n("Camera view control")
+        Layout.fillWidth: true
+
+        Kirigami.FormLayout {
+            anchors.left: parent.left
+            anchors.right: parent.right
 
             PlasmaComponents.CheckBox {
                 id: stopCameraPollForBuckets

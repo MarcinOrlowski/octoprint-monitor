@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+    <kcfgfile name=""/>
+
+    <group name="Connection">
+        <entry name="api_url" type="String">
+            <default>{OCTOPRINT_API_URL}</default>
+        </entry>
+        <entry name="api_key" type="String">
+            <default>{OCTOPRINT_API_KEY}</default>
+        </entry>
+        <entry name="cameraViewSnapshotUrl" type="String">
+            <default>{OCTOPRINT_SNAPSHOT_URL}</default>
+        </entry>
+        <entry name="statusPollInterval" type="Int">
+            <default>15</default>
+        </entry>
+    </group>
+
+    <group name="CompactLayout">
+        <entry name="compactLayoutStateIconEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="compactLayoutStateEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="compactLayoutPercentageEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="compactLayoutVerticalProgressBarEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+
+
+        <entry name="compactLayoutCustomIconSizeEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="compactLayoutCustomIconSize" type="Int">
+            <default>96</default>
+        </entry>
+
+
+
+
+
+        <entry name="compactLayoutStateTextLineEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="compactLayoutShowBucketName" type="Bool">
+            <default>true</default>
+        </entry>
+
+        <entry name="compactLayoutHideBuckets" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideBucketUnknown" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideBucketWorking" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideBucketPaused" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideBucketError" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideBucketIdle" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideBucketDisconnected" type="Bool">
+            <default>false</default>
+        </entry>
+    </group>
+
+
+    <group name="FullLayout">
+        <entry name="cameraViewEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="cameraViewUpdateInterval" type="Int">
+            <default>10</default>
+        </entry>
+        <entry name="showJobFileName" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="showJobPrintTime" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="showJobTimeLeft" type="Bool">
+            <default>true</default>
+        </entry>
+
+
+
+        <entry name="stopCameraPollForBuckets" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="stopCameraPollForBucketUnknown" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="stopCameraPollForBucketWorking" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="stopCameraPollForBucketPaused" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="stopCameraPollForBucketError" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="stopCameraPollForBucketIdle" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="stopCameraPollForBucketDisconnected" type="Bool">
+            <default>false</default>
+        </entry>
+    </group>
+
+</kcfg>
