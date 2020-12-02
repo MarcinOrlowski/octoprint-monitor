@@ -19,7 +19,7 @@
 
 ### Widget stuck in "Connecting" state ###
 
-In most cases this means that widget is not configred correctly. Either you haven't done this yet or
-configuration you provided is incorrect (i.e. wrong API key, incorrect API URL). In either case, please
-press right mouse button over installed widget, then select "Configure OctoPrint Monitor..." form context
-menu and make sure your config is right. Widget will automatically continue once correct settings are applied.
+In most cases this means that widget is not configred correctly. Most likely configuration is incorrect,
+be it API access URL or API key. In either case, please press right mouse button over installed widget, then
+select "Configure OctoPrint Monitor..." form context menu and make sure your config is right. Widget will
+automatically continue once correct settings are applied.
