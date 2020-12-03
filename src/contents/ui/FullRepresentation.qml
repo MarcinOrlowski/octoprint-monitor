@@ -34,13 +34,23 @@ GridLayout {
 	property string cameraViewTimerState: ""
 	property string cameraView0Stamp: ""
 	property string cameraView1Stamp: ""
+
+
     Timer {
-        id: fullImageTimer;
+        id: cameraViewTimer;
+
+        property int foo: {
+            var interval = plasmoid.configuration.cameraViewUpdateInterval * 1000
+            cameraViewTimer.interval = interval
+            cameraViewTimer.restart()
+            return interval
+         }
 
         interval: plasmoid.configuration.cameraViewUpdateInterval * 1000
+
         repeat: true
         running: plasmoid.expanded
-        triggeredOnStart: plasmoid.expanded
+//        triggeredOnStart: plasmoid.expanded
 
         onTriggered: {
             if (!main.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
