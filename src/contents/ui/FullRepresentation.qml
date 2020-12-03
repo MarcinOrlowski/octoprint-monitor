@@ -53,7 +53,6 @@ GridLayout {
 			var targetImageView = (cameraViewStack.currentIndex === 0) ? cameraView0 : cameraView1
 			var sep = plasmoid.configuration.cameraViewSnapshotUrl.search('/\?/') == -1 ? '?' : '&'
             var url = `${plasmoid.configuration.cameraViewSnapshotUrl}${sep}random=` + Math.floor(Math.random() * 100)
-            console.debug(url)
 			targetImageView.source = url
 
 			function finishImage() {

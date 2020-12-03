@@ -258,8 +258,8 @@ Item {
             // switching back from working to anything but paused
             post = !post && (previous == bucket_working && current != bucket_paused)
 
-            // switching from from anything to working
-            if (!post && (current == bucket_working)) {
+            // switching from anything (but connecting) to working
+            if (!post && (current == bucket_working) && previous != 'connecting') {
                 post = true
                 expireTimeout = 15000
             }
@@ -304,7 +304,7 @@ Item {
         main.jobInProgress = jobInProgress
         main.printerConnected = printerConnected
 
-        console.debug(`currentState: ${currentState}, previous: ${main.previousOctoState}`);
+//        console.debug(`currentState: ${currentState}, previous: ${main.previousOctoState}`);
         if (currentState != main.previousOctoState) {
             main.previousOctoState = main.octoState
             main.previousOctoStateBucket = main.octoStateBucket
