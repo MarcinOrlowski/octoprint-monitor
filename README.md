@@ -85,6 +85,12 @@ update webcam view in such case (hence 'STOPPED' mark next to screenshot timesta
 
 Widget now shows additional infomation related to ongoing printing job.
 
+### Camera view manual controls ###
+
+![Desktop widget #3](img/desktop3.png)
+
+Since v1.2.0 you can manually refresh camera view or pause it on demand.
+
 ---
 
 ## License ##
