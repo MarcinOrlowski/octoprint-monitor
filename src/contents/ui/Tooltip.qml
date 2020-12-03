@@ -94,7 +94,7 @@ Item {
 				Layout.alignment: Qt.AlignRight
 				maximumLineCount: 1
 				wrapMode: Text.NoWrap
-				text: `${main.p_bed_actual}°'
+				text: `${main.p_bed_actual}°`
 				visible: main.p_bed_target == 0 || main.p_bed_actual == main.p_bed_target
 			}
 			PlasmaComponents.Label {
