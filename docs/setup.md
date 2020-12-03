@@ -139,7 +139,13 @@ Full layout is being used when `OctoPrint Monitor` is used as regular desktop wi
 
  - **Post desktop notifications** - when checked, various events (like printer state changes etc)
    will additionally announced by posting desktop notification.
-
+ - **Notification timeouts**
+   - **Print job started** - timeout (in seconds) for desktop notification of new print job started. 
+     Setting to `0` means no timeout.
+   - **Print job successful** - timeout (in seconds) for desktop notification of successful completion
+     of print job. Setting to `0` means no timeout.
+   - **Print job failed** - timeout (in seconds) for desktop notification of failed (aborted, stopped,
+     printer disconnected etc) print job. Setting to `0` means no timeout.
 
 ## OctoPrint API ##
 

@@ -150,14 +150,14 @@ GridLayout {
                     minimumPixelSize: 8
                     text: i18n('Print time') + `: ${main.jobPrintTime}`
                     font.pixelSize: Qt.application.font.pixelSize * 0.8
-                    visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime
+                    visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
                 }
                 PlasmaComponents.Label {
                     fontSizeMode: Text.Fit
                     minimumPixelSize: 8
                     text: i18n('ETA') + `: ${main.jobPrintTimeLeft}`
                     font.pixelSize: Qt.application.font.pixelSize * 0.8
-                    visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft
+                    visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft && main.jobPrintTimeLeft != ''
                 }
             } // ColumnLayout
         } // RowLayout

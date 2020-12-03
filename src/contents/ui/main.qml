@@ -146,6 +146,7 @@ Item {
     readonly property string bucket_error: "error"
     readonly property string bucket_idle: "idle"
     readonly property string bucket_disconnected: "disconnected"
+    readonly property string bucket_connecting: "connecting"
 
     /*
     ** Returns name of printer state's bucket.
@@ -208,8 +209,8 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    property string octoState: "connecting"
-    property string octoStateBucket: "connecting"
+    property string octoState: bucket_connecting
+    property string octoStateBucket: bucket_connecting
     // FIXME we should have SVG icons here
     property string octoStateIcon: plasmoid.file("", "images/state-unknown.png")
     property string octoStateDescription: 'Connecting to OctoPrint API.'
@@ -229,7 +230,7 @@ Item {
 //              case bucket_working: ""
 //              case bucket_error: "error"
                 case 'unavailable': desc = 'Unable to connect to OctoPrint API.'; break;
-                case 'connecting': desc = 'Connecting to OctoPrint API.'; break;
+                case bucket_connecting: desc = 'Connecting to OctoPrint API.'; break;
 
                 case 'configuration': desc = 'Widget is not configured!'; break;
             }
@@ -256,32 +257,47 @@ Item {
 
         var body = main.octoStateDescription
         if (current != previous) {
-            // switching back from working to anything but paused
-            if (!post && (previous == bucket_working && current != bucket_paused)) {
+            // switching back from "Working"
+            if (!post && (previous == bucket_working)) {
                 post = true
-                console.debug('compl: ' + jobCompletion)
-                if (jobCompletion == 100) {
-                    body = `Print ${jobFileName} completed. Took ${jobPrintTime}.`
-                } else {
-                    body = `Print ${jobFileName} stopped at ${jobCompletion}%.`
+                switch (current) {
+                    case bucket_paused:
+                        body = `Print job '${jobFileName}' paused.`
+                        break
+
+                    default:
+                        if (jobCompletion == 100) {
+                            expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobSuccessful
+                            body = `Print '${jobFileName}' completed.`
+                        } else {
+                            expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobFailed
+                            body = `Print '${jobFileName}' stopped at ${jobCompletion}%.`
+                        }
+                        if (jobPRintTime != '') {
+                            body += ` Print time ${jobPrintTime}.`
+                        }
+                        break
                 }
             }
 
-            // switching from anything (but connecting) to working
-            if (!post && (current == bucket_working) && previous != 'connecting') {
+            // switching from anything (but connecting) to bucket "Working"
+            if (!post && (current == bucket_working) && (previous != bucket_connecting)) {
                 post = true
-                expireTimeout = 15000
-                body = `Printing ${jobFileName}. Est. print time ${main.jobPrintTimeLeft}.`
+                expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
+                body = `Printing ${jobFileName}.`
+                if (main.JobPrintTimeLeft != '') {
+                    body += ` Est. print time ${main.jobPrintTimeLeft}.`
+                }
             }
         }
 
 //        console.debug(`post: ${post}, prev: ${previous}, current: ${current}, expTimeout: ${expireTimeout}`);
         if (post) notificationManager.post({
-            'title': Plasmoid.title,
+            'title': Plasmoid.title + ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat),
             'icon': main.octoStateIcon,
             'summary': `Printer new state: '${main.octoState}'.`,
             'body': body,
-            'expireTimeout': expireTimeout,
+            'expireTimeout': expireTimeout * 1000,
         });
     }
 
@@ -434,10 +450,10 @@ Item {
        	main.jobCompletion = (Util.isVal(resp.progress.completion)) ? Util.roundFloat(resp.progress.completion) : 0
 
 		var jobPrintTime = resp.progress.printTime
-		main.jobPrintTime = (Util.isVal(jobPrintTime)) ? Util.secondsToString(jobPrintTime) : '???'
+		main.jobPrintTime = (Util.isVal(jobPrintTime)) ? Util.secondsToString(jobPrintTime) : ''
 
 		var printTimeLeft = resp.progress.printTimeLeft
-        main.jobPrintTimeLeft = (Util.isVal(printTimeLeft)) ? Util.secondsToString(printTimeLeft) : '???'
+        main.jobPrintTimeLeft = (Util.isVal(printTimeLeft)) ? Util.secondsToString(printTimeLeft) : ''
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
