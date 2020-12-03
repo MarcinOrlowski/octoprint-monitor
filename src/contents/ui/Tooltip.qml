@@ -65,6 +65,28 @@ Item {
             visible: lastOctoStateChangeStamp != ''
 		}
 
+		PlasmaComponents.Label {
+		    Layout.maximumWidth: tooltipRoot.width
+			maximumLineCount: 1
+			wrapMode: Text.NoWrap
+			font.bold: true
+			elide: Text.ElideMiddle
+			text: i18n('Print time') + `: ${main.jobPrintTime}`
+			font.pixelSize: Qt.application.font.pixelSize * 0.8
+			visible: main.jobPrintTime != ""
+		}
+
+		PlasmaComponents.Label {
+		    Layout.maximumWidth: tooltipRoot.width
+			maximumLineCount: 1
+			wrapMode: Text.NoWrap
+			font.bold: true
+			elide: Text.ElideMiddle
+			text: i18n('Time left') + `: ${main.jobPrintTimeLeft}`
+			font.pixelSize: Qt.application.font.pixelSize * 0.8
+			visible: main.jobPrintTimeLeft != ""
+		}
+
 
 		PlasmaComponents.Label {
 		    Layout.maximumWidth: tooltipRoot.width
