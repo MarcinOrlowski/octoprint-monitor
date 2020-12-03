@@ -254,14 +254,24 @@ Item {
 
         if (!plasmoid.configuration.notificationsEnabled) return
 
+        var body = main.octoStateDescription
         if (current != previous) {
             // switching back from working to anything but paused
-            post = !post && (previous == bucket_working && current != bucket_paused)
+            if (!post && (previous == bucket_working && current != bucket_paused)) {
+                post = true
+                console.debug('compl: ' + jobCompletion)
+                if (jobCompletion == 100) {
+                    body = `Print ${jobFileName} completed. Took ${jobPrintTime}.`
+                } else {
+                    body = `Print ${jobFileName} stopped at ${jobCompletion}%.`
+                }
+            }
 
             // switching from anything (but connecting) to working
             if (!post && (current == bucket_working) && previous != 'connecting') {
                 post = true
                 expireTimeout = 15000
+                body = `Printing ${jobFileName}. Est. print time ${main.jobPrintTimeLeft}.`
             }
         }
 
@@ -269,8 +279,8 @@ Item {
         if (post) notificationManager.post({
             'title': Plasmoid.title,
             'icon': main.octoStateIcon,
-            'summary': `State changed from '${main.previousOctoState}' to '${main.octoState}'.`,
-            'body': main.octoStateDescription,
+            'summary': `Printer new state: '${main.octoState}'.`,
+            'body': body,
             'expireTimeout': expireTimeout,
         });
     }

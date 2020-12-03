@@ -7,6 +7,7 @@
 * @dev
    * Added camera view controls
    * Fixed notification config panel
+   * Reworked desktop notification content to contain more information.
 
 * v1.1.1 (2020-12-03)
    * Improved docs
