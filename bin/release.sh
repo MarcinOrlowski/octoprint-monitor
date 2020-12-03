@@ -36,6 +36,7 @@ declare -r cfg_config_file="${tmp}/contents/config/main.xml"
 pushd "${tmp}" > /dev/null
 cat "${cfg_template_file}" | sed -e "s/{OCTOPRINT_API_URL}/${op_api_url}/g" | sed -e "s/{OCTOPRINT_API_KEY}/${op_api_key}/g" | sed -e "s/{OCTOPRINT_SNAPSHOT_URL}/${op_snapshot_url}/g" > "${cfg_config_file}"
 rm -vf "${cfg_template_file}"
+echo -e "var version=\"${pkg_version}\"" > "${tmp}/contents/js/version.js"
 
 zip -q -r "${plasmoid_path}/${plasmoid_name}" *
 ls -ld "${plasmoid_path}/${plasmoid_name}"

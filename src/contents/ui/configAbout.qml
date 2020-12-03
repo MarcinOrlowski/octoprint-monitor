@@ -14,6 +14,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.1
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami 2.5 as Kirigami
+import "../js/version.js" as Version
 
 ColumnLayout {
     width: childrenRect.width
@@ -29,18 +30,17 @@ ColumnLayout {
             source: plasmoid.file("", "images/logo.png")
         }
 
-
-
+        // metadata access is not available until very recent Plasma
+        // so as a work around we have it auto-generated as JS file
         PlasmaComponents.Label {
             Layout.alignment: Qt.AlignHCenter
             textFormat: Text.RichText
-            text:
-"<center>
-<h2>OctoPrint Monitor v1.0.1</h2><br />
+            text: `<center>
+<h2>OctoPrint Monitor v${Version.version}</h2><br />
 &copy;2020 by Marcin Orlowski<br />
 <br />
 <a href=\"https://github/com/marcinorlowski/octoprint-monitor\">https://github/com/marcinorlowski/octoprint-monitor</a>
-</center>"
+</center>`
             }
         }
 
