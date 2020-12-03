@@ -15,7 +15,7 @@ QtObject {
     function post(args) {
         var useNotifySend = plasmoid.configuration.notificationsUseNotifySend
 
-        console.debug(`useNotifySend: ${useNotifySend}`)
+//        console.debug(`useNotifySend: ${useNotifySend}`)
         if (useNotifySend) {
             var params = [`--app-name="${args.title}"`]
             if (args.icon) params.push(`--icon="${args.icon}"`)
