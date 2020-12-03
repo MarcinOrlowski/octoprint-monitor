@@ -4,6 +4,9 @@
 
 ## CHANGE LOG ##
 
+* @dev
+   * Added camera view controls
+
 * v1.1.1 (2020-12-03)
    * Improved docs
 

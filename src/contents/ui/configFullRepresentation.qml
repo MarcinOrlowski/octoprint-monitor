@@ -21,6 +21,8 @@ ColumnLayout {
     property alias cfg_cameraViewEnabled: cameraViewEnabled.checked
     property alias cfg_cameraViewUpdateInterval: cameraViewUpdateInterval.value
     property alias cfg_cameraViewSnapshotUrl: cameraViewSnapshotUrl.text
+    property alias cfg_cameraViewControlsEnabled: cameraViewControlsEnabled.checked
+
     property alias cfg_showJobFileName: showJobFileName.checked
     property alias cfg_showJobPrintTime: showJobPrintTime.checked
     property alias cfg_showJobTimeLeft: showJobTimeLeft.checked
@@ -63,6 +65,13 @@ ColumnLayout {
 
                 Kirigami.FormData.label: i18n("Camera update interval (seconds)") + ':'
             }
+
+            CheckBox {
+                id: cameraViewControlsEnabled
+                enabled: cfg_cameraViewEnabled
+                Kirigami.FormData.label: i18n("Show camera view controls") + ':'
+            }
+
         }
     }
 

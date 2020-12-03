@@ -11,19 +11,10 @@
 
 import QtQuick 2.6
 import QtQuick.Layouts 1.5
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.core 2.0 as Core
-import org.kde.plasma.components 3.0 as PlasmaComponents
-import org.kde.plasma.extras 2.0 as Extras
-import org.kde.kquickcontrolsaddons 2.0
-import QtQuick.Controls.Styles 1.4
+import org.kde.plasma.components 2.0 as PlasmaComponents
 
 GridLayout {
     id: fullContainer
-
-//    width: units.gu(300)
-//    height: units.gu(200)
 
     columns: 1
     rows: 5
@@ -31,10 +22,38 @@ GridLayout {
     // ------------------------------------------------------------------------------------------------------------------------
 
 	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ""
-	property string cameraViewTimerState: ""
+	property string cameraViewTimerState: `@${plasmoid.configuration.cameraViewUpdateInterval} secs`
 	property string cameraView0Stamp: ""
 	property string cameraView1Stamp: ""
 
+	function updateSnapshot() {
+        if (!main.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
+            return
+        }
+
+        var targetImageView = (cameraViewStack.currentIndex === 0) ? cameraView0 : cameraView1
+        targetImageView.source = `${plasmoid.configuration.cameraViewSnapshotUrl}#random` + Math.floor(Math.random() * 1000)
+
+        function finishImage() {
+            if (targetImageView.status === Component.Ready) {
+                targetImageView.statusChanged.disconnect(finishImage)
+                cameraViewStack.currentIndex = (cameraViewStack.currentIndex+1) % 2
+
+                var stamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
+                if (cameraViewStack.currentIndex === 0) {
+                    cameraView0Stamp = stamp
+                } else {
+                    cameraView1Stamp = stamp
+                }
+            }
+        }
+
+        if (targetImageView.status === Component.Loading) {
+            targetImageView.statusChanged.connect(finishImage)
+        } else {
+            finishImage()
+        }
+	}
 
     Timer {
         id: cameraViewTimer;
@@ -50,41 +69,9 @@ GridLayout {
 
         repeat: true
         running: plasmoid.expanded
-//        triggeredOnStart: plasmoid.expanded
+        triggeredOnStart: plasmoid.expanded
 
-        onTriggered: {
-            if (!main.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
-                fullContainer.cameraViewTimerState = i18n("STOPPED")
-                return
-            } else {
-                fullContainer.cameraViewTimerState = `@${plasmoid.configuration.cameraViewUpdateInterval} secs`
-            }
-
-			var targetImageView = (cameraViewStack.currentIndex === 0) ? cameraView0 : cameraView1
-			var sep = plasmoid.configuration.cameraViewSnapshotUrl.search('/\?/') == -1 ? '?' : '&'
-            var url = `${plasmoid.configuration.cameraViewSnapshotUrl}${sep}random=` + Math.floor(Math.random() * 100)
-			targetImageView.source = url
-
-			function finishImage() {
-				if (targetImageView.status === Component.Ready) {
-					targetImageView.statusChanged.disconnect(finishImage)
-			        cameraViewStack.currentIndex = (cameraViewStack.currentIndex+1) % 2
-
-                    var stamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
-                    if (cameraViewStack.currentIndex === 0) {
-                        cameraView0Stamp = stamp
-                    } else {
-                        cameraView1Stamp = stamp
-                    }
-				}
-			}
-
-			if (targetImageView.status === Component.Loading) {
-				targetImageView.statusChanged.connect(finishImage)
-			} else {
-				finishImage()
-			}
-		}
+        onTriggered: updateSnapshot()
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -184,6 +171,11 @@ GridLayout {
         }
     } // ColumnLayout
 
+//    MouseArea {
+//        width: fullContainer.width
+//        Layout.minimumWidth: fullContainer.width
+//        Layout.maximumWidth: fullContainer.width
+
     StackLayout {
         id: cameraViewStack
 
@@ -212,14 +204,29 @@ GridLayout {
                 asynchronous: true
                 Layout.alignment: Qt.AlignCenter
             }
-            PlasmaComponents.Label {
-                maximumLineCount: 1
-                Layout.maximumWidth: parent.width
-                fontSizeMode: Text.Fit
-                elide: Text.ElideRight
-                wrapMode: Text.NoWrap
-                font.pixelSize: Qt.application.font.pixelSize * 0.8
-                text: (cameraView0Stamp != '') ? `${cameraView0Stamp} (${cameraViewTimerState})` : ''
+            RowLayout {
+                Layout.fillWidth: true
+                PlasmaComponents.Label {
+                    maximumLineCount: 1
+                    Layout.maximumWidth: parent.width
+                    wrapMode: Text.NoWrap
+                    fontSizeMode: Text.Fit
+                    elide: Text.ElideRight
+                    font.pixelSize: Qt.application.font.pixelSize * 0.8
+                    text: cameraView0Stamp
+                }
+                Item {
+                    Layout.fillWidth: true
+                }
+                PlasmaComponents.Label {
+                    maximumLineCount: 1
+                    Layout.maximumWidth: parent.width
+                    wrapMode: Text.NoWrap
+                    fontSizeMode: Text.Fit
+                    elide: Text.ElideRight
+                    font.pixelSize: Qt.application.font.pixelSize * 0.8
+                    text: (cameraView0Stamp != '') ? cameraViewTimerState : ''
+                }
             }
         }
 
@@ -241,17 +248,84 @@ GridLayout {
                 asynchronous: true
                 Layout.alignment: Qt.AlignCenter
             }
-            PlasmaComponents.Label {
-                maximumLineCount: 1
-                Layout.maximumWidth: parent.width
-                wrapMode: Text.NoWrap
-                fontSizeMode: Text.Fit
-                elide: Text.ElideRight
-                font.pixelSize: Qt.application.font.pixelSize * 0.8
-                text: (cameraView1Stamp != '') ? `${cameraView1Stamp} (${cameraViewTimerState})` : ''
+            RowLayout {
+                Layout.fillWidth: true
+                PlasmaComponents.Label {
+                    maximumLineCount: 1
+                    Layout.maximumWidth: parent.width
+                    wrapMode: Text.NoWrap
+                    fontSizeMode: Text.Fit
+                    elide: Text.ElideRight
+                    font.pixelSize: Qt.application.font.pixelSize * 0.8
+                    text: cameraView1Stamp
+                }
+                Item {
+                    Layout.fillWidth: true
+                }
+                PlasmaComponents.Label {
+                    maximumLineCount: 1
+                    Layout.maximumWidth: parent.width
+                    wrapMode: Text.NoWrap
+                    fontSizeMode: Text.Fit
+                    elide: Text.ElideRight
+                    font.pixelSize: Qt.application.font.pixelSize * 0.8
+                    text: (cameraView1Stamp != '') ? cameraViewTimerState : ''
+                }
             }
         }
     } // StackLayout
+
+    RowLayout {
+        visible: plasmoid.configuration.cameraViewControlsEnabled && isCameraViewEnabled
+        Layout.fillWidth: true
+
+        PlasmaComponents.Button {
+            id: buttonStartPause
+            text: i18n("Pause")
+            implicitWidth: minimumWidth
+            iconSource: "media-playback-pause"
+            onClicked: {
+                if (cameraViewTimer.running) {
+                    cameraViewTimer.stop()
+                    cameraViewTimerState = i18n('PAUSED')
+                    buttonStartPause.text = i18n('Start')
+                    buttonStartPause.iconSource = "media-playback-start"
+                } else {
+                    cameraViewTimer.start()
+                    buttonStartPause.text = i18n('Pause')
+                    buttonStartPause.iconSource = "media-playback-pause"
+                }
+            }
+        }
+
+        PlasmaComponents.Button {
+            text: "Stop"
+            implicitWidth: minimumWidth
+            iconSource: "media-playback-stop"
+            onClicked: {
+                cameraViewTimer.stop()
+                cameraViewTimerState = i18n('STOPPED')
+                buttonStartPause.text = i18n('Start')
+                buttonStartPause.iconSource = "media-playback-start"
+            }
+        }
+
+        Item {
+            Layout.fillWidth: true
+        }
+
+        PlasmaComponents.Button {
+            text: ""
+            implicitWidth: units.gridUnit * 2
+            iconSource: "view-refresh"
+            onClicked: {
+                if (cameraViewTimer.running) {
+                    cameraViewTimer.restart()
+                }
+                updateSnapshot()
+            }
+        }
+    }
 
     // ------------------------------------------------------------------------------------------------------------------------
 }

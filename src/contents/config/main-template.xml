@@ -83,6 +83,10 @@
         <entry name="cameraViewUpdateInterval" type="Int">
             <default>10</default>
         </entry>
+        <entry name="cameraViewControlsEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+
         <entry name="showJobFileName" type="Bool">
             <default>true</default>
         </entry>
