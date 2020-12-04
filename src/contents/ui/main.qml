@@ -11,10 +11,12 @@
 
 import QtQuick 2.1
 import QtQuick.Layouts 1.1
+import Qt.labs.settings 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
 import "../js/utils.js" as Utils
+import "../js/version.js" as Version
 
 Item {
     id: main
@@ -647,5 +649,49 @@ Item {
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
+
+	Timer {
+		id: versionCheckTimer
+        interval: 3 * 60 * 60 * 1000
+        repeat: true
+        running: true
+        triggeredOnStart: true
+        onTriggered: checkVersion()
+	}
+
+    Settings {
+        id: settings
+        category: "VersionChecker"
+        property string lastVersionCheckDate: ''
+    }
+
+    function checkVersion() {
+        var performCheck = true
+        var d = new Date()
+        var today = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate()
+        if (today != settings.lastVersionCheckDate) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('GET', 'https://raw.githubusercontent.com/MarcinOrlowski/octoprint-monitor/master/src/metadata.desktop')
+            xhr.onreadystatechange = (function () {
+                // We only care about DONE readyState.
+                if (xhr.readyState !== 4) return
+                if (xhr.status === 200) {
+                    settings.lastVersionCheckDate = today
+
+                    var remoteVersion = xhr.responseText.match(/X\-KDE\-PluginInfo\-Version=(.*)/)[1]
+                    if (remoteVersion != Version.version) {
+                        notificationManager.post({
+                            'title': Plasmoid.title,
+                            'icon': main.octoStateIcon,
+                            'summary': `OctoPrint Monitor ${remoteVersion} available!`,
+                            'body': `You are currently using version ${Version.version}. See project page for more information (link in Configuration > About)`,
+                            'expireTimeout': 0,
+                        });
+                    }
+                }
+            });
+            xhr.send()
+        }
+    }
 
 }
