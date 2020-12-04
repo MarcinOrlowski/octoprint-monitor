@@ -23,6 +23,33 @@
         <entry name="compactLayoutStateIconEnabled" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="compactLayoutHideIconForBuckets" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketUnknown" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketWorking" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketPaused" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketError" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketIdle" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketDisconnected" type="Bool">
+            <default>false</default>
+        </entry>
+
+
+
+
+
+
         <entry name="compactLayoutStateEnabled" type="Bool">
             <default>true</default>
         </entry>

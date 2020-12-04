@@ -57,13 +57,38 @@ GridLayout {
     // ------------------------------------------------------------------------------------------------------------------------
 
     /*
+    ** Determines if current state icon should be visible or not,
+    ** depeneding of multiple factors, incl. user settings.
+    **
+    ** Returns:
+    **  bool: False if icon for current state bucket should not be shown
+    */
+    function isStateBucketIconShown() {
+        if (!plasmoid.configuration.compactLayoutStateIconEnabled) return false
+        if (!plasmoid.configuration.compactLayoutHideIconForBuckets) return true
+
+        var result = true
+        switch (getPrinterStateBucket()) {
+            case main.bucket_idle: result = !plasmoid.configuration.compactLayoutHideIconForBucketIdle; break;
+            case main.bucket_unknown: result = !plasmoid.configuration.compactLayoutHideIconForBucketUnknown; break;
+            case main.bucket_working: result = !plasmoid.configuration.compactLayoutHideIconForBucketWorking; break;
+            case main.bucket_paused: result = !plasmoid.configuration.compactLayoutHideIconForBucketPaused; break;
+            case main.bucket_error: result = !plasmoid.configuration.compactLayoutHideIconForBucketError; break;
+            case main.bucket_disconnected: result = !plasmoid.configuration.compactLayoutHideIconForBucketDisconnected; break;
+        }
+        return result
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    /*
     ** Determines if current state bucket should be visible or not,
     ** depeneding of multiple factors, incl. user settings.
     **
     ** Returns:
     **  bool: False if current state bucket should not be shown
     */
-    function isStateBucketShown() {
+    function isStateBucketNameShown() {
         if (!plasmoid.configuration.compactLayoutShowBucketName) return false
         if (!plasmoid.configuration.compactLayoutHideBuckets) return true
 
@@ -92,13 +117,17 @@ GridLayout {
         clip: true
         visible: {
             // If all is set hidden we will force icon display anyway.
-            var visibility = plasmoid.configuration.compactLayoutStateIconEnabled
+            var visibility = isStateBucketIconShown()
             if (!visibility) {
-                if (!plasmoid.configuration.compactLayoutStateEnabled
-                    && !plasmoid.configuration.compactLayoutPercentageEnabled
-                    && !plasmoid.configuration.compactLayoutVerticalProgressBarEnabled) {
-                    visibility = true
-                }
+                visibility =
+                    (!isStateBucketNameShown()
+                        && !(main.jobInProgress && (
+                            plasmoid.configuration.compactLayoutPercentageEnabled
+                            || plasmoid.configuration.compactLayoutVerticalProgressBarEnabled
+                            || plasmoid.configuration.compactLayoutShowPrintTime
+                            || plasmoid.configuration.compactLayoutShowPrintTimeLeft
+                        )
+                    ))
             }
             return visibility;
         }
@@ -128,7 +157,7 @@ GridLayout {
         font.capitalization: Font.Capitalize
         text: {
             var state = "";
-            if(isStateBucketShown()) state += main.octoState
+            if(isStateBucketNameShown()) state += main.octoState
             if (main.jobInProgress && plasmoid.configuration.compactLayoutPercentageEnabled) {
                 if (state != '') state += ' '
                 state += `${main.jobCompletion}%`

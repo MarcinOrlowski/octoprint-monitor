@@ -11,6 +11,7 @@
    * Desktop notification timeouts can now be configured.
    * Compact widget's tooltip now shows print and remaining time.
    * Compact widget can now display elapsed and remaining print time.
+   * Visibility of compact widget state icon can be configured per state bucket.
 
 * v1.1.1 (2020-12-03)
    * Improved docs

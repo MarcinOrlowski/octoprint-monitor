@@ -16,10 +16,24 @@ import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami 2.5 as Kirigami
 
 ColumnLayout {
+    id: ccRoot
+
     width: childrenRect.width
 
-	property alias cfg_compactLayoutShowBucketName:		compactLayoutShowBucketName.checked
+    readonly property int indent: 24
+
     property alias cfg_compactLayoutStateIconEnabled:   compactLayoutStateIconEnabled.checked
+
+    property alias cfg_compactLayoutHideIconForBuckets: compactLayoutHideIconForBuckets.checked
+    property alias cfg_compactLayoutHideIconForBucketUnknown: compactLayoutHideIconForBucketUnknown.checked
+    property alias cfg_compactLayoutHideIconForBucketWorking: compactLayoutHideIconForBucketWorking.checked
+    property alias cfg_compactLayoutHideIconForBucketPaused: compactLayoutHideIconForBucketPaused.checked
+    property alias cfg_compactLayoutHideIconForBucketError: compactLayoutHideIconForBucketError.checked
+    property alias cfg_compactLayoutHideIconForBucketIdle: compactLayoutHideIconForBucketIdle.checked
+    property alias cfg_compactLayoutHideIconForBucketDisconnected: compactLayoutHideIconForBucketDisconnected.checked
+
+
+	property alias cfg_compactLayoutShowBucketName:		compactLayoutShowBucketName.checked
     property alias cfg_compactLayoutPercentageEnabled:	compactLayoutPercentageEnabled.checked
 
     property alias cfg_compactLayoutCustomIconSizeEnabled: compactLayoutCustomIconSizeEnabled.checked
@@ -60,7 +74,7 @@ ColumnLayout {
 
             RowLayout {
                 PlasmaComponents.Label {
-                    text: i18n("State icon size") + ':'
+                    text: i18n("State icon size")
                 }
                 PlasmaComponents.SpinBox {
                     id: compactLayoutCustomIconSize
@@ -69,6 +83,53 @@ ColumnLayout {
                     from: 32
                     to: 512
                     stepSize: 16
+                }
+            }
+
+            PlasmaComponents.CheckBox {
+                id: compactLayoutHideIconForBuckets
+                enabled: cfg_compactLayoutStateIconEnabled
+                text: i18n("Hide state icon for specific buckets")
+            }
+            ColumnLayout {
+                GridLayout {
+                    columns: 2
+                    PlasmaComponents.CheckBox {
+                        id: compactLayoutHideIconForBucketUnknown
+                        enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
+                        Layout.leftMargin: ccRoot.indent
+                        text: i18n("Unknown")
+                    }
+                    PlasmaComponents.CheckBox {
+                        id: compactLayoutHideIconForBucketWorking
+                        enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
+                        Layout.leftMargin: ccRoot.indent
+                        text: i18n("Working")
+                    }
+                    PlasmaComponents.CheckBox {
+                        id: compactLayoutHideIconForBucketPaused
+                        enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
+                        Layout.leftMargin: ccRoot.indent
+                        text: i18n("Paused")
+                    }
+                    PlasmaComponents.CheckBox {
+                        id: compactLayoutHideIconForBucketError
+                        enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
+                        Layout.leftMargin: ccRoot.indent
+                        text: i18n("Error")
+                    }
+                    PlasmaComponents.CheckBox {
+                        id: compactLayoutHideIconForBucketIdle
+                        enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
+                        Layout.leftMargin: ccRoot.indent
+                        text: i18n("Idle")
+                    }
+                    PlasmaComponents.CheckBox {
+                        id: compactLayoutHideIconForBucketDisconnected
+                        enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
+                        Layout.leftMargin: ccRoot.indent
+                        text: i18n("Disconnected")
+                    }
                 }
             }
         }
@@ -99,7 +160,6 @@ ColumnLayout {
                 text: i18n("Hide state text for specific buckets")
             }
             ColumnLayout {
-                id: clsStates
                 readonly property int indent: 24
 
                 GridLayout {
@@ -107,37 +167,37 @@ ColumnLayout {
                     PlasmaComponents.CheckBox {
                         id: compactLayoutHideBucketUnknown
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: ccRoot.indent
                         text: i18n("Unknown")
                     }
                     PlasmaComponents.CheckBox {
                         id: compactLayoutHideBucketWorking
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: ccRoot.indent
                         text: i18n("Working")
                     }
                     PlasmaComponents.CheckBox {
                         id: compactLayoutHideBucketPaused
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: ccRoot.indent
                         text: i18n("Paused")
                     }
                     PlasmaComponents.CheckBox {
                         id: compactLayoutHideBucketError
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: ccRoot.indent
                         text: i18n("Error")
                     }
                     PlasmaComponents.CheckBox {
                         id: compactLayoutHideBucketIdle
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: ccRoot.indent
                         text: i18n("Idle")
                     }
                     PlasmaComponents.CheckBox {
                         id: compactLayoutHideBucketDisconnected
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: ccRoot.indent
                         text: i18n("Disconnected")
                     }
                 }
