@@ -15,6 +15,7 @@
        * [Compact layout](#compact-layout)
        * [Full layout](#full-layout)
        * [Desktop notifications](#desktop-notifications)
+       * [Printer states](#printer-states)
        * [OctoPrint API](#octoprint-api)
    * [Troubleshooting](troubles.md)
    * [License](../README.md/#license)
@@ -158,6 +159,18 @@ Full layout is being used when `OctoPrint Monitor` is used as regular desktop wi
    - **Print job failed** - timeout (in seconds) for desktop notification of failed (aborted, stopped,
      printer disconnected etc) print job. Setting to `0` means no timeout.
 
+### Printer states ###
+
+Several printer state names can be configured to your liking. So you can i.e. have status icon
+hidden for `Idle` state and at the same time set `Idle` bucket name to i.e. `Printer #2 is idle.`
+which may be more useful in several cases.
+
+![Printer states](img/config-printer.png)
+
+- **Custom printer state names** - when checked, provided text will be used in place of original
+  state bucket name. If custom string is enabled but not provided (empty string), default value
+  will be used instead.
+
 ## OctoPrint API ##
 
 Configure OctoPrint API access here.
@@ -173,4 +186,3 @@ Configure OctoPrint API access here.
  - **Data polling**
    - **Status poll interval** - controls how often `OctoPrint Monitor` will query
      OctoPrint about its status and the printer. 
-
