@@ -1,5 +1,14 @@
 #!/bin/bash
 
+#  OctoPrint Monitor
+#
+#  Updated plasmoid dev config file based on current template and env vars
+#
+#  @author    Marcin Orlowski <mail (#) marcinOrlowski (.) com>
+#  @copyright 2020 Marcin Orlowski
+#  @license   http://www.opensource.org/licenses/mit-license.php MIT
+#  @link      https://github.com/MarcinOrlowski/octoprint-monitor
+
 function escape() {
 	local -r str="${1:-}"
 	echo $(echo "${str}" | sed -e 's/[]\/$*.^[]/\\&/g')
