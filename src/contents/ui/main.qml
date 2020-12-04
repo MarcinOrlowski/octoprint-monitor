@@ -273,7 +273,7 @@ Item {
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobFailed
                             body = `Print '${jobFileName}' stopped at ${jobCompletion}%.`
                         }
-                        if (jobPRintTime != '') {
+                        if (jobPrintTime != '') {
                             body += ` Print time ${jobPrintTime}.`
                         }
                         break
