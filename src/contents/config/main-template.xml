@@ -174,4 +174,50 @@
         </entry>
     </group>
 
+
+    <group name="PrinterStates">
+        <entry name="printerStateNameForBucketUnknownEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketUnknown" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketWorkingEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketWorking" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketPausedEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketPaused" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketErrorEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketError" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketIdleEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketIdle" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketDisconnectedEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketDisconnected" type="String">
+            <default></default>
+        </entry>
+
+    </group>
+
 </kcfg>

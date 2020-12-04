@@ -152,7 +152,7 @@ Item {
     ** Returns name of printer state's bucket.
     **
     ** Returns:
-    **	string: printer state bucket name
+    **	string: printer state bucket
     */
     function getPrinterStateBucket() {
         var bucket = undefined;
@@ -172,6 +172,46 @@ Item {
         }
 
         return bucket;
+    }
+
+    /*
+    ** Returns name of given state bucket. Checks if custom name for that bucket
+    ** is enabled and uses if it's not empty string. In other cases returns
+    ** generic bucket name.
+    **
+    ** Returns
+    **  string: printer bucket name
+    */
+    function getPrinterStateBucketName(bucket) {
+        var name = ''
+        switch(bucket) {
+            case bucket_unknown:
+                if (plasmoid.configuration.printerStateNameForBucketUnknownEnabled)
+                    name = plasmoid.configuration.printerStateNameForBucketUnknown
+                break
+            case bucket_working:
+                if (plasmoid.configuration.printerStateNameForBucketWorkingEnabled)
+                    name = plasmoid.configuration.printerStateNameForBucketWorking
+                break
+            case bucket_paused:
+                if (plasmoid.configuration.printerStateNameForBucketPausedEnabled)
+                    name = plasmoid.configuration.printerStateNameForBucketPaused
+                break
+            case bucket_error:
+                if (plasmoid.configuration.printerStateNameForBucketErrorEnabled)
+                    name = plasmoid.configuration.printerStateNameForBucketError
+                break
+            case bucket_idle:
+                if (plasmoid.configuration.printerStateNameForBucketIdleEnabled)
+                    name = plasmoid.configuration.printerStateNameForBucketIdle
+                break
+            case bucket_disconnected:
+                if (plasmoid.configuration.printerStateNameForBucketDisconnectedEnabled)
+                    name = plasmoid.configuration.printerStateNameForBucketDisconnected
+                break
+        }
+
+        return name != '' ? name : bucket
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -211,6 +251,7 @@ Item {
 
     property string octoState: bucket_connecting
     property string octoStateBucket: bucket_connecting
+    property string octoStateBucketName: bucket_connecting
     // FIXME we should have SVG icons here
     property string octoStateIcon: plasmoid.file("", "images/state-unknown.png")
     property string octoStateDescription: 'Connecting to OctoPrint API.'
@@ -222,7 +263,7 @@ Item {
     function updateOctoStateDescription() {
         var desc = main.jobStateDescription;
         if (desc == '') {
-            switch(main.octoState) {
+            switch(main.octoStateBucket) {
                 case bucket_unknown: desc = 'Unable to determine root cause.'; break;
                 case bucket_paused: desc = 'Print job is PAUSED now.'; break;
                 case bucket_idle: desc = 'Printer is operational and idle.'; break;
@@ -314,7 +355,8 @@ Item {
         var jobInProgress = false
         var printerConnected = isPrinterConnected()
         var currentStateBucket = getPrinterStateBucket()
-        var currentState = currentStateBucket
+        var currentStateBucketName = getPrinterStateBucketName(currentStateBucket);
+        var currentState = currentStateBucketName
 
         main.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '')
 
@@ -337,6 +379,7 @@ Item {
 
             main.octoState = currentState
             main.octoStateBucket = currentStateBucket
+            main.octoStateBucketName = currentStateBucketName
             updateOctoStateDescription()
 
             main.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
