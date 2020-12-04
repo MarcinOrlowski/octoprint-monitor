@@ -32,9 +32,9 @@ QtObject {
             var service = dataSource.serviceForSource("notification")
             var operation = service.operationDescription("createNotification")
             operation.appName = args.title
-            operation.appIcon = args.icon || ""
-            operation.summary = args.summary || ""
-            operation.body = args.body || ""
+            operation.appIcon = args.icon || ''
+            operation.summary = args.summary || ''
+            operation.body = args.body || ''
             if (typeof args.expireTimeout !== undefined) {
                 operation.expireTimeout = args.expireTimeout
             }

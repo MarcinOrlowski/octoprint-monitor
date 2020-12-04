@@ -303,6 +303,8 @@ Item {
         var previous = main.previousOctoStateBucket
         var post = false
         var expireTimeout = 0
+        var summary = ''
+        var body = ''
 
         if (!plasmoid.configuration.notificationsEnabled) return
 
@@ -313,29 +315,30 @@ Item {
                 post = true
                 switch (current) {
                     case bucket_cancelling:
-                        body = `Cancelling job '${jobFileName}'.`
+                        summary = `Cancelling job '${jobFileName}'.`
                         break;
 
                     case bucket_paused:
-                        body = `Print job '${jobFileName}' paused.`
+                        summary = `Print job '${jobFileName}' paused.`
                         break
 
                     default:
                         if (jobCompletion == 100) {
+                            summary = `Print '${jobFileName}' completed.`
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobSuccessful
-                            body = `Print '${jobFileName}' completed.`
                         } else {
+                            summary = 'Print stopped.'
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobFailed
-
                             var jobCompletion = main.jobCompletion > 0 ? main.jobCompletion : previousJobCompletion
                             if (jobCompletion > 0) {
-                                body = `Print '${main.jobFileName}' stopped at ${jobCompletion}%.`
+                                body = `File '${main.jobFileName}' stopped at ${jobCompletion}%.`
                             } else {
-                               body = `Print '${main.jobFileName}' stopped.`
+                               body = `File '${main.jobFileName}'.`
                             }
                         }
                         if (jobPrintTime != '') {
-                            body += ` Print time ${jobPrintTime}.`
+                            if (body != '') body += ' '
+                            body += `Print time ${jobPrintTime}.`
                         }
                         break
                 }
@@ -345,9 +348,10 @@ Item {
             if (!post && (current == bucket_working) && (previous != bucket_connecting)) {
                 post = true
                 expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
-                body = `Printing ${jobFileName}.`
+                summary = 'Printing started.'
+                body = `File '${jobFileName}'.`
                 if (main.JobPrintTimeLeft != '') {
-                console.debug(`Est. print time '${main.jobPrintTimeLeft}'.`)
+                    console.debug(`Est. print time '${main.jobPrintTimeLeft}'.`)
                     body += ` Est. print time ${main.jobPrintTimeLeft}.`
                 }
             }
@@ -360,10 +364,13 @@ Item {
             if (expireTimeout == 0) {
                 title += ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
             }
+            if (summary == '') {
+                summary = `Printer new state: '${main.octoState}'.`
+            }
             notificationManager.post({
                 'title': title,
                 'icon': main.octoStateIcon,
-                'summary': `Printer new state: '${main.octoState}'.`,
+                'summary': summary,
                 'body': body,
                 'expireTimeout': expireTimeout * 1000,
             });
