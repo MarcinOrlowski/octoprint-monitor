@@ -681,7 +681,7 @@ Item {
                     var remoteVersion = xhr.responseText.match(/X\-KDE\-PluginInfo\-Version=(.*)/)[1]
                     if (remoteVersion != Version.version) {
                         notificationManager.post({
-                            'title': 'OctoPrint Monitor',
+                            'title': Plasmoid.title,
                             'icon': main.octoStateIcon,
                             'summary': `OctoPrint Monitor ${remoteVersion} available!`,
                             'body': `You are currently using version ${Version.version}. See project page for more information (link in Configuration > About)`,
