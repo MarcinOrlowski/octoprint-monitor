@@ -10,6 +10,7 @@
    * Reworked desktop notification content to contain more information.
    * Desktop notification timeouts can now be configured.
    * Compact widget's tooltip now shows print and remaining time.
+   * Compact widget can now display elapsed and remaining print time.
 
 * v1.1.1 (2020-12-03)
    * Improved docs
@@ -21,7 +22,7 @@
    * Added `Configuration` state indicating lack of widget required configuration.
    * Improved API response handling.
    * Scaled state icons down to reduce plasmoid size.
-   * Corected layout of "Full layout" config panel.
+   * Corrected layout of "Full layout" config panel.
 
 * v1.0.0 (2020-12-01)
    * Initial public release

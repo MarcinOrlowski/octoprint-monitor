@@ -83,6 +83,13 @@ used when you put it into your vertical or horizontal panel.
 - **Job progress**
   - **Show print job progress bar** - if enabled, small progress bar will be shown as
     soon as print job is started.
+  - **Show elapsed print time** - contrils visibiliy of elapsed print time. If there's
+    no print job in progress, this info is hidden.
+  - **Show estimated remaining time** - displays **estimated** time needed to complete
+    ongoing print. This information comes from OctoPrint and, unfortunatelly is often
+    not very accurate, so to speak. You may want to disable it and using percentage
+    or progress bar instead. If there's no print job in progress, this info is hidden.
+
 
 > **HINT:** with default settings, active print job is presented as "Printing 12.1%",
 > which is somehow redundant as percentage is only shown for active print job. You may
@@ -121,7 +128,7 @@ Full layout is being used when `OctoPrint Monitor` is used as regular desktop wi
  - **Misclaneous**
    - **Show elapsed print time** - contrils visibiliy of elapsed print time. If there's
      no print job in progress, this info is hidden.
-   - **Show estimated job time left** - displays **estimated** time needed to complete
+   - **Show estimated remaining time** - displays **estimated** time needed to complete
      ongoing print. This information comes from OctoPrint and, unfortunatelly is often
      not very accurate, so to speak. You may want to disable it and using percentage
      or progress bar instead. If there's no print job in progress, this info is hidden.

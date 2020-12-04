@@ -148,5 +148,23 @@ GridLayout {
         value: main.jobCompletion/100
     }
 
+    PlasmaComponents.Label {
+        fontSizeMode: Text.Fit
+        minimumPixelSize: 8
+        Layout.alignment: Qt.AlignHCenter
+        font.capitalization: Font.Capitalize
+        text: i18n('Elapsed') + ': ' + main.jobPrintTime
+        visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTime && main.jobPrintTime != ''
+    }
+
+    PlasmaComponents.Label {
+        fontSizeMode: Text.Fit
+        minimumPixelSize: 8
+        Layout.alignment: Qt.AlignHCenter
+        font.capitalization: Font.Capitalize
+        text: i18n('Left') + ': ' + main.jobPrintTimeLeft
+        visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTimeLeft && main.jobPrintTimeLeft != ''
+    }
+
     // ------------------------------------------------------------------------------------------------------------------------
 }

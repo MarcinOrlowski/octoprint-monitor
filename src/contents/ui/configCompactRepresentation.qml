@@ -24,7 +24,10 @@ ColumnLayout {
 
     property alias cfg_compactLayoutCustomIconSizeEnabled: compactLayoutCustomIconSizeEnabled.checked
 	property alias cfg_compactLayoutCustomIconSize:   compactLayoutCustomIconSize.value
+
 	property alias cfg_compactLayoutVerticalProgressBarEnabled: compactLayoutVerticalProgressBarEnabled.checked
+	property alias cfg_compactLayoutShowPrintTime: compactLayoutShowPrintTime
+	property alias cfg_compactLayoutShowPrintTimeLeft: compactLayoutShowPrintTimeLeft
 
 	property alias cfg_compactLayoutStateTextLineEnabled: compactLayoutStateTextLineEnabled.checked
 
@@ -160,6 +163,15 @@ ColumnLayout {
             PlasmaComponents.CheckBox {
                 id: compactLayoutVerticalProgressBarEnabled
                 text: i18n("Show print job progress bar")
+            }
+
+            PlasmaComponents.CheckBox {
+                id: compactLayoutShowPrintTime
+                text: i18n("Show print elapsed time")
+            }
+            PlasmaComponents.CheckBox {
+                id: compactLayoutShowPrintTimeLeft
+                text: i18n("Show estimated remaining time")
             }
         }
     }

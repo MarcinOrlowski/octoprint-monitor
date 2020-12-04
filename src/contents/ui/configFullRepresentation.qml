@@ -45,14 +45,14 @@ ColumnLayout {
 
             PlasmaComponents.CheckBox {
                 id: cameraViewEnabled
-                Kirigami.FormData.label: i18n("Enable camera snapshot view") + ':'
+                Kirigami.FormData.label: i18n("Enable camera snapshot view")
             }
 
             TextField {
                 id: cameraViewSnapshotUrl
                 enabled: cfg_cameraViewEnabled
                 validator: RegExpValidator { regExp: /http(s)?:.{5,}/ }
-                Kirigami.FormData.label: i18n("Camera snapshot URL") + ':'
+                Kirigami.FormData.label: i18n("Camera snapshot URL")
             }
 
             PlasmaComponents.SpinBox {
@@ -63,13 +63,13 @@ ColumnLayout {
                 to: 3600
                 stepSize: 5
 
-                Kirigami.FormData.label: i18n("Camera update interval (seconds)") + ':'
+                Kirigami.FormData.label: i18n("Camera update interval (seconds)")
             }
 
             CheckBox {
                 id: cameraViewControlsEnabled
                 enabled: cfg_cameraViewEnabled
-                Kirigami.FormData.label: i18n("Show camera view controls") + ':'
+                Kirigami.FormData.label: i18n("Show camera view controls")
             }
 
         }
@@ -145,15 +145,15 @@ ColumnLayout {
 
             CheckBox {
                 id: showJobPrintTime
-                Kirigami.FormData.label: i18n("Show elapsed print time") + ':'
+                Kirigami.FormData.label: i18n("Show elapsed print time")
             }
             CheckBox {
                 id: showJobTimeLeft
-                Kirigami.FormData.label: i18n("Show estimated job time left") + ':'
+                Kirigami.FormData.label: i18n("Show estimated remaining time")
             }
             CheckBox {
                 id: showJobFileName
-                Kirigami.FormData.label: i18n("Show job file name") + ':'
+                Kirigami.FormData.label: i18n("Show job file name")
             }
         }
     }

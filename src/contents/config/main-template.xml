@@ -33,6 +33,13 @@
             <default>true</default>
         </entry>
 
+        <entry name="compactLayoutShowPrintTime" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutShowPrintTimeLeft" type="Bool">
+            <default>true</default>
+        </entry>
+
 
         <entry name="compactLayoutCustomIconSizeEnabled" type="Bool">
             <default>true</default>
@@ -40,8 +47,6 @@
         <entry name="compactLayoutCustomIconSize" type="Int">
             <default>96</default>
         </entry>
-
-
 
 
 
@@ -91,7 +96,7 @@
             <default>true</default>
         </entry>
         <entry name="showJobPrintTime" type="Bool">
-            <default>true</default>
+            <default>false</default>
         </entry>
         <entry name="showJobTimeLeft" type="Bool">
             <default>true</default>

@@ -148,14 +148,14 @@ GridLayout {
                 PlasmaComponents.Label {
                     fontSizeMode: Text.Fit
                     minimumPixelSize: 8
-                    text: i18n('Print time') + `: ${main.jobPrintTime}`
+                    text: i18n('Elapsed') + `: ${main.jobPrintTime}`
                     font.pixelSize: Qt.application.font.pixelSize * 0.8
                     visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
                 }
                 PlasmaComponents.Label {
                     fontSizeMode: Text.Fit
                     minimumPixelSize: 8
-                    text: i18n('ETA') + `: ${main.jobPrintTimeLeft}`
+                    text: i18n('Left') + `: ${main.jobPrintTimeLeft}`
                     font.pixelSize: Qt.application.font.pixelSize * 0.8
                     visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft && main.jobPrintTimeLeft != ''
                 }
