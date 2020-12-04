@@ -14,6 +14,7 @@ import QtQuick.Layouts 1.5
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
+import "../js/utils.js" as Utils
 
 Item {
 	id: tooltipRoot
@@ -35,8 +36,7 @@ Item {
 			maximumLineCount: 1
 			wrapMode: Text.NoWrap
 			font.bold: true
-            text: !main.jobInProgress ? main.octoState : `${main.octoState} ${main.jobCompletion}%`
-			font.capitalization: Font.Capitalize
+            text: Utils.ucfirst(!main.jobInProgress ? main.octoState : `${main.octoState} ${main.jobCompletion}%`)
 		}
 		PlasmaComponents.Label {
 		    Layout.maximumWidth: tooltipRoot.width

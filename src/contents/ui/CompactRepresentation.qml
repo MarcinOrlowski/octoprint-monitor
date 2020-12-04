@@ -18,6 +18,7 @@ import org.kde.plasma.extras 2.0 as Extras
 import org.kde.kquickcontrolsaddons 2.0
 import org.kde.kquickcontrolsaddons 2.0
 import QtQuick.Controls.Styles 1.4
+import "../js/utils.js" as Utils
 
 GridLayout {
     id: compactContainer
@@ -156,7 +157,6 @@ GridLayout {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        font.capitalization: Font.Capitalize
         text: {
             var state = "";
             if(isStateBucketNameShown()) state += main.octoState
@@ -164,7 +164,7 @@ GridLayout {
                 if (state != '') state += ' '
                 state += `${main.jobCompletion}%`
             }
-            return state;
+            return Utils.ucfirst(state);
         }
         visible: plasmoid.configuration.compactLayoutStateTextLineEnabled && compactOctoStateLine.text != ''
     }
@@ -183,7 +183,6 @@ GridLayout {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        font.capitalization: Font.Capitalize
         text: i18n('Elapsed') + ': ' + main.jobPrintTime
         visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTime && main.jobPrintTime != ''
     }
@@ -192,7 +191,6 @@ GridLayout {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        font.capitalization: Font.Capitalize
         text: i18n('Left') + ': ' + main.jobPrintTimeLeft
         visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTimeLeft && main.jobPrintTimeLeft != ''
     }

@@ -92,3 +92,11 @@ function secondsToString(seconds) {
 
     return result;
 }
+
+function ucfirst(string) {
+    if (string.length > 1) {
+        return string.substr(0, 1).toUpperCase() + string.substr(1);
+    } else {
+        return string.toUpperCase();
+    }
+}

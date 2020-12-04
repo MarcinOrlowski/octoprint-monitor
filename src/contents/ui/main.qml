@@ -14,7 +14,7 @@ import QtQuick.Layouts 1.1
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
-import "../js/utils.js" as Util
+import "../js/utils.js" as Utils
 
 Item {
     id: main
@@ -365,7 +365,7 @@ Item {
                 title += ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
             }
             if (summary == '') {
-                summary = `Printer new state: '${main.octoState}'.`
+                summary = "Printer new state: '" + Utils.ucfirst(main.octoState) + "'."
             }
             notificationManager.post({
                 'title': title,
@@ -526,19 +526,19 @@ Item {
 		    updateOctoStateDescription()
         }
 
-		main.jobFileName = Util.getString(resp.job.file.display)
+		main.jobFileName = Utils.getString(resp.job.file.display)
 
-       	var jobCompletion = Util.isVal(resp.progress.completion) ? Util.roundFloat(resp.progress.completion) : 0
+       	var jobCompletion = Utils.isVal(resp.progress.completion) ? Utils.roundFloat(resp.progress.completion) : 0
        	if (jobCompletion != main.jobCompletion) {
        	    main.previousJobCompletion = main.jobCompletion
        	    main.jobCompletion = jobCompletion
        	}
 
 		var jobPrintTime = resp.progress.printTime
-		main.jobPrintTime = Util.isVal(jobPrintTime) ? Util.secondsToString(jobPrintTime) : ''
+		main.jobPrintTime = Utils.isVal(jobPrintTime) ? Utils.secondsToString(jobPrintTime) : ''
 
 		var printTimeLeft = resp.progress.printTimeLeft
-        main.jobPrintTimeLeft = Util.isVal(printTimeLeft) ? Util.secondsToString(printTimeLeft) : ''
+        main.jobPrintTimeLeft = Utils.isVal(printTimeLeft) ? Utils.secondsToString(printTimeLeft) : ''
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -635,15 +635,15 @@ Item {
 		main.printer_state = resp.state.text
 
 		// temepratures
-		main.p_bed_actual = Util.getFloat(resp.temperature.bed.actual)
-		main.p_bed_offset = Util.getFloat(resp.temperature.bed.offset)
-		main.p_bed_target = Util.getFloat(resp.temperature.bed.target)
+		main.p_bed_actual = Utils.getFloat(resp.temperature.bed.actual)
+		main.p_bed_offset = Utils.getFloat(resp.temperature.bed.offset)
+		main.p_bed_target = Utils.getFloat(resp.temperature.bed.target)
 
 		// hot-ends
 		// FIXME: check for more than one
-		main.p_he0_actual = Util.getFloat(resp.temperature.tool0.actual)
-		main.p_he0_offset = Util.getFloat(resp.temperature.tool0.offset)
-		main.p_he0_target = Util.getFloat(resp.temperature.tool0.target)
+		main.p_he0_actual = Utils.getFloat(resp.temperature.tool0.actual)
+		main.p_he0_offset = Utils.getFloat(resp.temperature.tool0.offset)
+		main.p_he0_target = Utils.getFloat(resp.temperature.tool0.target)
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------

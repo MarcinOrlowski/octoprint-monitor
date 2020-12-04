@@ -137,9 +137,8 @@ GridLayout {
                         if (main.jobInProgress) {
                             state += ` ${main.jobCompletion}%`
                         }
-                        return state;
+                        return Utils.ucfirst(state);
                     }
-                    font.capitalization: Font.Capitalize
                 }
                 PlasmaComponents.ProgressBar {
                     Layout.maximumWidth: fullStateContainer.width
