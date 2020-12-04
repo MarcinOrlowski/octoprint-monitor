@@ -26,8 +26,8 @@ ColumnLayout {
 	property alias cfg_compactLayoutCustomIconSize:   compactLayoutCustomIconSize.value
 
 	property alias cfg_compactLayoutVerticalProgressBarEnabled: compactLayoutVerticalProgressBarEnabled.checked
-	property alias cfg_compactLayoutShowPrintTime: compactLayoutShowPrintTime
-	property alias cfg_compactLayoutShowPrintTimeLeft: compactLayoutShowPrintTimeLeft
+	property alias cfg_compactLayoutShowPrintTime: compactLayoutShowPrintTime.checked
+	property alias cfg_compactLayoutShowPrintTimeLeft: compactLayoutShowPrintTimeLeft.checked
 
 	property alias cfg_compactLayoutStateTextLineEnabled: compactLayoutStateTextLineEnabled.checked
 
