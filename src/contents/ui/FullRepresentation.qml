@@ -278,6 +278,8 @@ GridLayout {
     } // StackLayout
 
     RowLayout {
+        id: cameraViewControButtons
+
         visible: plasmoid.configuration.cameraViewControlsEnabled && isCameraViewEnabled
         Layout.fillWidth: true
 

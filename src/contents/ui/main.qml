@@ -351,7 +351,7 @@ Item {
                 summary = 'Printing started.'
                 body = `File '${jobFileName}'.`
                 if (main.JobPrintTimeLeft != '') {
-                    console.debug(`Est. print time '${main.jobPrintTimeLeft}'.`)
+//                    console.debug(`Est. print time '${main.jobPrintTimeLeft}'.`)
                     body += ` Est. print time ${main.jobPrintTimeLeft}.`
                 }
             }
