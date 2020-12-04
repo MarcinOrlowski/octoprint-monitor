@@ -144,6 +144,7 @@ Item {
     // Printer status buckets
     readonly property string bucket_unknown: "unknown"
     readonly property string bucket_working: "working"
+    readonly property string bucket_cancelling: "cancelling"
     readonly property string bucket_paused: "paused"
     readonly property string bucket_error: "error"
     readonly property string bucket_idle: "idle"
@@ -159,8 +160,10 @@ Item {
     function getPrinterStateBucket() {
         var bucket = undefined;
 
-        if ( main.pf_cancelling || main.pf_finishing || main.pf_printing || main.pf_pausing ) {
+        if ( main.pf_finishing || main.pf_printing || main.pf_pausing ) {
             bucket = main.bucket_working
+        } else if ( main.pf_cancelling ) {
+            bucket = main.bucket_cancelling
         } else if ( main.pf_closedOrError || main.pf_error ) {
             bucket = main.bucket_error
         } else if ( main.pf_operational || main.pf_ready ) {
@@ -194,6 +197,10 @@ Item {
             case bucket_working:
                 if (plasmoid.configuration.printerStateNameForBucketWorkingEnabled)
                     name = plasmoid.configuration.printerStateNameForBucketWorking
+                break
+            case bucket_cancelling:
+                if (plasmoid.configuration.printerStateNameForBucketCancellingEnabled)
+                    name = plasmoid.configuration.printerStateNameForBucketCancelling
                 break
             case bucket_paused:
                 if (plasmoid.configuration.printerStateNameForBucketPausedEnabled)
@@ -270,6 +277,7 @@ Item {
                 case bucket_paused: desc = 'Print job is PAUSED now.'; break;
                 case bucket_idle: desc = 'Printer is operational and idle.'; break;
                 case bucket_disconnected: desc = 'OctoPrint is not connected to the printer.'; break;
+                case bucket_cancelling: desc = 'OctoPrint is cancelling current job.'; break;
 //              case bucket_working: ""
 //              case bucket_error: "error"
                 case 'unavailable': desc = 'Unable to connect to OctoPrint API.'; break;
@@ -304,6 +312,10 @@ Item {
             if (!post && (previous == bucket_working)) {
                 post = true
                 switch (current) {
+                    case bucket_cancelling:
+                        body = `Cancelling job '${jobFileName}'.`
+                        break;
+
                     case bucket_paused:
                         body = `Print job '${jobFileName}' paused.`
                         break
@@ -335,6 +347,7 @@ Item {
                 expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
                 body = `Printing ${jobFileName}.`
                 if (main.JobPrintTimeLeft != '') {
+                console.debug(`Est. print time '${main.jobPrintTimeLeft}'.`)
                     body += ` Est. print time ${main.jobPrintTimeLeft}.`
                 }
             }

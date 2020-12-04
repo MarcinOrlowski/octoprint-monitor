@@ -22,6 +22,8 @@ ColumnLayout {
     property alias cfg_printerStateNameForBucketUnknown: printerStateNameForBucketUnknown.text
     property alias cfg_printerStateNameForBucketWorkingEnabled: printerStateNameForBucketWorkingEnabled.checked
     property alias cfg_printerStateNameForBucketWorking: printerStateNameForBucketWorking.text
+    property alias cfg_printerStateNameForBucketCancellingEnabled: printerStateNameForBucketCancellingEnabled.checked
+    property alias cfg_printerStateNameForBucketCancelling: printerStateNameForBucketCancelling.text
     property alias cfg_printerStateNameForBucketPausedEnabled: printerStateNameForBucketPausedEnabled.checked
     property alias cfg_printerStateNameForBucketPaused: printerStateNameForBucketPaused.text
     property alias cfg_printerStateNameForBucketErrorEnabled: printerStateNameForBucketErrorEnabled.checked
@@ -67,6 +69,21 @@ ColumnLayout {
                     id: printerStateNameForBucketWorking
                     Layout.fillWidth: true
                     enabled: printerStateNameForBucketWorkingEnabled
+                }
+        	}
+
+        	RowLayout {
+                Layout.fillWidth: true
+        	    Kirigami.FormData.label: i18n("Cancelling")
+
+                PlasmaComponents.CheckBox {
+                    id: printerStateNameForBucketCancellingEnabled
+                }
+
+                TextField {
+                    id: printerStateNameForBucketCancelling
+                    Layout.fillWidth: true
+                    enabled: printerStateNameForBucketCancellingEnabled
                 }
         	}
 

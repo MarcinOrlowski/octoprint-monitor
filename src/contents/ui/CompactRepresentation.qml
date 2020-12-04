@@ -71,6 +71,7 @@ GridLayout {
         switch (getPrinterStateBucket()) {
             case main.bucket_idle: result = !plasmoid.configuration.compactLayoutHideIconForBucketIdle; break;
             case main.bucket_unknown: result = !plasmoid.configuration.compactLayoutHideIconForBucketUnknown; break;
+            case main.bucket_cancelling: result = !plasmoid.configuration.compactLayoutHideIconForBucketCancelling; break;
             case main.bucket_working: result = !plasmoid.configuration.compactLayoutHideIconForBucketWorking; break;
             case main.bucket_paused: result = !plasmoid.configuration.compactLayoutHideIconForBucketPaused; break;
             case main.bucket_error: result = !plasmoid.configuration.compactLayoutHideIconForBucketError; break;
@@ -97,6 +98,7 @@ GridLayout {
             case main.bucket_idle: result = !plasmoid.configuration.compactLayoutHideBucketIdle; break;
             case main.bucket_unknown: result = !plasmoid.configuration.compactLayoutHideBucketUnknown; break;
             case main.bucket_working: result = !plasmoid.configuration.compactLayoutHideBucketWorking; break;
+            case main.bucket_cancelling: result = !plasmoid.configuration.compactLayoutHideBucketCancelling; break;
             case main.bucket_paused: result = !plasmoid.configuration.compactLayoutHideBucketPaused; break;
             case main.bucket_error: result = !plasmoid.configuration.compactLayoutHideBucketError; break;
             case main.bucket_disconnected: result = !plasmoid.configuration.compactLayoutHideBucketDisconnected; break;

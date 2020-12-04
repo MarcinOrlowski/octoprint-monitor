@@ -30,6 +30,7 @@ ColumnLayout {
     property alias cfg_stopCameraPollForBuckets: stopCameraPollForBuckets.checked
     property alias cfg_stopCameraPollForBucketUnknown: stopCameraPollForBucketUnknown.checked
     property alias cfg_stopCameraPollForBucketWorking: stopCameraPollForBucketWorking.checked
+    property alias cfg_stopCameraPollForBucketCancelling: stopCameraPollForBucketCancelling.checked
     property alias cfg_stopCameraPollForBucketPaused: stopCameraPollForBucketPaused.checked
     property alias cfg_stopCameraPollForBucketError: stopCameraPollForBucketError.checked
     property alias cfg_stopCameraPollForBucketIdle: stopCameraPollForBucketIdle.checked
@@ -105,6 +106,12 @@ ColumnLayout {
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Working")
+                    }
+                    PlasmaComponents.CheckBox {
+                        id: stopCameraPollForBucketCancelling
+                        enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
+                        Layout.leftMargin: clsStates.indent
+                        text: i18n("Cancelling")
                     }
                     PlasmaComponents.CheckBox {
                         id: stopCameraPollForBucketPaused

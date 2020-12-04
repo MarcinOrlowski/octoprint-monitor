@@ -32,6 +32,9 @@
         <entry name="compactLayoutHideIconForBucketWorking" type="Bool">
             <default>false</default>
         </entry>
+        <entry name="compactLayoutHideIconForBucketCancelling" type="Bool">
+            <default>false</default>
+        </entry>
         <entry name="compactLayoutHideIconForBucketPaused" type="Bool">
             <default>false</default>
         </entry>
@@ -93,6 +96,9 @@
         <entry name="compactLayoutHideBucketWorking" type="Bool">
             <default>false</default>
         </entry>
+        <entry name="compactLayoutHideBucketCancelling" type="Bool">
+            <default>false</default>
+        </entry>
         <entry name="compactLayoutHideBucketPaused" type="Bool">
             <default>false</default>
         </entry>
@@ -138,6 +144,9 @@
             <default>false</default>
         </entry>
         <entry name="stopCameraPollForBucketWorking" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="stopCameraPollForBucketCancelling" type="Bool">
             <default>false</default>
         </entry>
         <entry name="stopCameraPollForBucketPaused" type="Bool">
@@ -187,6 +196,13 @@
             <default>false</default>
         </entry>
         <entry name="printerStateNameForBucketWorking" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketCancellingEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketCancelling" type="String">
             <default></default>
         </entry>
 

@@ -27,6 +27,7 @@ ColumnLayout {
     property alias cfg_compactLayoutHideIconForBuckets: compactLayoutHideIconForBuckets.checked
     property alias cfg_compactLayoutHideIconForBucketUnknown: compactLayoutHideIconForBucketUnknown.checked
     property alias cfg_compactLayoutHideIconForBucketWorking: compactLayoutHideIconForBucketWorking.checked
+    property alias cfg_compactLayoutHideIconForBucketCancelling: compactLayoutHideIconForBucketCancelling.checked
     property alias cfg_compactLayoutHideIconForBucketPaused: compactLayoutHideIconForBucketPaused.checked
     property alias cfg_compactLayoutHideIconForBucketError: compactLayoutHideIconForBucketError.checked
     property alias cfg_compactLayoutHideIconForBucketIdle: compactLayoutHideIconForBucketIdle.checked
@@ -48,6 +49,7 @@ ColumnLayout {
     property alias cfg_compactLayoutHideBuckets: compactLayoutHideBuckets.checked
     property alias cfg_compactLayoutHideBucketUnknown: compactLayoutHideBucketUnknown.checked
     property alias cfg_compactLayoutHideBucketWorking: compactLayoutHideBucketWorking.checked
+    property alias cfg_compactLayoutHideBucketCancelling: compactLayoutHideBucketCancelling.checked
     property alias cfg_compactLayoutHideBucketPaused: compactLayoutHideBucketPaused.checked
     property alias cfg_compactLayoutHideBucketError: compactLayoutHideBucketError.checked
     property alias cfg_compactLayoutHideBucketIdle: compactLayoutHideBucketIdle.checked
@@ -105,6 +107,12 @@ ColumnLayout {
                         enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Working")
+                    }
+                    PlasmaComponents.CheckBox {
+                        id: compactLayoutHideIconForBucketCancelling
+                        enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
+                        Layout.leftMargin: ccRoot.indent
+                        text: i18n("Cancelling")
                     }
                     PlasmaComponents.CheckBox {
                         id: compactLayoutHideIconForBucketPaused
@@ -175,6 +183,12 @@ ColumnLayout {
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Working")
+                    }
+                    PlasmaComponents.CheckBox {
+                        id: compactLayoutHideBucketCancelling
+                        enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
+                        Layout.leftMargin: ccRoot.indent
+                        text: i18n("Cancelling")
                     }
                     PlasmaComponents.CheckBox {
                         id: compactLayoutHideBucketPaused

@@ -92,6 +92,7 @@ GridLayout {
             case main.bucket_idle: result = !plasmoid.configuration.stopCameraPollForBucketIdle; break;
             case main.bucket_unknown: result = !plasmoid.configuration.stopCameraPollForBucketUnknown; break;
             case main.bucket_working: result = !plasmoid.configuration.stopCameraPollForBucketWorking; break;
+            case main.bucket_cancelling: result = !plasmoid.configuration.stopCameraPollForBucketCancelling; break;
             case main.bucket_paused: result = !plasmoid.configuration.stopCameraPollForBucketPaused; break;
             case main.bucket_error: result = !plasmoid.configuration.stopCameraPollForBucketError; break;
             case main.bucket_disconnected: result = !plasmoid.configuration.stopCameraPollForBucketDisconnected; break;

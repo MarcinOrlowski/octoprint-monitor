@@ -38,6 +38,11 @@ currently connected to OctoPrint but is not printing anything, sitting idle and 
 state indicates state of current print job (i.e. "Finishing"). When printer is printing, additional information
 such as progress indicators (both text "Printing (25,1%)" and graphics) will be provided. 
 
+### Cancelling ###
+![Working](img/state-cancelling.png) The **Cancelling** state indicates printer is currently in process of cancelling
+active job. It is usually a quick phase, but as it is' not an instant abort, it sometimes may still need a moment
+co complete.
+
 ### Paused ###
 ![Paused](img/state-paused.png) **Paused** sate tells, the printer is still occupied, but current print job
 was paused by user..
@@ -63,4 +68,3 @@ most cases it will tell that OctoPrint instance is down or that `OctoPrint Monit
 indicates that `OctoPrint Monitor` is simply unable to correctly determine what is the current state of your printer.
 This should only happened during plasmoid's start-up  phase, as it shows "Unknown" state icon unless first API call
 is successful. If you see this during normal usage, please fill a bug report as it should not really happen.
-
