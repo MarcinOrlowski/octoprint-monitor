@@ -661,7 +661,7 @@ Item {
 
     Settings {
         id: settings
-        category: "versionChecker"
+        category: "VersionChecker"
         property string lastVersionCheckDate: ''
     }
 
