@@ -56,9 +56,11 @@ Item {
 
     // Job related stats (if any in progress)
     property string jobState: "N/A"
+    property string previousJobState: "N/A"
     property string jobStateDescription: ""
     property string jobFileName: ""
     property double jobCompletion: 0
+    property double previousJobCompletion: 0
 
     property string jobPrintTime: ""
 	property string jobPrintStartStamp: ""
@@ -312,7 +314,13 @@ Item {
                             body = `Print '${jobFileName}' completed.`
                         } else {
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobFailed
-                            body = `Print '${jobFileName}' stopped at ${jobCompletion}%.`
+
+                            var jobCompletion = main.jobCompletion > 0 ? main.jobCompletion : previousJobCompletion
+                            if (jobCompletion > 0) {
+                                body = `Print '${main.jobFileName}' stopped at ${jobCompletion}%.`
+                            } else {
+                               body = `Print '${main.jobFileName}' stopped.`
+                            }
                         }
                         if (jobPrintTime != '') {
                             body += ` Print time ${jobPrintTime}.`
@@ -482,21 +490,28 @@ Item {
 	function parseJobStatusResponse(resp) {
 		var state = resp.state.split(/[ ,]+/)[0]
 
-		main.jobState = state.toLowerCase()
+        if (state != main.jobState) {
+            main.previousJobState = main.jobState
+		    main.jobState = state.toLowerCase()
 
-        var stateSplit = resp.state.match(/\w+\s+\((.*)\)/)
-		main.jobStateDescription = (stateSplit !== null) ? stateSplit[1] : ''
-		updateOctoStateDescription()
+            var stateSplit = resp.state.match(/\w+\s+\((.*)\)/)
+		    main.jobStateDescription = (stateSplit !== null) ? stateSplit[1] : ''
+		    updateOctoStateDescription()
+        }
 
 		main.jobFileName = Util.getString(resp.job.file.display)
 
-       	main.jobCompletion = (Util.isVal(resp.progress.completion)) ? Util.roundFloat(resp.progress.completion) : 0
+       	var jobCompletion = Util.isVal(resp.progress.completion) ? Util.roundFloat(resp.progress.completion) : 0
+       	if (jobCompletion != main.jobCompletion) {
+       	    main.previousJobCompletion = main.jobCompletion
+       	    main.jobCompletion = jobCompletion
+       	}
 
 		var jobPrintTime = resp.progress.printTime
-		main.jobPrintTime = (Util.isVal(jobPrintTime)) ? Util.secondsToString(jobPrintTime) : ''
+		main.jobPrintTime = Util.isVal(jobPrintTime) ? Util.secondsToString(jobPrintTime) : ''
 
 		var printTimeLeft = resp.progress.printTimeLeft
-        main.jobPrintTimeLeft = (Util.isVal(printTimeLeft)) ? Util.secondsToString(printTimeLeft) : ''
+        main.jobPrintTimeLeft = Util.isVal(printTimeLeft) ? Util.secondsToString(printTimeLeft) : ''
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
