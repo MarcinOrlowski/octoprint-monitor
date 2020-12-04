@@ -66,6 +66,10 @@ used when you put it into your vertical or horizontal panel.
      cause icon to occupy too much space for no actual benefits. This option lets you set
      max allowed icon size and if the container is bigger, then icon will not grow beyong
      specified dimensions.
+   - **Hide state icon for specific buckets** - you may want to see the state icon 
+     for specific states only to make widgets as small as possible. **NOTE:** if there will be
+     no other information to show for given state (i.e. you hide both icon and state name)
+     this setting will be ignored and icon will be shown regardless.
 
 - **State text** - textual representation of state
   - **Display text state line** - controls visibility of text state shown usually below the icon.
