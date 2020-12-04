@@ -12,6 +12,7 @@
 import QtQuick 2.6
 import QtQuick.Layouts 1.5
 import org.kde.plasma.components 2.0 as PlasmaComponents
+import "../js/utils.js" as Utils
 
 GridLayout {
     id: fullContainer
@@ -22,7 +23,7 @@ GridLayout {
     // ------------------------------------------------------------------------------------------------------------------------
 
 	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ""
-	property string cameraViewTimerState: `@${plasmoid.configuration.cameraViewUpdateInterval} secs`
+	property string cameraViewTimerState: i18n('Every') + ' ' + Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval)
 	property string cameraView0Stamp: ""
 	property string cameraView1Stamp: ""
 
@@ -291,6 +292,7 @@ GridLayout {
                     buttonStartPause.text = i18n('Start')
                     buttonStartPause.iconSource = "media-playback-start"
                 } else {
+                    cameraViewTimerState = i18n('Every') + ' ' + Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval)
                     cameraViewTimer.start()
                     buttonStartPause.text = i18n('Pause')
                     buttonStartPause.iconSource = "media-playback-pause"
