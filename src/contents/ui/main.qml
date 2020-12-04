@@ -341,13 +341,20 @@ Item {
         }
 
 //        console.debug(`post: ${post}, state: ${previous}=>${current}, timeout: ${expireTimeout}, body: "${body}"`)
-        if (post) notificationManager.post({
-            'title': Plasmoid.title + ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat),
-            'icon': main.octoStateIcon,
-            'summary': `Printer new state: '${main.octoState}'.`,
-            'body': body,
-            'expireTimeout': expireTimeout * 1000,
-        });
+        if (post) {
+            var title = Plasmoid.title
+            // there's system timer shown (xx ago) shown for non expiring notifications
+            if (expireTimeout == 0) {
+                title += ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
+            }
+            notificationManager.post({
+                'title': title,
+                'icon': main.octoStateIcon,
+                'summary': `Printer new state: '${main.octoState}'.`,
+                'body': body,
+                'expireTimeout': expireTimeout * 1000,
+            });
+        }
     }
 
     /*
