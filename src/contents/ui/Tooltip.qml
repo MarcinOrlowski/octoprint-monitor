@@ -35,13 +35,7 @@ Item {
 			maximumLineCount: 1
 			wrapMode: Text.NoWrap
 			font.bold: true
-            text: {
-                var state = main.octoState;
-                if (main.jobInProgress) {
-                    state += ` ${main.jobCompletion}%`
-                }
-                return state;
-            }
+            text: !main.jobInProgress ? main.octoState : `${main.octoState} ${main.jobCompletion}%`
 			font.capitalization: Font.Capitalize
 		}
 		PlasmaComponents.Label {
@@ -53,14 +47,14 @@ Item {
 			font.italic: true
 			text: main.octoStateDescription
 			font.pixelSize: Qt.application.font.pixelSize * 0.8
-			visible: main.octoStateDescription != ""
+			visible: main.octoStateDescription != ''
 		}
 		PlasmaComponents.Label {
 		    Layout.maximumWidth: tooltipRoot.width
-			textFormat: Text.PlainText
 			maximumLineCount: 1
 			wrapMode: Text.NoWrap
-            text: i18n('State changed') + `: ${lastOctoStateChangeStamp}`
+			textFormat: Text.RichText
+            text: '<b>' + i18n('State changed') + `:</b> ${lastOctoStateChangeStamp}`
             font.pixelSize: Qt.application.font.pixelSize * 0.8
             visible: lastOctoStateChangeStamp != ''
 		}
@@ -68,35 +62,31 @@ Item {
 		PlasmaComponents.Label {
 		    Layout.maximumWidth: tooltipRoot.width
 			maximumLineCount: 1
+			textFormat: Text.RichText
 			wrapMode: Text.NoWrap
-			font.bold: true
-			elide: Text.ElideMiddle
-			text: i18n('Print time') + `: ${main.jobPrintTime}`
+			text: {
+			    var msg = ''
+			    if (main.jobPrintTime != '')
+			        msg += '<b>' + i18n('Print time') + `:</b> ${main.jobPrintTime}`
+                if (main.jobPrintTimeLeft != '') {
+                    if (msg != '') msg += ', '
+                    msg += '<b>' + i18n('Time left') + `:</b> ${main.jobPrintTimeLeft}`
+                }
+                return msg
+            }
 			font.pixelSize: Qt.application.font.pixelSize * 0.8
-			visible: main.jobPrintTime != ""
+			visible: main.jobPrintTime != '' || main.jobPrintTimeLeft != ''
 		}
 
 		PlasmaComponents.Label {
 		    Layout.maximumWidth: tooltipRoot.width
 			maximumLineCount: 1
 			wrapMode: Text.NoWrap
-			font.bold: true
 			elide: Text.ElideMiddle
-			text: i18n('Time left') + `: ${main.jobPrintTimeLeft}`
+			textFormat: Text.RichText
+			text: '<b>' + i18n('File') + `:</b> ${main.jobFileName}`
 			font.pixelSize: Qt.application.font.pixelSize * 0.8
-			visible: main.jobPrintTimeLeft != ""
-		}
-
-
-		PlasmaComponents.Label {
-		    Layout.maximumWidth: tooltipRoot.width
-			maximumLineCount: 1
-			wrapMode: Text.NoWrap
-			font.bold: true
-			elide: Text.ElideMiddle
-			text: main.jobFileName
-			font.pixelSize: Qt.application.font.pixelSize * 0.8
-			visible: main.jobFileName != ""
+			visible: main.jobFileName != ''
 		}
 
         GridLayout {
@@ -109,42 +99,42 @@ Item {
 			PlasmaComponents.Label {
 				maximumLineCount: 1
 				wrapMode: Text.NoWrap
-				text: i18n("Hot bed") + ': '
+				textFormat: Text.RichText
+				text: '<b>' + i18n("Hot bed") + ':</b> '
+				font.pixelSize: Qt.application.font.pixelSize * 0.8
 			}
 
 			PlasmaComponents.Label {
 				Layout.alignment: Qt.AlignRight
 				maximumLineCount: 1
+				textFormat: Text.RichText
 				wrapMode: Text.NoWrap
-				text: `${main.p_bed_actual}°`
-				visible: main.p_bed_target == 0 || main.p_bed_actual == main.p_bed_target
-			}
-			PlasmaComponents.Label {
-				Layout.alignment: Qt.AlignRight
-				maximumLineCount: 1
-				wrapMode: Text.NoWrap
-				text: `${main.p_bed_actual}° of ${main.p_bed_target}°`
-				visible: main.p_bed_target > 0 && main.p_bed_actual != main.p_bed_target
+				text: {
+				    var msg = `${main.p_bed_actual}°`
+				    if (main.p_bed_target > 0) msg += ` of ${main.p_bed_target}°`
+				    return msg
+                }
+				font.pixelSize: Qt.application.font.pixelSize * 0.8
 			}
 
 			PlasmaComponents.Label {
 				maximumLineCount: 1
 				wrapMode: Text.NoWrap
-				text: i18n("Hotend #1") + ': '
+                textFormat: Text.RichText
+				text: '<b> ' + i18n("Hotend #1") + ':</b> '
+				font.pixelSize: Qt.application.font.pixelSize * 0.8
 			}
 			PlasmaComponents.Label {
 				Layout.alignment: Qt.AlignRight
 				maximumLineCount: 1
+                textFormat: Text.RichText
 				wrapMode: Text.NoWrap
-				text: `${main.p_he0_actual}°`
-				visible: main.p_he0_target == 0 || main.p_he0_actual == main.p_he0_target
-			}
-			PlasmaComponents.Label {
-				Layout.alignment: Qt.AlignRight
-				maximumLineCount: 1
-				wrapMode: Text.NoWrap
-				text: `${main.p_he0_actual}° of ${main.p_he0_target}°`
-				visible: main.p_he0_target > 0 && main.p_he0_actual != main.p_he0_target
+				text: {
+				    var msg = `${main.p_he0_actual}°`
+				    if (main.p_he0_target > 0) msg += ` of ${main.p_he0_target}°`
+				    return msg
+                }
+				font.pixelSize: Qt.application.font.pixelSize * 0.8
 			}
 		} // GridLayout
 	} // ColumnLayout
