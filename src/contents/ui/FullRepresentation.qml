@@ -11,7 +11,7 @@
 
 import QtQuick 2.6
 import QtQuick.Layouts 1.5
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import "../js/utils.js" as Utils
 
 GridLayout {
@@ -288,18 +288,18 @@ GridLayout {
             id: buttonStartPause
             text: i18n("Pause")
             implicitWidth: minimumWidth
-            iconSource: "media-playback-pause"
+            icon.name: "media-playback-pause"
             onClicked: {
                 if (cameraViewTimer.running) {
                     cameraViewTimer.stop()
                     cameraViewTimerState = i18n('PAUSED')
                     buttonStartPause.text = i18n('Start')
-                    buttonStartPause.iconSource = "media-playback-start"
+                    buttonStartPause.icon.name = "media-playback-start"
                 } else {
                     cameraViewTimerState = i18n('Every') + ' ' + Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval)
                     cameraViewTimer.start()
                     buttonStartPause.text = i18n('Pause')
-                    buttonStartPause.iconSource = "media-playback-pause"
+                    buttonStartPause.icon.name = "media-playback-pause"
                 }
             }
         }
@@ -307,12 +307,12 @@ GridLayout {
         PlasmaComponents.Button {
             text: "Stop"
             implicitWidth: minimumWidth
-            iconSource: "media-playback-stop"
+            icon.name: "media-playback-stop"
             onClicked: {
                 cameraViewTimer.stop()
                 cameraViewTimerState = i18n('STOPPED')
                 buttonStartPause.text = i18n('Start')
-                buttonStartPause.iconSource = "media-playback-start"
+                buttonStartPause.icon.name = "media-playback-start"
             }
         }
 
@@ -323,7 +323,7 @@ GridLayout {
         PlasmaComponents.Button {
             text: ""
             implicitWidth: units.gridUnit * 2
-            iconSource: "view-refresh"
+            icon.name: "view-refresh"
             onClicked: {
                 if (cameraViewTimer.running) {
                     cameraViewTimer.restart()
