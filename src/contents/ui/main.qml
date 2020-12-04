@@ -501,7 +501,7 @@ Item {
                 }
                 updateOctoState()
             } else {
-                console.debug(`Unexpected job response status code ('${xhr.status}').`)
+                console.debug(`Unexpected job response status code (${xhr.status}).`)
             }
         });
         xhr.send()
@@ -581,7 +581,7 @@ Item {
                     setPrinterFlags(false)
                     break
                 default:
-                    console.debug(`Unexpected printer response status code ('${xhr.status}').`)
+                    console.debug(`Unexpected printer response status code (${xhr.status}).`)
                     main.pf_error = true
                     break
             }
