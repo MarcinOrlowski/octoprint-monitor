@@ -39,7 +39,7 @@ ColumnLayout {
     	        id: api_url
 				focus: true
 				validator: RegExpValidator { regExp: /http(s)?:.{5,}/ }
-	            Kirigami.FormData.label: i18n("OctoPrint API URL") + ':'
+	            Kirigami.FormData.label: i18n("OctoPrint API URL")
     	    }
 		}
     }
@@ -58,7 +58,7 @@ ColumnLayout {
                 from: 1
                 to: 600
                 stepSize: 15
-                Kirigami.FormData.label: i18n("Status poll interval (seconds)") + ':'
+                Kirigami.FormData.label: i18n("Status poll interval (secs)")
 	        }
         }
     }

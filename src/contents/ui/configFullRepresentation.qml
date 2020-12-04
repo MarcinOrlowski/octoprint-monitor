@@ -63,7 +63,7 @@ ColumnLayout {
                 to: 3600
                 stepSize: 5
 
-                Kirigami.FormData.label: i18n("Camera update interval (seconds)")
+                Kirigami.FormData.label: i18n("Camera update interval (secs)")
             }
 
             CheckBox {
