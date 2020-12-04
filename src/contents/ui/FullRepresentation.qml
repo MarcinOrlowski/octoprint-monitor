@@ -147,6 +147,7 @@ GridLayout {
                     visible: main.jobInProgress
                 }
                 PlasmaComponents.Label {
+                    Layout.alignment: Qt.AlignHCenter
                     fontSizeMode: Text.Fit
                     minimumPixelSize: 8
                     text: i18n('Elapsed') + `: ${main.jobPrintTime}`
@@ -154,6 +155,7 @@ GridLayout {
                     visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
                 }
                 PlasmaComponents.Label {
+                    Layout.alignment: Qt.AlignHCenter
                     fontSizeMode: Text.Fit
                     minimumPixelSize: 8
                     text: i18n('Left') + `: ${main.jobPrintTimeLeft}`
