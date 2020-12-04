@@ -15,7 +15,6 @@ QtObject {
     function post(args) {
         var useNotifySend = plasmoid.configuration.notificationsUseNotifySend
 
-//        console.debug(`useNotifySend: ${useNotifySend}`)
         if (useNotifySend) {
             var params = [`--app-name="${args.title}"`]
             if (args.icon) params.push(`--icon="${args.icon}"`)
@@ -26,7 +25,7 @@ QtObject {
 
 //            console.debug(JSON.stringify(args))
             var cmd='notify-send ' + params.join(' ')
-            console.debug(`cmd: ${cmd}`)
+//            console.debug(`cmd: ${cmd}`)
             executable.exec(cmd)
         } else {
             // https://github.com/KDE/plasma-workspace/blob/master/dataengines/notifications/notifications.operations

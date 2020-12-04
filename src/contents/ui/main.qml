@@ -291,7 +291,7 @@ Item {
             }
         }
 
-//        console.debug(`post: ${post}, prev: ${previous}, current: ${current}, expTimeout: ${expireTimeout}`);
+//        console.debug(`post: ${post}, state: ${previous}=>${current}, timeout: ${expireTimeout}, body: "${body}"`)
         if (post) notificationManager.post({
             'title': Plasmoid.title + ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat),
             'icon': main.octoStateIcon,
@@ -441,8 +441,8 @@ Item {
 
 		main.jobState = state.toLowerCase()
 
-		var stateSplit = resp.state.match(/(.+)\s+\((.*)\)/)
-		main.jobStateDescription = (stateSplit !== null) ? stateSplit[2] : ''
+        var stateSplit = resp.state.match(/\w+\s+\((.*)\)/)
+		main.jobStateDescription = (stateSplit !== null) ? stateSplit[1] : ''
 		updateOctoStateDescription()
 
 		main.jobFileName = Util.getString(resp.job.file.display)
