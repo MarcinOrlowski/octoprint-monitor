@@ -32,7 +32,7 @@ ColumnLayout {
 
             TextField {
                 id: api_key
-                Kirigami.FormData.label: i18n("API key:")
+                Kirigami.FormData.label: i18n("API key")
             }
 
 	        TextField {
