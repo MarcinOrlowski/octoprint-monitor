@@ -102,11 +102,14 @@ ColumnLayout {
     // ------------------------------------------------------------------------------------------------------------------------
 
     RowLayout {
-        width: parent.width
+        id: fullStateContainerTopRow
+//        width: parent.width
         Layout.fillWidth: true
 
         Image {
             readonly property int iconSize: 96
+
+            id: fullStateIcon
 
             Layout.alignment: Qt.AlignCenter
             fillMode: Image.PreserveAspectFit
@@ -121,9 +124,10 @@ ColumnLayout {
         }
 
         ColumnLayout {
-            id: fullStateContainer
+            id: fullStateTopContainer
 
             Layout.fillWidth: true
+            anchors.right: fullStateContainerTopRow.right
 
             PlasmaComponents.Label {
                 Layout.alignment: Qt.AlignHCenter
@@ -138,12 +142,14 @@ ColumnLayout {
                 }
             }
             PlasmaComponents.ProgressBar {
-                Layout.maximumWidth: fullStateContainer.width
+                id: fullStateProgressBar
+//                Layout.maximumWidth: fullStateTopContainer.width
                 height: 4
                 value: main.jobCompletion/100
                 visible: main.jobInProgress
             }
             PlasmaComponents.Label {
+                id: fullStateElapsedTime
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
@@ -152,6 +158,7 @@ ColumnLayout {
                 visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
             }
             PlasmaComponents.Label {
+                id: fullStateRemainingTime
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
@@ -163,6 +170,8 @@ ColumnLayout {
     } // RowLayout
 
     PlasmaComponents.Label {
+        id: fullStateJobFileName
+        Layout.fillWidth: true
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         elide: Text.ElideMiddle
@@ -186,6 +195,7 @@ ColumnLayout {
         currentIndex: 0
 
         ColumnLayout {
+            id: cameraViewContainer0
             width: fullContainer.width
             Layout.minimumWidth: fullContainer.width
 
@@ -230,6 +240,7 @@ ColumnLayout {
         }
 
         ColumnLayout {
+            id: cameraViewContainer1
             width: parent.width
             Layout.minimumWidth: parent.width
             Layout.maximumWidth: parent.width
