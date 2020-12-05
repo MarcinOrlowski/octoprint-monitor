@@ -311,10 +311,13 @@ Item {
             if (!post && (current == bucket_working) && (previous != bucket_connecting)) {
                 post = true
                 expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
-                summary = 'Printing started.'
-                body = `File '${main.jobFileName}'.`
-                if (main.jobPrintTimeLeft != '') {
-                    body += ` Est. print time ${main.jobPrintTimeLeft}.`
+                summary = 'New printing started.'
+
+                if (main.jobFileName != '') {
+                    body = `File '${main.jobFileName}'.`
+                    if (main.jobPrintTimeLeft != '') {
+                        body += ` Est. print time ${main.jobPrintTimeLeft}.`
+                    }
                 }
             }
         }
