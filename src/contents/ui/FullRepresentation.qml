@@ -23,7 +23,7 @@ ColumnLayout {
     // ------------------------------------------------------------------------------------------------------------------------
 
 	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ""
-	property string cameraViewTimerState: i18n('Every%1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
+	property string cameraViewTimerState: i18n('Every %1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
 	property string cameraView0Stamp: ""
 	property string cameraView1Stamp: ""
 
@@ -304,7 +304,7 @@ ColumnLayout {
                     buttonStartPause.text = i18n('Start')
                     buttonStartPause.icon.name = "media-playback-start"
                 } else {
-                    cameraViewTimerState = i18n('Every') + ' ' + Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval)
+                    cameraViewTimerState = i18n('Every %1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
                     cameraViewTimer.start()
                     buttonStartPause.text = i18n('Pause')
                     buttonStartPause.icon.name = "media-playback-pause"
