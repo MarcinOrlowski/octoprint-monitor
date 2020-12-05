@@ -12,7 +12,7 @@
    * Compact widget's tooltip now shows print and remaining time.
    * Compact widget can now display elapsed and remaining print time.
    * Visibility of compact widget state icon can be configured per state bucket.
-   * Printer status bucket names can be customiezed.
+   * Printer status bucket names can be customized.
    * Will show 'Cancelling' instead of 'Working' if printer is cancelling the job.
    * Added version checker to notify about widget updates
 
