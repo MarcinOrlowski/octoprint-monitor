@@ -23,7 +23,7 @@ Item {
     id: main
 
     // Debug switch to mimic API access using hardcded JSONs
-    readonly property bool fakeApiAccess: true
+    readonly property bool fakeApiAccess: false
 
     Plasmoid.compactRepresentation: CompactRepresentation {}
     Plasmoid.fullRepresentation: FullRepresentation {}
