@@ -329,30 +329,30 @@ Item {
                 post = true
                 switch (current) {
                     case bucket_cancelling:
-                        summary = `Cancelling job '${jobFileName}'.`
+                        summary = `Cancelling job '${main.jobFileName}'.`
                         break;
 
                     case bucket_paused:
-                        summary = `Print job '${jobFileName}' paused.`
+                        summary = `Print job '${main.jobFileName}' paused.`
                         break
 
                     default:
-                        if (jobCompletion == 100) {
-                            summary = `Print '${jobFileName}' completed.`
+                        if (main.jobCompletion == 100) {
+                            summary = `Print '${main.jobFileName}' completed.`
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobSuccessful
                         } else {
                             summary = 'Print stopped.'
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobFailed
-                            var jobCompletion = main.jobCompletion > 0 ? main.jobCompletion : previousJobCompletion
-                            if (jobCompletion > 0) {
-                                body = `File '${main.jobFileName}' stopped at ${jobCompletion}%.`
+                            var percentage = main.jobCompletion > 0 ? main.jobCompletion : main.previousJobCompletion
+                            if (percentage > 0) {
+                                body = `File '${main.jobFileName}' stopped at ${percentage}%.`
                             } else {
                                body = `File '${main.jobFileName}'.`
                             }
                         }
-                        if (jobPrintTime != '') {
+                        if (main.jobPrintTime != '') {
                             if (body != '') body += ' '
-                            body += `Print time ${jobPrintTime}.`
+                            body += `Print time ${main.jobPrintTime}.`
                         }
                         break
                 }
@@ -363,7 +363,7 @@ Item {
                 post = true
                 expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
                 summary = 'Printing started.'
-                body = `File '${jobFileName}'.`
+                body = `File '${main.jobFileName}'.`
                 if (main.jobPrintTimeLeft != '') {
                     body += ` Est. print time ${main.jobPrintTimeLeft}.`
                 }
