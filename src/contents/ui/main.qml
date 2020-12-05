@@ -372,7 +372,7 @@ Item {
 
 //        console.debug(`post: ${post}, state: ${previous}=>${current}, timeout: ${expireTimeout}, body: "${body}"`)
         if (post) {
-            var title = plasmoidTitle
+            var title = main.plasmoidTitle
             // there's system timer shown (xx ago) shown for non expiring notifications
             if (expireTimeout == 0) {
                 title += ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
@@ -410,9 +410,7 @@ Item {
 
         if (main.apiConnected) {
             jobInProgress = isJobInProgress()
-            if (jobInProgress && main.jobState == "printing") {
-                currentState = main.jobState
-            }
+            if (jobInProgress && main.jobState == "printing") currentState = main.jobState
         } else {
             currentState = (!main.apiAccessConfigured) ? 'configuration' : 'unavailable'
         }
@@ -692,7 +690,7 @@ Item {
                     var remoteVersion = xhr.responseText.match(/X\-KDE\-PluginInfo\-Version=(.*)/)[1]
                     if (remoteVersion != Version.version) {
                         notificationManager.post({
-                            'title': plasmoidTitle,
+                            'title': main.plasmoidTitle,
                             'icon': main.octoStateIcon,
                             'summary': `OctoPrint Monitor ${remoteVersion} available!`,
                             'body': `You are currently using version ${Version.version}. See project page for more information.`,
@@ -744,7 +742,7 @@ Item {
                     textFormat: Text.PlainText
                     font.bold: true
                     font.pixelSize: Qt.application.font.pixelSize * 1.5
-                    text: `${plasmoidTitle} v${Version.version}`
+                    text: `${main.plasmoidTitle} v${Version.version}`
                 }
 
                 PlasmaComponents.Label {
