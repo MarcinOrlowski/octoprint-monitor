@@ -38,9 +38,4 @@ ConfigModel {
         icon: "configure"
         source: "configApi.qml"
     }
-    ConfigCategory {
-        name: i18n("About")
-        icon: "dialog-information"
-        source: "configAbout.qml"
-    }
 }

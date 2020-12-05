@@ -287,7 +287,7 @@ GridLayout {
         PlasmaComponents.Button {
             id: buttonStartPause
             text: i18n("Pause")
-            implicitWidth: minimumWidth
+//            implicitWidth: minimumWidth
             icon.name: "media-playback-pause"
             onClicked: {
                 if (cameraViewTimer.running) {
@@ -306,7 +306,7 @@ GridLayout {
 
         PlasmaComponents.Button {
             text: "Stop"
-            implicitWidth: minimumWidth
+//            implicitWidth: minimumWidth
             icon.name: "media-playback-stop"
             onClicked: {
                 cameraViewTimer.stop()
