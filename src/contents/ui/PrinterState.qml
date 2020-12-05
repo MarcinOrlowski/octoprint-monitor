@@ -12,6 +12,18 @@
 import QtQuick 2.0
 
 QtObject {
+    // Printer status buckets
+    readonly property string bucket_unknown: "unknown"
+    readonly property string bucket_working: "working"
+    readonly property string bucket_cancelling: "cancelling"
+    readonly property string bucket_paused: "paused"
+    readonly property string bucket_error: "error"
+    readonly property string bucket_idle: "idle"
+    readonly property string bucket_disconnected: "disconnected"
+    readonly property string bucket_connecting: "connecting"
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
     property var json: ''
 
     // Printer state flags
