@@ -364,8 +364,7 @@ Item {
                 expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
                 summary = 'Printing started.'
                 body = `File '${jobFileName}'.`
-                if (main.JobPrintTimeLeft != '') {
-//                    console.debug(`Est. print time '${main.jobPrintTimeLeft}'.`)
+                if (main.jobPrintTimeLeft != '') {
                     body += ` Est. print time ${main.jobPrintTimeLeft}.`
                 }
             }
