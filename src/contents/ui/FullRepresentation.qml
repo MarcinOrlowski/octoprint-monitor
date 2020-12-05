@@ -11,6 +11,7 @@
 
 import QtQuick 2.6
 import QtQuick.Layouts 1.5
+import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import "../js/utils.js" as Utils
 
@@ -103,10 +104,10 @@ ColumnLayout {
 
     RowLayout {
         id: fullStateContainerTopRow
-//        width: parent.width
         Layout.fillWidth: true
 
         Image {
+//            readonly property int iconSize: PlasmaCore.Units.iconSizes.huge
             readonly property int iconSize: 96
 
             id: fullStateIcon
@@ -143,7 +144,7 @@ ColumnLayout {
             }
             PlasmaComponents.ProgressBar {
                 id: fullStateProgressBar
-//                Layout.maximumWidth: fullStateTopContainer.width
+                Layout.fillWidth: true
                 height: 4
                 value: main.jobCompletion/100
                 visible: main.jobInProgress
