@@ -12,6 +12,7 @@
 import QtQuick 2.6
 import QtQuick.Layouts 1.5
 import org.kde.plasma.components 3.0 as PlasmaComponents
+import org.kde.plasma.core 2.0 as PlasmaCore
 import "../js/utils.js" as Utils
 
 ColumnLayout {
@@ -22,12 +23,12 @@ ColumnLayout {
     // ------------------------------------------------------------------------------------------------------------------------
 
 	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ""
-	property string cameraViewTimerState: i18n('Every') + ' ' + Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval)
+	property string cameraViewTimerState: i18nc('%1 is the time in seconds', 'Every %1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
 	property string cameraView0Stamp: ""
 	property string cameraView1Stamp: ""
 
 	function updateSnapshot() {
-        if (!main.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
+        if (!main.apiConnected || !plasmoid.expanded || !isCameraViewEnabled || !isCameraViewPollActive()) {
             return
         }
 
@@ -102,11 +103,10 @@ ColumnLayout {
     // ------------------------------------------------------------------------------------------------------------------------
 
     RowLayout {
-        width: parent.width
         Layout.fillWidth: true
 
         Image {
-            readonly property int iconSize: 96
+            readonly property int iconSize: PlasmaCore.Units.iconSizes.huge
 
             Layout.alignment: Qt.AlignCenter
             fillMode: Image.PreserveAspectFit
@@ -138,24 +138,26 @@ ColumnLayout {
                 }
             }
             PlasmaComponents.ProgressBar {
-                Layout.maximumWidth: fullStateContainer.width
+                Layout.fillWidth: true
                 height: 4
                 value: main.jobCompletion/100
                 visible: main.jobInProgress
             }
             PlasmaComponents.Label {
                 Layout.alignment: Qt.AlignHCenter
+                Layout.fillWidth: true
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Elapsed') + `: ${main.jobPrintTime}`
+                text: i18n('Elapsed: %1', main.jobPrintTime)
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
                 visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
             }
             PlasmaComponents.Label {
                 Layout.alignment: Qt.AlignHCenter
+                Layout.fillWidth: true
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Left') + `: ${main.jobPrintTimeLeft}`
+                text: i18n('Left: %1' main.jobPrintTimeLeft)
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
                 visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft && main.jobPrintTimeLeft != ''
             }
