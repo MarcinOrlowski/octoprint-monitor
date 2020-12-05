@@ -14,6 +14,7 @@ import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.3
 import Qt.labs.settings 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.kirigami 2.6 as Kirigami
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
 import "../js/utils.js" as Utils
@@ -722,7 +723,7 @@ Item {
         Layout.minimumWidth: 600
         Layout.minimumHeight: 500
 
-        onAccepted: visible = false
+//        onAccepted: visible = false
 
         ColumnLayout {
             anchors.centerIn: parent
@@ -753,14 +754,16 @@ Item {
                     text: `&copy;2020 by Marcin Orlowski`
                 }
 
-                PlasmaComponents.Label {
-                    Layout.alignment: Qt.AlignHCenter
-                    textFormat: Text.RichText
-                    text: `<a href="${plasmoidUrl}">${plasmoidUrl}</a>`
-                    onLinkActivated: {
-                        Qt.openUrlExternally(link);
-                    }
+                Kirigami.UrlButton {
+                    url: plasmoidUrl
                 }
+
+//                PlasmaComponents.Label {
+//                    Layout.alignment: Qt.AlignHCenter
+//                    textFormat: Text.RichText
+//                    text: `<a href="${plasmoidUrl}">${plasmoidUrl}</a>`
+//                    onLinkActivated: Qt.openUrlExternally(link)
+//                }
             }
         }
     } // Dialog
