@@ -529,13 +529,13 @@ Item {
         xhr.send()
     }
 
+    JobStateManager {
+        id: jobStateManager
+    }
+
     PrinterStateManager {
         id: printerStateManager
     }
-
-//    OctoState {
-//        id: currentOctoState
-//    }
 
     // ------------------------------------------------------------------------------------------------------------------------
 
