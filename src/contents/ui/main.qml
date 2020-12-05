@@ -38,31 +38,6 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    // Printer state flags
-    property bool pf_cancelling: false		// working
-    property bool pf_closedOrError: false	// error
-    property bool pf_error: false			// error
-    property bool pf_finishing: false		// working
-    property bool pf_operational: false		// idle
-    property bool pf_paused: false			// paused
-    property bool pf_pausing: false			// working
-    property bool pf_printing: false		// working
-    property bool pf_ready: false			// idle
-    property bool pf_resuming: false		// working
-
-    // printer state
-    property string printer_state: ""
-
-    // Bed temperature
-    property double p_bed_actual: 0
-    property double p_bed_offset: 0
-    property double p_bed_target: 0
-
-    // Hotend temperature
-    property double extruder0TemperatureActual: 0
-    property double extruder0TemperatureOffset: 0
-    property double extruder0TemperatureTarget: 0
-
     // True if printer is connected to OctoPrint
     property bool printerConnected: false
 
@@ -172,25 +147,7 @@ Item {
     **	string: printer state bucket
     */
     function getPrinterStateBucket() {
-        var bucket = undefined;
-
-        if ( main.pf_finishing || main.pf_printing || main.pf_pausing ) {
-            bucket = main.bucket_working
-        } else if ( main.pf_cancelling ) {
-            bucket = main.bucket_cancelling
-        } else if ( main.pf_closedOrError || main.pf_error ) {
-            bucket = main.bucket_error
-        } else if ( main.pf_operational || main.pf_ready ) {
-            bucket = main.bucket_idle
-        } else if ( main.pf_paused ) {
-            bucket = main.bucket_paused;
-        }
-
-        if (bucket == undefined) {
-            bucket = main.bucket_disconnected
-        }
-
-        return bucket;
+        return currentOctoState.printer.getPrinterStateBucket()
     }
 
     /*
@@ -246,8 +203,7 @@ Item {
     **	bool
     */
     function isJobInProgress() {
-        var result = main.pf_printing || main.pf_paused || main.pf_resuming;
-        return result;
+        return currentOctoState.printer.isJobInProgress()
     }
 
     /*
@@ -257,17 +213,7 @@ Item {
     **	bool
     */
     function isPrinterConnected() {
-        return  main.pf_cancelling
-             || main.pf_error
-             || main.pf_finishing
-             || main.pf_operational
-             || main.pf_paused
-             || main.pf_pausing
-             || main.pf_printing
-             || main.pf_ready
-             || main.pf_resuming
-//           || main.pf_closedOrError
-        ;
+        return currentOctoState.printer.isPrinterConnected()
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -574,88 +520,15 @@ Item {
 
             // Ensure we managed to talk to the API
             main.apiConnected = (xhr.status !== 0)
-
-            switch (xhr.status) {
-                case 200:
-//                  console.debug(`ResponseText: "'${xhr.responseText}'"`)
-                    try {
-                        parsePrinterStateResponse(JSON.parse(xhr.responseText))
-                    } catch (error) {
-                        setPrinterFlags(false)
-                        main.pf_error = true
-                    }
-                    break
-                case 409:
-                    // Printer is not operational
-                    setPrinterFlags(false)
-                    break
-                default:
-                    console.debug(`Unexpected printer response status code (${xhr.status}).`)
-                    main.pf_error = true
-                    break
-            }
+            currentOctoState.parsePrinterXhr(xhr)
             updateOctoState();
         });
         xhr.send()
     }
 
-    /**
-    ** Sets pf_* flags to given bool value. Just for DRY.
-    **
-    ** Arguments:
-    **  state: true/false to set all flags to.
-    **
-    ** Returns:
-    **  void
-    */
-    function setPrinterFlags(state) {
-        main.pf_cancelling = state
-        main.pf_closedOrError = state
-        main.pf_finishing = state
-        main.pf_operational = state
-        main.pf_paused = state
-        main.pf_pausing = state
-        main.pf_printing = state
-        main.pf_ready = state
-        main.pf_resuming = state
-        main.pf_error = state
+    OctoState {
+        id: currentOctoState
     }
-
-	/*
-	** Parses printer status JSON response object.
-	**
-	** Arguments:
-	**	resp: response JSON object
-	**
-	** Returns:
-	**	void
-	*/
-	function parsePrinterStateResponse(resp) {
-		main.pf_cancelling = resp.state.flags.cancelling
-		main.pf_closedOrError = resp.state.flags.closedOrError
-		main.pf_error = resp.state.flags.error
-		main.pf_finishing = resp.state.flags.finishing
-		main.pf_operational = resp.state.flags.operational
-		main.pf_paused = resp.state.flags.paused
-		main.pf_pausing = resp.state.flags.pausing
-		main.pf_printing = resp.state.flags.printing
-		main.pf_ready = resp.state.flags.ready
-		main.pf_resuming = resp.state.flags.resuming
-
-		// Textural representation of printer state as returned by API
-		main.printer_state = resp.state.text
-
-		// temepratures
-		main.p_bed_actual = Utils.getFloat(resp.temperature.bed.actual)
-		main.p_bed_offset = Utils.getFloat(resp.temperature.bed.offset)
-		main.p_bed_target = Utils.getFloat(resp.temperature.bed.target)
-
-		// hot-ends
-		// FIXME: check for more than one
-		main.extruder0TemperatureActual = Utils.getFloat(resp.temperature.tool0.actual)
-		main.extruder0TemperatureOffset = Utils.getFloat(resp.temperature.tool0.offset)
-		main.extruder0TemperatureTarget = Utils.getFloat(resp.temperature.tool0.target)
-	}
 
     // ------------------------------------------------------------------------------------------------------------------------
 
