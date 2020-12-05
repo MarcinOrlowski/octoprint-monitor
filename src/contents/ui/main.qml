@@ -11,6 +11,7 @@
 
 import QtQuick 2.1
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.3
 import Qt.labs.settings 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 3.0 as PlasmaComponents
@@ -23,6 +24,16 @@ Item {
 
     Plasmoid.compactRepresentation: CompactRepresentation {}
     Plasmoid.fullRepresentation: FullRepresentation {}
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    property string plasmoidTitle: ''
+    readonly property string plasmoidUrl: 'https://github.com/marcinorlowski/octoprint-monitor'
+
+    Component.onCompleted: {
+        plasmoidTitle = Plasmoid.title
+        plasmoid.setAction("showAboutDialog", i18n('About ') + plasmoidTitle + '…');
+    }
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -361,7 +372,7 @@ Item {
 
 //        console.debug(`post: ${post}, state: ${previous}=>${current}, timeout: ${expireTimeout}, body: "${body}"`)
         if (post) {
-            var title = Plasmoid.title
+            var title = plasmoidTitle
             // there's system timer shown (xx ago) shown for non expiring notifications
             if (expireTimeout == 0) {
                 title += ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
@@ -681,10 +692,10 @@ Item {
                     var remoteVersion = xhr.responseText.match(/X\-KDE\-PluginInfo\-Version=(.*)/)[1]
                     if (remoteVersion != Version.version) {
                         notificationManager.post({
-                            'title': Plasmoid.title,
+                            'title': plasmoidTitle,
                             'icon': main.octoStateIcon,
                             'summary': `OctoPrint Monitor ${remoteVersion} available!`,
-                            'body': `You are currently using version ${Version.version}. See project page for more information (link in Configuration > About)`,
+                            'body': `You are currently using version ${Version.version}. See project page for more information.`,
                             'expireTimeout': 0,
                         });
                     }
@@ -693,5 +704,67 @@ Item {
             xhr.send()
         }
     }
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    function action_showAboutDialog() {
+        aboutDialog.visible = true
+    }
+
+    Dialog {
+        id: aboutDialog
+        visible: false
+        title: i18n('Information')
+        standardButtons: StandardButton.Ok
+
+        width: 600
+        height: 500
+        Layout.minimumWidth: 600
+        Layout.minimumHeight: 500
+
+        onAccepted: visible = false
+
+        ColumnLayout {
+            anchors.centerIn: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            ColumnLayout {
+                Layout.margins: 30
+
+                Image {
+                    Layout.alignment: Qt.AlignHCenter
+                    fillMode: Image.PreserveAspectFit
+                    source: plasmoid.file('', 'images/logo.png')
+                }
+
+                // metadata access is not available until very recent Plasma
+                // so as a work around we have it auto-generated as JS file
+                PlasmaComponents.Label {
+                    Layout.alignment: Qt.AlignHCenter
+                    textFormat: Text.PlainText
+                    font.bold: true
+                    font.pixelSize: Qt.application.font.pixelSize * 1.5
+                    text: `${plasmoidTitle} v${Version.version}`
+                }
+
+                PlasmaComponents.Label {
+                    Layout.alignment: Qt.AlignHCenter
+                    textFormat: Text.RichText
+                    text: `&copy;2020 by Marcin Orlowski`
+                }
+
+                PlasmaComponents.Label {
+                    Layout.alignment: Qt.AlignHCenter
+                    textFormat: Text.RichText
+                    text: `<a href="${plasmoidUrl}">${plasmoidUrl}</a>`
+                    onLinkActivated: {
+                        Qt.openUrlExternally(link);
+                    }
+                }
+            }
+        }
+    } // Dialog
+
+    // ------------------------------------------------------------------------------------------------------------------------
 
 }
