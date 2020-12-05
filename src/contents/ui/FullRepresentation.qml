@@ -101,77 +101,74 @@ ColumnLayout {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    ColumnLayout {
+    RowLayout {
+        width: parent.width
+        Layout.fillWidth: true
 
-        RowLayout {
-            width: parent.width
+        Image {
+            readonly property int iconSize: 96
+
+            Layout.alignment: Qt.AlignCenter
+            fillMode: Image.PreserveAspectFit
+            source: main.octoStateIcon
+            clip: true
+            width: iconSize
+            height: iconSize
+            Layout.maximumWidth: iconSize
+            Layout.maximumHeight: iconSize
+            Layout.preferredWidth: iconSize
+            Layout.preferredHeight: iconSize
+        }
+
+        ColumnLayout {
+            id: fullStateContainer
+
             Layout.fillWidth: true
 
-            Image {
-                readonly property int iconSize: 96
-
-                Layout.alignment: Qt.AlignCenter
-                fillMode: Image.PreserveAspectFit
-                source: main.octoStateIcon
-                clip: true
-                width: iconSize
-                height: iconSize
-                Layout.maximumWidth: iconSize
-                Layout.maximumHeight: iconSize
-                Layout.preferredWidth: iconSize
-                Layout.preferredHeight: iconSize
-            }
-
-            ColumnLayout {
-                id: fullStateContainer
-
-                Layout.fillWidth: true
-
-                PlasmaComponents.Label {
-                    Layout.alignment: Qt.AlignHCenter
-                    fontSizeMode: Text.Fit
-                    minimumPointSize: 1
-                    text: {
-                        var state = main.octoState;
-                        if (main.jobInProgress) {
-                            state += ` ${main.jobCompletion}%`
-                        }
-                        return Utils.ucfirst(state);
+            PlasmaComponents.Label {
+                Layout.alignment: Qt.AlignHCenter
+                fontSizeMode: Text.Fit
+                minimumPointSize: 1
+                text: {
+                    var state = main.octoState;
+                    if (main.jobInProgress) {
+                        state += ` ${main.jobCompletion}%`
                     }
+                    return Utils.ucfirst(state);
                 }
-                PlasmaComponents.ProgressBar {
-                    Layout.maximumWidth: fullStateContainer.width
-                    height: 4
-                    value: main.jobCompletion/100
-                    visible: main.jobInProgress
-                }
-                PlasmaComponents.Label {
-                    Layout.alignment: Qt.AlignHCenter
-                    fontSizeMode: Text.Fit
-                    minimumPixelSize: 8
-                    text: i18n('Elapsed') + `: ${main.jobPrintTime}`
-                    font.pixelSize: Qt.application.font.pixelSize * 0.8
-                    visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
-                }
-                PlasmaComponents.Label {
-                    Layout.alignment: Qt.AlignHCenter
-                    fontSizeMode: Text.Fit
-                    minimumPixelSize: 8
-                    text: i18n('Left') + `: ${main.jobPrintTimeLeft}`
-                    font.pixelSize: Qt.application.font.pixelSize * 0.8
-                    visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft && main.jobPrintTimeLeft != ''
-                }
-            } // ColumnLayout
-        } // RowLayout
+            }
+            PlasmaComponents.ProgressBar {
+                Layout.maximumWidth: fullStateContainer.width
+                height: 4
+                value: main.jobCompletion/100
+                visible: main.jobInProgress
+            }
+            PlasmaComponents.Label {
+                Layout.alignment: Qt.AlignHCenter
+                fontSizeMode: Text.Fit
+                minimumPixelSize: 8
+                text: i18n('Elapsed') + `: ${main.jobPrintTime}`
+                font.pixelSize: Qt.application.font.pixelSize * 0.8
+                visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
+            }
+            PlasmaComponents.Label {
+                Layout.alignment: Qt.AlignHCenter
+                fontSizeMode: Text.Fit
+                minimumPixelSize: 8
+                text: i18n('Left') + `: ${main.jobPrintTimeLeft}`
+                font.pixelSize: Qt.application.font.pixelSize * 0.8
+                visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft && main.jobPrintTimeLeft != ''
+            }
+        } // ColumnLayout
+    } // RowLayout
 
-        PlasmaComponents.Label {
-            fontSizeMode: Text.Fit
-            minimumPixelSize: 8
-            elide: Text.ElideMiddle
-            text: main.jobFileName
-            visible: main.jobInProgress && plasmoid.configuration.showJobFileName
-        }
-    } // ColumnLayout
+    PlasmaComponents.Label {
+        fontSizeMode: Text.Fit
+        minimumPixelSize: 8
+        elide: Text.ElideMiddle
+        text: main.jobFileName
+        visible: main.jobInProgress && plasmoid.configuration.showJobFileName
+    }
 
 //    MouseArea {
 //        width: fullContainer.width

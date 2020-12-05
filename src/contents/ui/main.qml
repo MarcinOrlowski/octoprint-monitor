@@ -22,6 +22,9 @@ import "../js/version.js" as Version
 Item {
     id: main
 
+    // Debug switch to mimic API access using hardcded JSONs
+    readonly property bool fakeApiAccess: false
+
     Plasmoid.compactRepresentation: CompactRepresentation {}
     Plasmoid.fullRepresentation: FullRepresentation {}
 
@@ -432,6 +435,21 @@ Item {
 	**	void
     */
 	function getJobStateFromApi() {
+	    if (!main.fakeApiAccess) {
+	        getJobStateFromApiReal()
+        } else {
+            getJobStateFromApiFake()
+        }
+	}
+
+    function getJobStateFromApiFake() {
+        main.apiConnected = true
+        var json='{"job":{"averagePrintTime":null,"estimatedPrintTime":19637.457560140414,"filament":{"tool0":{"length":9744.308959960938,"volume":68.87846124657558}},"file":{"date":1607166777,"display":"deercraft-stick.gcode","name":"deercraft-stick.gcode","origin":"local","path":"deercraft-stick.gcode","size":17025823},"lastPrintTime":null,"user":"_api"},"progress":{"completion":15.966200282946675,"filepos":2718377,"printTime":2582,"printTimeLeft":16499,"printTimeLeftOrigin":"genius"},"state":"Printing"}'
+        parseJobStatusResponse(JSON.parse(json))
+        updateOctoState()
+    }
+
+	function getJobStateFromApiReal() {
 	    var xhr = getXhr('job')
 
         if (xhr === null) {
@@ -507,6 +525,20 @@ Item {
 	**	void
     */
     function getPrinterStateFromApi() {
+        if (!main.fakeApiAccess) {
+            getPrinterStateFromApiReal()
+        } else {
+            getPrinterStateFromApiFake()
+        }
+    }
+
+    function getPrinterStateFromApiFake() {
+        var json = '{"state":{"flags":{"cancelling":false,"closedOrError":false,"error":false,"finishing":false,"operational":true,"paused":false,"pausing":false,"printing":true,"ready":false,"resuming":false,"sdReady":false},"text":"Printing"},"temperature":{"bed":{"actual":65.0,"offset":0,"target":65.0},"tool0":{"actual":200.0,"offset":0,"target":200.0}}}';
+        parsePrinterStateResponse(JSON.parse(json))
+        updateOctoState();
+    }
+
+    function getPrinterStateFromApiReal() {
         var xhr = getXhr('printer')
 
         if (xhr === null) {
