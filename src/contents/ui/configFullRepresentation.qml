@@ -44,7 +44,7 @@ ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: cameraViewEnabled
                 Kirigami.FormData.label: i18n("Enable camera snapshot view")
             }
@@ -84,7 +84,7 @@ ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: stopCameraPollForBuckets
                 enabled: cfg_cameraViewEnabled
                 text: i18n("Stop camera pooling for state buckets")
@@ -95,43 +95,43 @@ ColumnLayout {
 
                 GridLayout {
                     columns: 2
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketUnknown
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Unknown")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketWorking
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Working")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketCancelling
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Cancelling")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketPaused
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Paused")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketError
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Error")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketIdle
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Idle")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketDisconnected
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent

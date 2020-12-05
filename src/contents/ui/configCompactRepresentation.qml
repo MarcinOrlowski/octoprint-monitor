@@ -12,8 +12,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.1
-import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami 2.5 as Kirigami
+import org.kde.plasma.components 3.0 as PlasmaComponents
 
 ColumnLayout {
     id: ccRoot
@@ -63,19 +63,19 @@ ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutStateIconEnabled
                 text: i18n("Display state icon")
             }
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutCustomIconSizeEnabled
                 text: i18n("Override maximum state icon size (if fits)")
                 enabled: cfg_compactLayoutStateIconEnabled
             }
 
             RowLayout {
-                PlasmaComponents.Label {
+                Label {
                     text: i18n("State icon size")
                 }
                 PlasmaComponents.SpinBox {
@@ -88,7 +88,7 @@ ColumnLayout {
                 }
             }
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutHideIconForBuckets
                 enabled: cfg_compactLayoutStateIconEnabled
                 text: i18n("Hide state icon for specific buckets")
@@ -96,43 +96,43 @@ ColumnLayout {
             ColumnLayout {
                 GridLayout {
                     columns: 2
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideIconForBucketUnknown
                         enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Unknown")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideIconForBucketWorking
                         enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Working")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideIconForBucketCancelling
                         enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Cancelling")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideIconForBucketPaused
                         enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Paused")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideIconForBucketError
                         enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Error")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideIconForBucketIdle
                         enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Idle")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideIconForBucketDisconnected
                         enabled: cfg_compactLayoutHideIconForBuckets && cfg_compactLayoutStateIconEnabled
                         Layout.leftMargin: ccRoot.indent
@@ -151,18 +151,18 @@ ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutStateTextLineEnabled
                 text: i18n("Display text state line")
             }
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutShowBucketName
                 enabled: cfg_compactLayoutStateTextLineEnabled
                 text: i18n("Show state bucket name")
             }
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutHideBuckets
                 enabled: cfg_compactLayoutStateTextLineEnabled && cfg_compactLayoutShowBucketName
                 text: i18n("Hide state text for specific buckets")
@@ -172,43 +172,43 @@ ColumnLayout {
 
                 GridLayout {
                     columns: 2
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideBucketUnknown
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Unknown")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideBucketWorking
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Working")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideBucketCancelling
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Cancelling")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideBucketPaused
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Paused")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideBucketError
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Error")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideBucketIdle
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
                         Layout.leftMargin: ccRoot.indent
                         text: i18n("Idle")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: compactLayoutHideBucketDisconnected
                         enabled: cfg_compactLayoutHideBuckets && cfg_compactLayoutShowBucketName && cfg_compactLayoutStateTextLineEnabled
                         Layout.leftMargin: ccRoot.indent
@@ -217,7 +217,7 @@ ColumnLayout {
                 }
             }
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutPercentageEnabled
                 enabled: cfg_compactLayoutStateTextLineEnabled
                 text: i18n("Display print progress percentage")
@@ -234,16 +234,16 @@ ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutVerticalProgressBarEnabled
                 text: i18n("Show print job progress bar")
             }
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutShowPrintTime
                 text: i18n("Show print elapsed time")
             }
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: compactLayoutShowPrintTimeLeft
                 text: i18n("Show estimated remaining time")
             }
