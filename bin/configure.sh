@@ -2,7 +2,8 @@
 
 #  OctoPrint Monitor
 #
-#  Updated plasmoid dev config file based on current template and env vars
+#  Updated plasmoid generated config files file based on current template,
+#  env vars and metadata.desktop file
 #
 #  @author    Marcin Orlowski <mail (#) marcinOrlowski (.) com>
 #  @copyright 2020 Marcin Orlowski
@@ -16,11 +17,21 @@ function escape() {
 
 declare -r src_dir="src"
 
-
 if [[ ! -d "${src_dir}" ]]; then
 	echo "*** Source dir not found: ${src_dir}"
 	exit 1
 fi
+
+declare -r pkg_name=$(grep X-KDE-PluginInfo-Name < "${src_dir}/metadata.desktop" | awk '{split($0,a,"="); print a[2]}')
+declare -r base_name=$(echo "${pkg_name}" | awk '{cnt=split($0,a,"."); print a[cnt]}')
+declare -r pkg_version=$(grep X-KDE-PluginInfo-Version < "${src_dir}/metadata.desktop" | awk '{split($0,a,"="); print a[2]}')
+declare -r plasmoid_path="$(pwd)"
+declare -r plasmoid_name="${base_name}-${pkg_version}.plasmoid"
+
+echo "PKG_NAME: ${pkg_name}"
+echo " VERSION: ${pkg_version}"
+echo -e "var version=\"${pkg_version}\"" > "${src_dir}/contents/js/version.js"
+
 
 declare -r cfg_template_file="${src_dir}/contents/config/main-template.xml"
 declare -r cfg_config_file="${src_dir}/contents/config/main.xml"
@@ -34,7 +45,7 @@ op_api_url=
 op_api_key=
 op_snapshot_url=
 
-if [[ "$#" -gt 0 ]]; then
+if [[ "$#" -eq 0 ]]; then
 	echo "Populating config with env vars: ${cfg_config_file}"
 
 	for name in OCTOPRINT_API_URL OCTOPRINT_API_KEY OCTOPRINT_SNAPSHOT_URL; do
