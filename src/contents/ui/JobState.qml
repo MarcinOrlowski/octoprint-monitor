@@ -12,8 +12,6 @@
 import QtQuick 2.0
 
 QtObject {
-    id: job
-
-//    property string json: ''
+    property string json: ''
 
 }

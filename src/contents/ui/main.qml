@@ -147,7 +147,7 @@ Item {
     **	string: printer state bucket
     */
     function getPrinterStateBucket() {
-        return currentOctoState.printer.getPrinterStateBucket()
+        return printerStateManager.current.getPrinterStateBucket()
     }
 
     /*
@@ -203,7 +203,7 @@ Item {
     **	bool
     */
     function isJobInProgress() {
-        return currentOctoState.printer.isJobInProgress()
+        return printerStateManager.current.isJobInProgress()
     }
 
     /*
@@ -213,7 +213,7 @@ Item {
     **	bool
     */
     function isPrinterConnected() {
-        return currentOctoState.printer.isPrinterConnected()
+        return printerStateManager.current.isPrinterConnected()
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -520,15 +520,22 @@ Item {
 
             // Ensure we managed to talk to the API
             main.apiConnected = (xhr.status !== 0)
-            currentOctoState.parsePrinterXhr(xhr)
+
+            printerStateManager.update(xhr)
+
+//            currentOctoState.parsePrinterXhr(xhr)
             updateOctoState();
         });
         xhr.send()
     }
 
-    OctoState {
-        id: currentOctoState
+    PrinterStateManager {
+        id: printerStateManager
     }
+
+//    OctoState {
+//        id: currentOctoState
+//    }
 
     // ------------------------------------------------------------------------------------------------------------------------
 

@@ -12,8 +12,6 @@
 import QtQuick 2.0
 
 QtObject {
-    id: printer
-
     property var json: ''
 
     // Printer state flags
@@ -83,20 +81,20 @@ QtObject {
     function getPrinterStateBucket() {
         var bucket = undefined;
 
-        if ( main.pf_finishing || main.pf_printing || main.pf_pausing ) {
-            bucket = main.bucket_working
-        } else if ( main.pf_cancelling ) {
-            bucket = main.bucket_cancelling
-        } else if ( main.pf_closedOrError || main.pf_error ) {
-            bucket = main.bucket_error
-        } else if ( main.pf_operational || main.pf_ready ) {
-            bucket = main.bucket_idle
-        } else if ( main.pf_paused ) {
-            bucket = main.bucket_paused;
+        if ( this.pf_finishing || this.pf_printing || this.pf_pausing ) {
+            bucket = this.bucket_working
+        } else if ( this.pf_cancelling ) {
+            bucket = this.bucket_cancelling
+        } else if ( this.pf_closedOrError || this.pf_error ) {
+            bucket = this.bucket_error
+        } else if ( this.pf_operational || this.pf_ready ) {
+            bucket = this.bucket_idle
+        } else if ( this.pf_paused ) {
+            bucket = this.bucket_paused;
         }
 
         if (bucket == undefined) {
-            bucket = main.bucket_disconnected
+            bucket = this.bucket_disconnected
         }
 
         return bucket;
