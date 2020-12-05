@@ -32,11 +32,11 @@ ColumnLayout {
         Kirigami.FormLayout {
             anchors.left: parent.left
             anchors.right: parent.right
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: notificationsEnabled
                 text: i18n("Post desktop notifications")
             }
-//            PlasmaComponents.CheckBox {
+//            CheckBox {
 //                id: notificationsUseNotifySend
 //                enabled: cfg_notificationsEnabled
 //                text: i18n("Use notify-send instead")

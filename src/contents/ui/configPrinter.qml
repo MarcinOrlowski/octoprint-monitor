@@ -13,7 +13,6 @@ import QtQuick 2.0
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.1
 import org.kde.kirigami 2.5 as Kirigami
-import org.kde.plasma.components 3.0 as PlasmaComponents
 
 ColumnLayout {
     width: childrenRect.width
@@ -46,7 +45,7 @@ ColumnLayout {
                 Layout.fillWidth: true
         	    Kirigami.FormData.label: i18n("Unknown")
 
-                PlasmaComponents.CheckBox {
+                CheckBox {
                     id: printerStateNameForBucketUnknownEnabled
                 }
 
@@ -61,7 +60,7 @@ ColumnLayout {
                 Layout.fillWidth: true
         	    Kirigami.FormData.label: i18n("Working")
 
-                PlasmaComponents.CheckBox {
+                CheckBox {
                     id: printerStateNameForBucketWorkingEnabled
                 }
 
@@ -76,7 +75,7 @@ ColumnLayout {
                 Layout.fillWidth: true
         	    Kirigami.FormData.label: i18n("Cancelling")
 
-                PlasmaComponents.CheckBox {
+                CheckBox {
                     id: printerStateNameForBucketCancellingEnabled
                 }
 
@@ -91,7 +90,7 @@ ColumnLayout {
                 Layout.fillWidth: true
         	    Kirigami.FormData.label: i18n("Paused")
 
-                PlasmaComponents.CheckBox {
+                CheckBox {
                     id: printerStateNameForBucketPausedEnabled
                 }
 
@@ -106,7 +105,7 @@ ColumnLayout {
                 Layout.fillWidth: true
         	    Kirigami.FormData.label: i18n("Error")
 
-                PlasmaComponents.CheckBox {
+                CheckBox {
                     id: printerStateNameForBucketErrorEnabled
                 }
 
@@ -122,7 +121,7 @@ ColumnLayout {
                 Layout.fillWidth: true
         	    Kirigami.FormData.label: i18n("Idle")
 
-                PlasmaComponents.CheckBox {
+                CheckBox {
                     id: printerStateNameForBucketIdleEnabled
                 }
 
@@ -137,7 +136,7 @@ ColumnLayout {
                 Layout.fillWidth: true
                 Kirigami.FormData.label: i18n("Disconnected")
 
-                PlasmaComponents.CheckBox {
+                CheckBox {
                     id: printerStateNameForBucketDisconnectedEnabled
                 }
 
