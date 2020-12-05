@@ -12,7 +12,6 @@
 import QtQuick 2.1
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.3
-import Qt.labs.settings 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.kirigami 2.6 as Kirigami
 import org.kde.plasma.components 3.0 as PlasmaComponents
@@ -29,6 +28,7 @@ Item {
     // ------------------------------------------------------------------------------------------------------------------------
 
     property string plasmoidTitle: ''
+    readonly property string plasmoidVersion: Version.version
     readonly property string plasmoidUrl: 'https://github.com/marcinorlowski/octoprint-monitor'
 
     Component.onCompleted: {
@@ -659,48 +659,10 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-	Timer {
-		id: versionCheckTimer
-        interval: 3 * 60 * 60 * 1000
-        repeat: true
-        running: true
-        triggeredOnStart: true
-        onTriggered: checkVersion()
-	}
-
-    Settings {
-        id: settings
-        category: "VersionChecker"
-        property string lastVersionCheckDate: ''
-    }
-
-    function checkVersion() {
-        var performCheck = true
-        var d = new Date()
-        var today = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate()
-        if (today != settings.lastVersionCheckDate) {
-            var xhr = new XMLHttpRequest()
-            xhr.open('GET', 'https://raw.githubusercontent.com/MarcinOrlowski/octoprint-monitor/master/src/metadata.desktop')
-            xhr.onreadystatechange = (function () {
-                // We only care about DONE readyState.
-                if (xhr.readyState !== 4) return
-                if (xhr.status === 200) {
-                    settings.lastVersionCheckDate = today
-
-                    var remoteVersion = xhr.responseText.match(/X\-KDE\-PluginInfo\-Version=(.*)/)[1]
-                    if (remoteVersion != Version.version) {
-                        notificationManager.post({
-                            'title': main.plasmoidTitle,
-                            'icon': main.octoStateIcon,
-                            'summary': `OctoPrint Monitor ${remoteVersion} available!`,
-                            'body': `You are currently using version ${Version.version}. See project page for more information.`,
-                            'expireTimeout': 0,
-                        });
-                    }
-                }
-            });
-            xhr.send()
-        }
+    UpdateChecker {
+        url: 'https://raw.githubusercontent.com/MarcinOrlowski/octoprint-monitor/master/src/metadata.desktop'
+        title: main.plasmoidTitle
+        currentVersion: main.plasmoidVersion
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -742,7 +704,7 @@ Item {
                     textFormat: Text.PlainText
                     font.bold: true
                     font.pixelSize: Qt.application.font.pixelSize * 1.5
-                    text: `${main.plasmoidTitle} v${Version.version}`
+                    text: `${main.plasmoidTitle} v${main.plasmoidVersion}`
                 }
 
                 PlasmaComponents.Label {
