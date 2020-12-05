@@ -34,7 +34,7 @@ Multiple configuration options let you tweak it as you like.
 - Graphical representation of your 3D printer states
 - State and progress of on-going printing job
 - Optional "live" Webcam view directly in the widget
-- Can report printer temperatures (bed, hotends, etc).
+- Can report printer temperatures (bed, extruders, etc).
 - Extensively configurable
 
 ---

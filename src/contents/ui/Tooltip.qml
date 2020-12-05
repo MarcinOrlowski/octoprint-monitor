@@ -121,7 +121,7 @@ Item {
 				maximumLineCount: 1
 				wrapMode: Text.NoWrap
                 textFormat: Text.RichText
-				text: '<b> ' + i18n("Hotend #1") + ':</b> '
+				text: '<b> ' + i18n("Extruder #1") + ':</b> '
 				font.pixelSize: Qt.application.font.pixelSize * 0.8
 			}
 			PlasmaComponents.Label {
@@ -130,8 +130,8 @@ Item {
                 textFormat: Text.RichText
 				wrapMode: Text.NoWrap
 				text: {
-				    var msg = `${main.p_he0_actual}°`
-				    if (main.p_he0_target > 0) msg += ` of ${main.p_he0_target}°`
+				    var msg = `${main.extruder0TemperatureActual}°`
+				    if (main.extruder0TemperatureTarget > 0) msg += ` of ${main.extruder0TemperatureTarget}°`
 				    return msg
                 }
 				font.pixelSize: Qt.application.font.pixelSize * 0.8

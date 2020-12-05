@@ -59,9 +59,9 @@ Item {
     property double p_bed_target: 0
 
     // Hotend temperature
-    property double p_he0_actual: 0
-    property double p_he0_offset: 0
-    property double p_he0_target: 0
+    property double extruder0TemperatureActual: 0
+    property double extruder0TemperatureOffset: 0
+    property double extruder0TemperatureTarget: 0
 
     // True if printer is connected to OctoPrint
     property bool printerConnected: false
@@ -655,9 +655,9 @@ Item {
 
 		// hot-ends
 		// FIXME: check for more than one
-		main.p_he0_actual = Utils.getFloat(resp.temperature.tool0.actual)
-		main.p_he0_offset = Utils.getFloat(resp.temperature.tool0.offset)
-		main.p_he0_target = Utils.getFloat(resp.temperature.tool0.target)
+		main.extruder0TemperatureActual = Utils.getFloat(resp.temperature.tool0.actual)
+		main.extruder0TemperatureOffset = Utils.getFloat(resp.temperature.tool0.offset)
+		main.extruder0TemperatureTarget = Utils.getFloat(resp.temperature.tool0.target)
 	}
 
     // ------------------------------------------------------------------------------------------------------------------------
