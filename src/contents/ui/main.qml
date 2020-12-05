@@ -36,7 +36,7 @@ Item {
 
     Component.onCompleted: {
         plasmoidTitle = Plasmoid.title
-        plasmoid.setAction("showAboutDialog", i18n('About ') + plasmoidTitle + '…');
+        plasmoid.setAction("showAboutDialog", i18n('About %1…', plasmoidTitle));
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

@@ -183,7 +183,7 @@ GridLayout {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        text: i18n('Elapsed') + ': ' + main.jobPrintTime
+        text: i18n('Elapsed: %1', main.jobPrintTime)
         visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTime && main.jobPrintTime != ''
     }
 
@@ -191,7 +191,7 @@ GridLayout {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        text: i18n('Left') + ': ' + main.jobPrintTimeLeft
+        text: i18n('Left: %1', main.jobPrintTimeLeft)
         visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTimeLeft && main.jobPrintTimeLeft != ''
     }
 

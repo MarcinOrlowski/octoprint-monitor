@@ -23,7 +23,7 @@ ColumnLayout {
     // ------------------------------------------------------------------------------------------------------------------------
 
 	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ""
-	property string cameraViewTimerState: i18n('Every') + ' ' + Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval)
+	property string cameraViewTimerState: i18n('Every%1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
 	property string cameraView0Stamp: ""
 	property string cameraView1Stamp: ""
 
@@ -154,7 +154,7 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Elapsed') + `: ${main.jobPrintTime}`
+                text: i18n('Elapsed: %1', main.jobPrintTime)
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
                 visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
             }
@@ -163,7 +163,7 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Left') + `: ${main.jobPrintTimeLeft}`
+                text: i18n('Left: %1', main.jobPrintTimeLeft)
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
                 visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft && main.jobPrintTimeLeft != ''
             }
