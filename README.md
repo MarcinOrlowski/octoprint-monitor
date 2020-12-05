@@ -12,6 +12,8 @@
  * [License](#license)
  * [Changelog](CHANGES.md)
 
+ * [Contributions](docs/contributions.md)
+
 ---
 
 ## Introduction ##
