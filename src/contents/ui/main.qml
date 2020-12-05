@@ -660,9 +660,10 @@ Item {
     // ------------------------------------------------------------------------------------------------------------------------
 
     UpdateChecker {
-        url: 'https://raw.githubusercontent.com/MarcinOrlowski/octoprint-monitor/master/src/metadata.desktop'
-        title: main.plasmoidTitle
-        currentVersion: main.plasmoidVersion
+        id: updateChecker
+        plasmoidUMetaDataUrl: 'https://raw.githubusercontent.com/MarcinOrlowski/octoprint-monitor/master/src/metadata.desktop'
+        plasmoidTitle: main.plasmoidTitle
+        plasmoidVersion: main.plasmoidVersion
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -671,61 +672,11 @@ Item {
         aboutDialog.visible = true
     }
 
-    Dialog {
+    AboutDialog {
         id: aboutDialog
-        visible: false
-        title: i18n('Information')
-        standardButtons: StandardButton.Ok
-
-        width: 600
-        height: 500
-        Layout.minimumWidth: 600
-        Layout.minimumHeight: 500
-
-//        onAccepted: visible = false
-
-        ColumnLayout {
-            anchors.centerIn: parent
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            ColumnLayout {
-                Layout.margins: 30
-
-                Image {
-                    Layout.alignment: Qt.AlignHCenter
-                    fillMode: Image.PreserveAspectFit
-                    source: plasmoid.file('', 'images/logo.png')
-                }
-
-                // metadata access is not available until very recent Plasma
-                // so as a work around we have it auto-generated as JS file
-                PlasmaComponents.Label {
-                    Layout.alignment: Qt.AlignHCenter
-                    textFormat: Text.PlainText
-                    font.bold: true
-                    font.pixelSize: Qt.application.font.pixelSize * 1.5
-                    text: `${main.plasmoidTitle} v${main.plasmoidVersion}`
-                }
-
-                PlasmaComponents.Label {
-                    Layout.alignment: Qt.AlignHCenter
-                    textFormat: Text.RichText
-                    text: `&copy;2020 by Marcin Orlowski`
-                }
-
-                Kirigami.UrlButton {
-                    url: plasmoidUrl
-                }
-
-//                PlasmaComponents.Label {
-//                    Layout.alignment: Qt.AlignHCenter
-//                    textFormat: Text.RichText
-//                    text: `<a href="${plasmoidUrl}">${plasmoidUrl}</a>`
-//                    onLinkActivated: Qt.openUrlExternally(link)
-//                }
-            }
-        }
-    } // Dialog
+        plasmoidTitle: main.plasmoidTitle
+        plasmoidVersion: main.plasmoidVersion
+    }
 
     // ------------------------------------------------------------------------------------------------------------------------
 

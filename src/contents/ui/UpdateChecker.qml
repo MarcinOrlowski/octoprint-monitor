@@ -1,15 +1,10 @@
 import QtQuick 2.0
-//import org.kde.plasma.core 2.0 as PlasmaCore
-//import QtMultimedia 5.4
-//import org.kde.plasma.plasmoid 2.0
 import Qt.labs.settings 1.0
 
 Item {
-    id: updateChecker
-
-    property string title: ''
-    property string url: ''
-    property string currentVersion: ''
+    property string plasmoidTitle: ''
+    property string plasmoidUMetaDataUrl: ''
+    property string plasmoidVersion: ''
 
 	Timer {
         interval: 3 * 60 * 60 * 1000
@@ -26,12 +21,12 @@ Item {
     }
 
     function checkVersion() {
-        if (updateChecker.url == '') {
-            console.debug('UpdateChecker URL is empty');
+        if (plasmoidUMetaDataUrl == '') {
+            console.debug('plasmoidUMetaDataUrl is empty');
             return
         }
-        if (updateChecker.currentVersion == '') {
-            console.debug('currentVersion not specified');
+        if (plasmoidVersion == '') {
+            console.debug('plasmoidVersion not specified');
             return
         }
 
@@ -40,7 +35,7 @@ Item {
 //        console.debug(`today: ${today}, lastCheck: ${updateCheckerSettings.lastVersionCheckDate}`)
         if (today != updateCheckerSettings.lastVersionCheckDate) {
             var xhr = new XMLHttpRequest()
-            xhr.open('GET', updateChecker.url)
+            xhr.open('GET', plasmoidUMetaDataUrl)
             xhr.onreadystatechange = (function () {
                 // We only care about DONE readyState.
                 if (xhr.readyState !== 4) return
@@ -48,13 +43,13 @@ Item {
                     updateCheckerSettings.lastVersionCheckDate = today
 
                     var remoteVersion = xhr.responseText.match(/X\-KDE\-PluginInfo\-Version=(.*)/)[1]
-//                    console.debug(`remoteVersion: ${remoteVersion}, currentVersion: ${currentVersion}`)
-                    if (remoteVersion != currentVersion) {
+//                    console.debug(`remoteVersion: ${remoteVersion}, currentVersion: ${plasmoidVersion}`)
+                    if (remoteVersion != plasmoidVersion) {
                         notificationManager.post({
-                            'title': updateChecker.title,
+                            'title': plasmoidTitle,
 //                            'icon': main.octoStateIcon,
                             'summary': `OctoPrint Monitor ${remoteVersion} available!`,
-                            'body': `You are currently using version ${updateChecker.currentVersion}. See project page for more information.`,
+                            'body': `You are currently using version ${plasmoidVersion}. See project page for more information.`,
                             'expireTimeout': 0,
                         });
                     }
