@@ -14,11 +14,10 @@ import QtQuick.Layouts 1.5
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import "../js/utils.js" as Utils
 
-GridLayout {
+ColumnLayout {
     id: fullContainer
 
-    columns: 1
-    rows: 5
+    Layout.fillWidth: true
 
     // ------------------------------------------------------------------------------------------------------------------------
 
