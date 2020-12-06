@@ -18,6 +18,7 @@ import org.kde.plasma.extras 2.0 as Extras
 import org.kde.kquickcontrolsaddons 2.0
 import org.kde.kquickcontrolsaddons 2.0
 import QtQuick.Controls.Styles 1.4
+import "./PrinterStateBucket.js" as Bucket
 import "../js/utils.js" as Utils
 
 GridLayout {
@@ -70,13 +71,13 @@ GridLayout {
 
         var result = true
         switch (getPrinterStateBucket()) {
-            case main.bucket_idle: result = !plasmoid.configuration.compactLayoutHideIconForBucketIdle; break;
-            case main.bucket_unknown: result = !plasmoid.configuration.compactLayoutHideIconForBucketUnknown; break;
-            case main.bucket_cancelling: result = !plasmoid.configuration.compactLayoutHideIconForBucketCancelling; break;
-            case main.bucket_working: result = !plasmoid.configuration.compactLayoutHideIconForBucketWorking; break;
-            case main.bucket_paused: result = !plasmoid.configuration.compactLayoutHideIconForBucketPaused; break;
-            case main.bucket_error: result = !plasmoid.configuration.compactLayoutHideIconForBucketError; break;
-            case main.bucket_disconnected: result = !plasmoid.configuration.compactLayoutHideIconForBucketDisconnected; break;
+            case main.Bucket.idle: result = !plasmoid.configuration.compactLayoutHideIconForBucketIdle; break;
+            case main.Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideIconForBucketUnknown; break;
+            case main.Bucket.cancelling: result = !plasmoid.configuration.compactLayoutHideIconForBucketCancelling; break;
+            case main.Bucket.working: result = !plasmoid.configuration.compactLayoutHideIconForBucketWorking; break;
+            case main.Bucket.paused: result = !plasmoid.configuration.compactLayoutHideIconForBucketPaused; break;
+            case main.Bucket.error: result = !plasmoid.configuration.compactLayoutHideIconForBucketError; break;
+            case main.Bucket.disconnected: result = !plasmoid.configuration.compactLayoutHideIconForBucketDisconnected; break;
         }
         return result
     }
@@ -96,13 +97,13 @@ GridLayout {
 
         var result = true
         switch (getPrinterStateBucket()) {
-            case main.bucket_idle: result = !plasmoid.configuration.compactLayoutHideBucketIdle; break;
-            case main.bucket_unknown: result = !plasmoid.configuration.compactLayoutHideBucketUnknown; break;
-            case main.bucket_working: result = !plasmoid.configuration.compactLayoutHideBucketWorking; break;
-            case main.bucket_cancelling: result = !plasmoid.configuration.compactLayoutHideBucketCancelling; break;
-            case main.bucket_paused: result = !plasmoid.configuration.compactLayoutHideBucketPaused; break;
-            case main.bucket_error: result = !plasmoid.configuration.compactLayoutHideBucketError; break;
-            case main.bucket_disconnected: result = !plasmoid.configuration.compactLayoutHideBucketDisconnected; break;
+            case main.Bucket.idle: result = !plasmoid.configuration.compactLayoutHideBucketIdle; break;
+            case main.Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideBucketUnknown; break;
+            case main.Bucket.working: result = !plasmoid.configuration.compactLayoutHideBucketWorking; break;
+            case main.Bucket.cancelling: result = !plasmoid.configuration.compactLayoutHideBucketCancelling; break;
+            case main.Bucket.paused: result = !plasmoid.configuration.compactLayoutHideBucketPaused; break;
+            case main.Bucket.error: result = !plasmoid.configuration.compactLayoutHideBucketError; break;
+            case main.Bucket.disconnected: result = !plasmoid.configuration.compactLayoutHideBucketDisconnected; break;
         }
         return result
     }

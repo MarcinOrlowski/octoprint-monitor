@@ -18,6 +18,7 @@ import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
 import "../js/utils.js" as Utils
 import "../js/version.js" as Version
+import "./PrinterStateBucket.js" as Bucket
 
 Item {
     id: main
@@ -95,7 +96,7 @@ Item {
                 getJobStateFromApi();
             } else {
                 // Do not query Job state if we can tell there's no running job
-                var buckets = [ main.bucket_error, main.bucket_idle, main.bucket_disconnected ];
+                var buckets = [ Bucket.error, Bucket.idle, Bucket.disconnected ];
                 if (buckets.includes(getPrinterStateBucket()) === false) {
                     getJobStateFromApi()
                 }
@@ -133,16 +134,6 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    // Printer status buckets
-    readonly property string bucket_unknown: "unknown"
-    readonly property string bucket_working: "working"
-    readonly property string bucket_cancelling: "cancelling"
-    readonly property string bucket_paused: "paused"
-    readonly property string bucket_error: "error"
-    readonly property string bucket_idle: "idle"
-    readonly property string bucket_disconnected: "disconnected"
-    readonly property string bucket_connecting: "connecting"
-
     /*
     ** Returns name of printer state's bucket.
     **
@@ -164,31 +155,31 @@ Item {
     function getPrinterStateBucketName(bucket) {
         var name = ''
         switch(bucket) {
-            case bucket_unknown:
+            case Bucket.unknown:
                 if (plasmoid.configuration.printerStateNameForBucketUnknownEnabled)
                     name = plasmoid.configuration.printerStateNameForBucketUnknown
                 break
-            case bucket_working:
+            case Bucket.working:
                 if (plasmoid.configuration.printerStateNameForBucketWorkingEnabled)
                     name = plasmoid.configuration.printerStateNameForBucketWorking
                 break
-            case bucket_cancelling:
+            case Bucket.cancelling:
                 if (plasmoid.configuration.printerStateNameForBucketCancellingEnabled)
                     name = plasmoid.configuration.printerStateNameForBucketCancelling
                 break
-            case bucket_paused:
+            case Bucket.paused:
                 if (plasmoid.configuration.printerStateNameForBucketPausedEnabled)
                     name = plasmoid.configuration.printerStateNameForBucketPaused
                 break
-            case bucket_error:
+            case Bucket.error:
                 if (plasmoid.configuration.printerStateNameForBucketErrorEnabled)
                     name = plasmoid.configuration.printerStateNameForBucketError
                 break
-            case bucket_idle:
+            case Bucket.idle:
                 if (plasmoid.configuration.printerStateNameForBucketIdleEnabled)
                     name = plasmoid.configuration.printerStateNameForBucketIdle
                 break
-            case bucket_disconnected:
+            case Bucket.disconnected:
                 if (plasmoid.configuration.printerStateNameForBucketDisconnectedEnabled)
                     name = plasmoid.configuration.printerStateNameForBucketDisconnected
                 break
@@ -221,9 +212,9 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    property string octoState: bucket_connecting
-    property string octoStateBucket: bucket_connecting
-    property string octoStateBucketName: bucket_connecting
+    property string octoState: Bucket.connecting
+    property string octoStateBucket: Bucket.connecting
+    property string octoStateBucketName: Bucket.connecting
     // FIXME we should have SVG icons here
     property string octoStateIcon: plasmoid.file("", "images/state-unknown.png")
     property string octoStateDescription: 'Connecting to OctoPrint API.'
@@ -236,15 +227,15 @@ Item {
         var desc = main.jobStateDescription;
         if (desc == '') {
             switch(main.octoStateBucket) {
-                case bucket_unknown: desc = 'Unable to determine root cause.'; break;
-                case bucket_paused: desc = 'Print job is PAUSED now.'; break;
-                case bucket_idle: desc = 'Printer is operational and idle.'; break;
-                case bucket_disconnected: desc = 'OctoPrint is not connected to the printer.'; break;
-                case bucket_cancelling: desc = 'OctoPrint is cancelling current job.'; break;
-//              case bucket_working: ""
-//              case bucket_error: "error"
+                case Bucket.unknown: desc = 'Unable to determine root cause.'; break;
+                case Bucket.paused: desc = 'Print job is PAUSED now.'; break;
+                case Bucket.idle: desc = 'Printer is operational and idle.'; break;
+                case Bucket.disconnected: desc = 'OctoPrint is not connected to the printer.'; break;
+                case Bucket.cancelling: desc = 'OctoPrint is cancelling current job.'; break;
+//              case Bucket.working: ""
+//              case Bucket.error: "error"
                 case 'unavailable': desc = 'Unable to connect to OctoPrint API.'; break;
-                case bucket_connecting: desc = 'Connecting to OctoPrint API.'; break;
+                case Bucket.connecting: desc = 'Connecting to OctoPrint API.'; break;
 
                 case 'configuration': desc = 'Widget is not configured!'; break;
             }
@@ -274,14 +265,14 @@ Item {
         var body = main.octoStateDescription
         if (current != previous) {
             // switching back from "Working"
-            if (!post && (previous == bucket_working)) {
+            if (!post && (previous == Bucket.working)) {
                 post = true
                 switch (current) {
-                    case bucket_cancelling:
+                    case Bucket.cancelling:
                         summary = `Cancelling job '${main.jobFileName}'.`
                         break;
 
-                    case bucket_paused:
+                    case Bucket.paused:
                         summary = `Print job '${main.jobFileName}' paused.`
                         break
 
@@ -308,7 +299,7 @@ Item {
             }
 
             // switching from anything (but connecting) to bucket "Working"
-            if (!post && (current == bucket_working) && (previous != bucket_connecting)) {
+            if (!post && (current == Bucket.working) && (previous != Bucket.connecting)) {
                 post = true
                 expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
                 summary = 'New printing started.'
@@ -448,7 +439,7 @@ Item {
     function getJobStateFromApiFake() {
         main.apiConnected = true
         var json='{"job":{"averagePrintTime":null,"estimatedPrintTime":19637.457560140414,"filament":{"tool0":{"length":9744.308959960938,"volume":68.87846124657558}},"file":{"date":1607166777,"display":"deercraft-stick.gcode","name":"deercraft-stick.gcode","origin":"local","path":"deercraft-stick.gcode","size":17025823},"lastPrintTime":null,"user":"_api"},"progress":{"completion":15.966200282946675,"filepos":2718377,"printTime":2582,"printTimeLeft":16499,"printTimeLeftOrigin":"genius"},"state":"Printing"}'
-        parseJobStatusResponse(JSON.parse(json))
+        printerStateManager.current.parseJobStatusResponse(JSON.parse(json))
         updateOctoState()
     }
 
@@ -470,7 +461,7 @@ Item {
             if (xhr.status === 200) {
 //                console.debug(`ResponseText: "${xhr.responseText}"`)
                 try {
-                    parseJobStatusResponse(JSON.parse(xhr.responseText))
+                    jobStateManager.update(xhr)
                 } catch (error) {
                     console.debug('Error handling API job state response.')
                     console.debug(error)
@@ -483,41 +474,6 @@ Item {
         xhr.send()
     }
 
-	/*
-	** Parses printing job status JSON response object.
-	**
-	** Arguments:
-	**	resp: response JSON object
-	**
-	** Returns:
-	**	void
-	*/
-	function parseJobStatusResponse(resp) {
-		var state = resp.state.split(/[ ,]+/)[0]
-
-        if (state != main.jobState) {
-            main.previousJobState = main.jobState
-		    main.jobState = state.toLowerCase()
-
-            var stateSplit = resp.state.match(/\w+\s+\((.*)\)/)
-		    main.jobStateDescription = (stateSplit !== null) ? stateSplit[1] : ''
-		    updateOctoStateDescription()
-        }
-
-		main.jobFileName = Utils.getString(resp.job.file.display)
-
-       	var jobCompletion = Utils.isVal(resp.progress.completion) ? Utils.roundFloat(resp.progress.completion) : 0
-       	if (jobCompletion != main.jobCompletion) {
-       	    main.previousJobCompletion = main.jobCompletion
-       	    main.jobCompletion = jobCompletion
-       	}
-
-		var jobPrintTime = resp.progress.printTime
-		main.jobPrintTime = Utils.isVal(jobPrintTime) ? Utils.secondsToString(jobPrintTime) : ''
-
-		var printTimeLeft = resp.progress.printTimeLeft
-        main.jobPrintTimeLeft = Utils.isVal(printTimeLeft) ? Utils.secondsToString(printTimeLeft) : ''
-	}
 
     // ------------------------------------------------------------------------------------------------------------------------
 

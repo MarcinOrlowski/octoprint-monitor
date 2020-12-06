@@ -10,20 +10,9 @@
  */
 
 import QtQuick 2.0
+import "PrinterStateBucket.js" as Bucket
 
 QtObject {
-    // Printer status buckets
-    readonly property string bucket_unknown: "unknown"
-    readonly property string bucket_working: "working"
-    readonly property string bucket_cancelling: "cancelling"
-    readonly property string bucket_paused: "paused"
-    readonly property string bucket_error: "error"
-    readonly property string bucket_idle: "idle"
-    readonly property string bucket_disconnected: "disconnected"
-    readonly property string bucket_connecting: "connecting"
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
     property var json: ''
 
     // Printer state flags
@@ -94,19 +83,19 @@ QtObject {
         var bucket = undefined;
 
         if ( this.pf_finishing || this.pf_printing || this.pf_pausing ) {
-            bucket = this.bucket_working
+            bucket = Bucket.working
         } else if ( this.pf_cancelling ) {
-            bucket = this.bucket_cancelling
+            bucket = Bucket.cancelling
         } else if ( this.pf_closedOrError || this.pf_error ) {
-            bucket = this.bucket_error
+            bucket = Bucket.error
         } else if ( this.pf_operational || this.pf_ready ) {
-            bucket = this.bucket_idle
+            bucket = Bucket.idle
         } else if ( this.pf_paused ) {
-            bucket = this.bucket_paused;
+            bucket = Bucket.paused;
         }
 
         if (bucket == undefined) {
-            bucket = this.bucket_disconnected
+            bucket = Bucket.disconnected
         }
 
         return bucket;
