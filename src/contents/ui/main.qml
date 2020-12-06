@@ -97,7 +97,7 @@ Item {
             } else {
                 // Do not query Job state if we can tell there's no running job
                 var buckets = [ Bucket.error, Bucket.idle, Bucket.disconnected ];
-                if (buckets.includes(getPrinterStateBucket()) === false) {
+                if (buckets.includes(osm.getPrinterStateBucket()) === false) {
                     getJobStateFromApi()
                 }
             }
@@ -133,16 +133,6 @@ Item {
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
-
-    /*
-    ** Returns name of printer state's bucket.
-    **
-    ** Returns:
-    **	string: printer state bucket
-    */
-    function getPrinterStateBucket() {
-        return printerStateManager.current.getPrinterStateBucket()
-    }
 
     /*
     ** Returns name of given state bucket. Checks if custom name for that bucket
@@ -186,28 +176,6 @@ Item {
         }
 
         return name != '' ? name : bucket
-    }
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
-    /*
-    ** Checks if current printer status flags indicate there's actually print in progress.
-    **
-    ** Returns:
-    **	bool
-    */
-    function isJobInProgress() {
-        return printerStateManager.current.isJobInProgress()
-    }
-
-    /*
-    ** Checks if current printer status flags indicate device is offline or not.
-    **
-    ** Returns:
-    **	bool
-    */
-    function isPrinterConnected() {
-        return printerStateManager.current.isPrinterConnected()
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -344,15 +312,15 @@ Item {
         // (i.e. was printing is idle) -> print successful
 
         var jobInProgress = false
-        var printerConnected = isPrinterConnected()
-        var currentStateBucket = getPrinterStateBucket()
+        var printerConnected = osm.isPrinterConnected()
+        var currentStateBucket = osm.getPrinterStateBucket()
         var currentStateBucketName = getPrinterStateBucketName(currentStateBucket);
         var currentState = currentStateBucketName
 
         main.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '')
 
         if (main.apiConnected) {
-            jobInProgress = isJobInProgress()
+            jobInProgress = osm.isJobInProgress()
             if (jobInProgress && main.jobState == "printing") currentState = main.jobState
         } else {
             currentState = (!main.apiAccessConfigured) ? 'configuration' : 'unavailable'
@@ -390,7 +358,7 @@ Item {
 	    if (!main.apiAccessConfigured) {
 	        bucket = 'configuration'
 	    } else if (main.apiConnected) {
-            bucket = getPrinterStateBucket()
+            bucket = osm.getPrinterStateBucket()
         }
 
         return plasmoid.file("", `images/state-${bucket}.png`)
@@ -428,22 +396,23 @@ Item {
 	** Returns:
 	**	void
     */
+//	function getJobStateFromApi() {
+//	    if (!main.fakeApiAccess) {
+//	        getJobStateFromApiReal()
+//        } else {
+//            getJobStateFromApiFake()
+//        }
+//	}
+//
+//    function getJobStateFromApiFake() {
+//        main.apiConnected = true
+//        var json='{"job":{"averagePrintTime":null,"estimatedPrintTime":19637.457560140414,"filament":{"tool0":{"length":9744.308959960938,"volume":68.87846124657558}},"file":{"date":1607166777,"display":"deercraft-stick.gcode","name":"deercraft-stick.gcode","origin":"local","path":"deercraft-stick.gcode","size":17025823},"lastPrintTime":null,"user":"_api"},"progress":{"completion":15.966200282946675,"filepos":2718377,"printTime":2582,"printTimeLeft":16499,"printTimeLeftOrigin":"genius"},"state":"Printing"}'
+//        printerStateManager.handle(JSON.parse(json))
+//        updateOctoState()
+//    }
+
 	function getJobStateFromApi() {
-	    if (!main.fakeApiAccess) {
-	        getJobStateFromApiReal()
-        } else {
-            getJobStateFromApiFake()
-        }
-	}
-
-    function getJobStateFromApiFake() {
-        main.apiConnected = true
-        var json='{"job":{"averagePrintTime":null,"estimatedPrintTime":19637.457560140414,"filament":{"tool0":{"length":9744.308959960938,"volume":68.87846124657558}},"file":{"date":1607166777,"display":"deercraft-stick.gcode","name":"deercraft-stick.gcode","origin":"local","path":"deercraft-stick.gcode","size":17025823},"lastPrintTime":null,"user":"_api"},"progress":{"completion":15.966200282946675,"filepos":2718377,"printTime":2582,"printTimeLeft":16499,"printTimeLeftOrigin":"genius"},"state":"Printing"}'
-        printerStateManager.current.parseJobStatusResponse(JSON.parse(json))
-        updateOctoState()
-    }
-
-	function getJobStateFromApiReal() {
+//	function getJobStateFromApiReal() {
 	    var xhr = getXhr('job')
 
         if (xhr === null) {
@@ -458,22 +427,13 @@ Item {
             // Ensure we managed to talk to the API
             main.apiConnected = (xhr.status !== 0)
 
-            if (xhr.status === 200) {
-//                console.debug(`ResponseText: "${xhr.responseText}"`)
-                try {
-                    jobStateManager.update(xhr)
-                } catch (error) {
-                    console.debug('Error handling API job state response.')
-                    console.debug(error)
-                }
-                updateOctoState()
-            } else {
-                console.debug(`Unexpected job response status code (${xhr.status}).`)
-            }
+//          console.debug(`ResponseText: "${xhr.responseText}"`)
+            osm.handleJobState(xhr)
+
+            updateOctoState()
         });
         xhr.send()
     }
-
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -483,21 +443,22 @@ Item {
 	** Returns:
 	**	void
     */
+//    function getPrinterStateFromApi() {
+//        if (!main.fakeApiAccess) {
+//            getPrinterStateFromApiReal()
+//        } else {
+//            getPrinterStateFromApiFake()
+//        }
+//    }
+
+//    function getPrinterStateFromApiFake() {
+//        var json = '{"state":{"flags":{"cancelling":false,"closedOrError":false,"error":false,"finishing":false,"operational":true,"paused":false,"pausing":false,"printing":true,"ready":false,"resuming":false,"sdReady":false},"text":"Printing"},"temperature":{"bed":{"actual":65.0,"offset":0,"target":65.0},"tool0":{"actual":200.0,"offset":0,"target":200.0}}}';
+//        parsePrinterStateResponse(JSON.parse(json))
+//        updateOctoState();
+//    }
+
     function getPrinterStateFromApi() {
-        if (!main.fakeApiAccess) {
-            getPrinterStateFromApiReal()
-        } else {
-            getPrinterStateFromApiFake()
-        }
-    }
-
-    function getPrinterStateFromApiFake() {
-        var json = '{"state":{"flags":{"cancelling":false,"closedOrError":false,"error":false,"finishing":false,"operational":true,"paused":false,"pausing":false,"printing":true,"ready":false,"resuming":false,"sdReady":false},"text":"Printing"},"temperature":{"bed":{"actual":65.0,"offset":0,"target":65.0},"tool0":{"actual":200.0,"offset":0,"target":200.0}}}';
-        parsePrinterStateResponse(JSON.parse(json))
-        updateOctoState();
-    }
-
-    function getPrinterStateFromApiReal() {
+//    function getPrinterStateFromApiReal() {
         var xhr = getXhr('printer')
 
         if (xhr === null) {
@@ -512,20 +473,24 @@ Item {
             // Ensure we managed to talk to the API
             main.apiConnected = (xhr.status !== 0)
 
-            printerStateManager.update(xhr)
-
-//            currentOctoState.parsePrinterXhr(xhr)
-            updateOctoState();
+            osm.handlePrinterState(xhr)
+            updateOctoState()
         });
         xhr.send()
     }
 
-    JobStateManager {
-        id: jobStateManager
-    }
+    // ------------------------------------------------------------------------------------------------------------------------
 
-    PrinterStateManager {
-        id: printerStateManager
+//    JobStateManager {
+//        id: jobStateManager
+//    }
+//
+//    PrinterStateManager {
+//        id: printerStateManager
+//    }
+
+    OctoStateManager {
+        id: osm
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

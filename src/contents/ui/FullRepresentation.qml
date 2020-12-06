@@ -88,7 +88,7 @@ ColumnLayout {
         if (!plasmoid.configuration.stopCameraPollForBuckets) return true
 
         var result = true
-        switch (getPrinterStateBucket()) {
+        switch (osm.getPrinterStateBucket()) {
             case main.bucket_idle: result = !plasmoid.configuration.stopCameraPollForBucketIdle; break;
             case main.bucket_unknown: result = !plasmoid.configuration.stopCameraPollForBucketUnknown; break;
             case main.bucket_working: result = !plasmoid.configuration.stopCameraPollForBucketWorking; break;

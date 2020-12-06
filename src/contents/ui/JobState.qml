@@ -10,9 +10,30 @@
  */
 
 import QtQuick 2.0
+import "../js/utils.js" as Utils
 
 QtObject {
-    property string json: ''
+    property var json: ''
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    function fromXhr(xhr) {
+        // We only care about DONE readyState.
+        if (xhr.readyState !== 4) return
+
+        if (xhr.status === 200) {
+            try {
+                this.fromJson(JSON.parse(xhr.responseText))
+            } catch (error) {
+//                console.debug(`ResponseText: "${xhr.responseText}"`)
+                console.debug('Error handling API job state response.')
+                console.debug(error)
+            }
+            updateOctoState()
+        } else {
+            console.debug(`Unexpected job response status code (${xhr.status}).`)
+        }
+    }
 
     /*
     ** Parses printing job status JSON response object.
@@ -23,7 +44,9 @@ QtObject {
     ** Returns:
     **	void
     */
-    function parseJobStatusResponse(resp) {
+    function fromJson(resp) {
+        this.json = resp
+
         var state = resp.state.split(/[ ,]+/)[0]
 
         if (state != main.jobState) {

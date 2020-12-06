@@ -15,20 +15,18 @@ QtObject {
     property var current: JobState
     property var states: []
 
-//    Component.onCompleted: {
-//        states.push(new PrinterState())
-//    }
+    // ------------------------------------------------------------------------------------------------------------------------
 
-    function update(xhr) {
+    function handle(xhr) {
         var state = Qt.createComponent("JobState.qml").createObject(null)
-        state.parseXhr(xhr)
+        state.fromXhr(xhr)
 
-        // check HASH and add if different
+        // check HASH and add if different from last one
 
-        states.unshift(current)
-        current = state
+        this.states.unshift(current)
+        this.current = state
 
-        if (states.length > 3) states.pop()
+        if (this.states.length > 3) this.states.pop()
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

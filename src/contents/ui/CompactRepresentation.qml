@@ -70,14 +70,14 @@ GridLayout {
         if (!plasmoid.configuration.compactLayoutHideIconForBuckets) return true
 
         var result = true
-        switch (getPrinterStateBucket()) {
-            case main.Bucket.idle: result = !plasmoid.configuration.compactLayoutHideIconForBucketIdle; break;
-            case main.Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideIconForBucketUnknown; break;
-            case main.Bucket.cancelling: result = !plasmoid.configuration.compactLayoutHideIconForBucketCancelling; break;
-            case main.Bucket.working: result = !plasmoid.configuration.compactLayoutHideIconForBucketWorking; break;
-            case main.Bucket.paused: result = !plasmoid.configuration.compactLayoutHideIconForBucketPaused; break;
-            case main.Bucket.error: result = !plasmoid.configuration.compactLayoutHideIconForBucketError; break;
-            case main.Bucket.disconnected: result = !plasmoid.configuration.compactLayoutHideIconForBucketDisconnected; break;
+        switch (osm.getPrinterStateBucket()) {
+            case Bucket.idle: result = !plasmoid.configuration.compactLayoutHideIconForBucketIdle; break;
+            case Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideIconForBucketUnknown; break;
+            case Bucket.cancelling: result = !plasmoid.configuration.compactLayoutHideIconForBucketCancelling; break;
+            case Bucket.working: result = !plasmoid.configuration.compactLayoutHideIconForBucketWorking; break;
+            case Bucket.paused: result = !plasmoid.configuration.compactLayoutHideIconForBucketPaused; break;
+            case Bucket.error: result = !plasmoid.configuration.compactLayoutHideIconForBucketError; break;
+            case Bucket.disconnected: result = !plasmoid.configuration.compactLayoutHideIconForBucketDisconnected; break;
         }
         return result
     }
@@ -96,14 +96,14 @@ GridLayout {
         if (!plasmoid.configuration.compactLayoutHideBuckets) return true
 
         var result = true
-        switch (getPrinterStateBucket()) {
-            case main.Bucket.idle: result = !plasmoid.configuration.compactLayoutHideBucketIdle; break;
-            case main.Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideBucketUnknown; break;
-            case main.Bucket.working: result = !plasmoid.configuration.compactLayoutHideBucketWorking; break;
-            case main.Bucket.cancelling: result = !plasmoid.configuration.compactLayoutHideBucketCancelling; break;
-            case main.Bucket.paused: result = !plasmoid.configuration.compactLayoutHideBucketPaused; break;
-            case main.Bucket.error: result = !plasmoid.configuration.compactLayoutHideBucketError; break;
-            case main.Bucket.disconnected: result = !plasmoid.configuration.compactLayoutHideBucketDisconnected; break;
+        switch (osm.getPrinterStateBucket()) {
+            case Bucket.idle: result = !plasmoid.configuration.compactLayoutHideBucketIdle; break;
+            case Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideBucketUnknown; break;
+            case Bucket.working: result = !plasmoid.configuration.compactLayoutHideBucketWorking; break;
+            case Bucket.cancelling: result = !plasmoid.configuration.compactLayoutHideBucketCancelling; break;
+            case Bucket.paused: result = !plasmoid.configuration.compactLayoutHideBucketPaused; break;
+            case Bucket.error: result = !plasmoid.configuration.compactLayoutHideBucketError; break;
+            case Bucket.disconnected: result = !plasmoid.configuration.compactLayoutHideBucketDisconnected; break;
         }
         return result
     }

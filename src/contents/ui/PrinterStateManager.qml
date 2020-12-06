@@ -15,20 +15,26 @@ QtObject {
     property var current: PrinterState
     property var states: []
 
-//    Component.onCompleted: {
-//        states.push(new PrinterState())
-//    }
+    // ------------------------------------------------------------------------------------------------------------------------
 
-    function update(xhr) {
+    function handle(xhr) {
+        // We only care about DONE readyState and HTTP OK 200
+        if (xhr.readyState !== 4) return
+
+        if (xhr.status !== 200) {
+            console.debug(`Unexpected job response status code (${xhr.status}).`)
+            return
+        }
+
         var state = Qt.createComponent("PrinterState.qml").createObject(null)
-        state.parseXhr(xhr)
+        state.fromXhr(xhr)
 
         // check HASH and add if different
 
-        states.unshift(current)
-        current = state
+        this.states.unshift(current)
+        this.current = state
 
-        if (states.length > 3) states.pop()
+        if (this.states.length > 3) this.states.pop()
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

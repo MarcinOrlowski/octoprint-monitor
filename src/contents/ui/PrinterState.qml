@@ -10,10 +10,13 @@
  */
 
 import QtQuick 2.0
+import "../js/utils.js" as Utils
 import "PrinterStateBucket.js" as Bucket
 
 QtObject {
     property var json: ''
+
+    // ------------------------------------------------------------------------------------------------------------------------
 
     // Printer state flags
     property bool pf_cancelling: false		// working
@@ -126,15 +129,16 @@ QtObject {
         this.pf_error = state
     }
 
-    function parseXhr(xhr) {
+    function fromXhr(xhr) {
         switch (xhr.status) {
             case 200:
-//                  console.debug(`ResponseText: "'${xhr.responseText}'"`)
+//              console.debug(`ResponseText: "'${xhr.responseText}'"`)
                 try {
-                    var json = JSON.parse(xhr.responseText);
-                    this.parsePrinterStateResponse(json)
-
+                    this.fromJson(JSON.parse(xhr.responseText))
                 } catch (error) {
+                    console.debug('Error handling API printer state response.')
+                    console.debug(error)
+
                     this.setPrinterFlags(false)
                     this.pf_error = true
                 }
@@ -159,7 +163,7 @@ QtObject {
     ** Returns:
     **	void
     */
-    function parsePrinterStateResponse(resp) {
+    function fromJson(resp) {
         this.json = resp;
 
         this.pf_cancelling = resp.state.flags.cancelling
