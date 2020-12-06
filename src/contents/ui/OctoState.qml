@@ -12,14 +12,13 @@
 import QtQuick 2.0
 
 QtObject {
-    // Job related stats (if any in progress)
-    property string jobState: 'N/A'
-    property string jobStateDescription: ''
-    property string jobFileName: ''
+    property string state: 'N/A'
+    property string stateBucket: ''
+    property string stateBucketName: ''
+    property string icon: ''
+
     property double jobCompletion: 0
-
     property string jobPrintTime: ''
-	property string jobPrintStartStamp: ''
-	property string jobPrintTimeLeft: ''
-
+    property string jobPrintTimeLeft: ''
 }
+

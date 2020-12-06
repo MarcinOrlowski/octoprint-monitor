@@ -13,10 +13,30 @@ import QtQuick 2.0
 import "./PrinterStateBucket.js" as Bucket
 
 QtObject {
-    property var state: OctoState
+    property var current: OctoState
     property var states: []
     property var job: JobStateManager {}
     property var printer: PrinterStateManager {}
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    property string octoState: 'N/A'
+    property string octoStateDescription: ''
+    property string octoStateBucket: ''
+    property string octoStateBucketName: ''
+    property string octoStateIcon: ''
+
+	property string lastOctoStateChangeStamp: ''
+
+    // Indicates if print job is currently in progress.
+	property bool jobInProgress: false
+
+    property string jobFileName: ''
+    property double jobCompletion: 0
+    property string jobStateDescription: ""
+    property string jobPrintTime: ""
+	property string jobPrintStartStamp: ""
+	property string jobPrintTimeLeft: ""
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -25,35 +45,7 @@ QtObject {
 
     property bool apiConnected: false;
 
-    // Indicates if print job is currently in progress.
-	property bool jobInProgress: false
-
 	property bool printerConnected: false
-
-
-	property string lastOctoStateChangeStamp: ''
-
-
-//    property string previousJobState: 'N/A'
-//    property double previousJobCompletion: 0
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
-//    // Job related stats (if any in progress)
-//    property string jobState: "N/A"
-//    property string previousJobState: "N/A"
-//    property string jobStateDescription: ""
-//    property string jobFileName: ""
-//    property double jobCompletion: 0
-//    property double previousJobCompletion: 0
-//
-//    property string jobPrintTime: ""
-//	property string jobPrintStartStamp: ""
-//	property string jobPrintTimeLeft: ""
-//
-//    // Indicates if print job is currently in progress.
-//	property bool jobInProgress: false
-
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -142,28 +134,34 @@ QtObject {
 
 //        console.debug(`currentState: ${currentState}, previous: ${this.previousOctoState}`);
         if (currentState != this.previousOctoState) {
+            state.icon = osm.getOctoStateIcon()
+            state.state = currentState
+            state.stateBucket = currentStateBucket
+            state.stateBucketName = currentStateBucketName
+
             this.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
-            state.octoStateIcon = osm.getOctoStateIcon()
 
             this.states.unshift(states)
-            this.state = state
+            this.current = state
 
-
-//            this.previousOctoState = this.octoState
-//            this.previousOctoStateBucket = this.octoStateBucket
-//
-//            this.octoState = currentState
-//            this.octoStateBucket = currentStateBucket
-//            this.octoStateBucketName = currentStateBucketName
-//            updateOctoStateDescription()
-
-//            this.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
-//            this.octoStateIcon = osm.getOctoStateIcon()
-
+            updateOctoStateDescription()
+            exposeCurrentState()
 
 
 //            postNotification()
         }
+    }
+
+    function exposeCurrentState() {
+        this.octoState = current.state
+        this.octoStateBucket = current.stateBucket
+        this.octoStateBucketName = current.stateBucketName
+        this.octoStateIcon = current.icon
+
+        this.jobFileName = job.current.jobFileName
+        this.jobCompletion = job.current.jobCompletion
+        this.jobPrintTime = job.current.jobPrintTime
+        this.jobPrintTimeLeft = job.current.jobPrintTimeLeft
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

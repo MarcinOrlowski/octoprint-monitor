@@ -10,7 +10,7 @@
  */
 
 function isVal(value) {
-    return value != null && value != "";
+    return (typeof value !== 'undefined') && value != null && value != "";
 }
 
 function getString(value, def) {

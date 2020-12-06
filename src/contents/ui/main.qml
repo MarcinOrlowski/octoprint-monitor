@@ -47,14 +47,14 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    property bool firstApiRequest: true
-
     /*
     ** State fetching timer. We fetch printer state first and job state only
     ** if there's any ongoing.
     */
 	Timer {
 		id: mainTimer
+
+        property bool firstApiRequest: true
 
         interval: plasmoid.configuration.statusPollInterval * 1000
         repeat: true
@@ -66,8 +66,8 @@ Item {
             // First time we need to fire both requests unconditionally, otherwise
             // job state request will neede to wait for another timer trigger, causing
             // odd delay in widget update.
-            if (main.firstApiRequest) {
-                main.firstApiRequest = false;
+            if (this.firstApiRequest) {
+                this.firstApiRequest = false;
                 getJobStateFromApi();
             } else {
                 // Do not query Job state if we can tell there's no running job
@@ -129,8 +129,9 @@ Item {
     **  void
     */
     function postNotification() {
-        var current = main.octoStateBucket
-        var previous = main.previousOctoStateBucket
+        var current = osm.octoStateBucket
+        // carlos
+        var previous = osm.previousOctoStateBucket
         var post = false
         var expireTimeout = 0
         var summary = ''
@@ -138,37 +139,37 @@ Item {
 
         if (!plasmoid.configuration.notificationsEnabled) return
 
-        var body = main.octoStateDescription
+        var body = osm.octoStateDescription
         if (current != previous) {
             // switching back from "Working"
             if (!post && (previous == Bucket.working)) {
                 post = true
                 switch (current) {
                     case Bucket.cancelling:
-                        summary = `Cancelling job '${main.jobFileName}'.`
+                        summary = `Cancelling job '${osm.jobFileName}'.`
                         break;
 
                     case Bucket.paused:
-                        summary = `Print job '${main.jobFileName}' paused.`
+                        summary = `Print job '${osm.jobFileName}' paused.`
                         break
 
                     default:
-                        if (main.jobCompletion == 100) {
-                            summary = `Print '${main.jobFileName}' completed.`
+                        if (osm.jobCompletion == 100) {
+                            summary = `Print '${osm.jobFileName}' completed.`
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobSuccessful
                         } else {
                             summary = 'Print stopped.'
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobFailed
-                            var percentage = main.jobCompletion > 0 ? main.jobCompletion : main.previousJobCompletion
+                            var percentage = osm.jobCompletion > 0 ? osm.jobCompletion : osm.previousJobCompletion
                             if (percentage > 0) {
-                                body = `File '${main.jobFileName}' stopped at ${percentage}%.`
+                                body = `File '${osm.jobFileName}' stopped at ${percentage}%.`
                             } else {
-                               body = `File '${main.jobFileName}'.`
+                               body = `File '${osm.jobFileName}'.`
                             }
                         }
-                        if (main.jobPrintTime != '') {
+                        if (osm.jobPrintTime != '') {
                             if (body != '') body += ' '
-                            body += `Print time ${main.jobPrintTime}.`
+                            body += `Print time ${osm.jobPrintTime}.`
                         }
                         break
                 }
@@ -180,10 +181,10 @@ Item {
                 expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
                 summary = 'New printing started.'
 
-                if (main.jobFileName != '') {
-                    body = `File '${main.jobFileName}'.`
-                    if (main.jobPrintTimeLeft != '') {
-                        body += ` Est. print time ${main.jobPrintTimeLeft}.`
+                if (osm.jobFileName != '') {
+                    body = `File '${osm.jobFileName}'.`
+                    if (osm.jobPrintTimeLeft != '') {
+                        body += ` Est. print time ${osm.jobPrintTimeLeft}.`
                     }
                 }
             }
@@ -197,11 +198,11 @@ Item {
                 title += ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
             }
             if (summary == '') {
-                summary = "Printer new state: '" + Utils.ucfirst(main.octoState) + "'."
+                summary = "Printer new state: '" + Utils.ucfirst(osm.octoState) + "'."
             }
             notificationManager.post({
                 'title': title,
-                'icon': main.octoStateIcon,
+                'icon': osm.octoStateIcon,
                 'summary': summary,
                 'body': body,
                 'expireTimeout': expireTimeout * 1000,
@@ -265,8 +266,8 @@ Item {
                 // We only care about DONE readyState.
                 if (xhr.readyState !== 4) return
 
-                // Ensure we managed to talk to the API
-                main.apiConnected = (xhr.status !== 0)
+////                 Ensure we managed to talk to the API
+//                main.apiConnected = (xhr.status !== 0)
 
 //              console.debug(`ResponseText: "${xhr.responseText}"`)
                 osm.handleJobState(xhr)
