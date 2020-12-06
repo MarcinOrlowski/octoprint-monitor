@@ -42,33 +42,8 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    // True if printer is connected to OctoPrint
-    property bool printerConnected: false
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
-    // Job related stats (if any in progress)
-    property string jobState: "N/A"
-    property string previousJobState: "N/A"
-    property string jobStateDescription: ""
-    property string jobFileName: ""
-    property double jobCompletion: 0
-    property double previousJobCompletion: 0
-
-    property string jobPrintTime: ""
-	property string jobPrintStartStamp: ""
-	property string jobPrintTimeLeft: ""
-
-    // Indicates if print job is currently in progress.
-	property bool jobInProgress: false
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
     // Indicates we were able to successfuly connect to OctoPrint API
     property bool apiConnected: false
-
-    // Tells if plasmoid API access is already confugred.
-    property bool apiAccessConfigured: false;
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -134,52 +109,6 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    /*
-    ** Returns name of given state bucket. Checks if custom name for that bucket
-    ** is enabled and uses if it's not empty string. In other cases returns
-    ** generic bucket name.
-    **
-    ** Returns
-    **  string: printer bucket name
-    */
-    function getPrinterStateBucketName(bucket) {
-        var name = ''
-        switch(bucket) {
-            case Bucket.unknown:
-                if (plasmoid.configuration.printerStateNameForBucketUnknownEnabled)
-                    name = plasmoid.configuration.printerStateNameForBucketUnknown
-                break
-            case Bucket.working:
-                if (plasmoid.configuration.printerStateNameForBucketWorkingEnabled)
-                    name = plasmoid.configuration.printerStateNameForBucketWorking
-                break
-            case Bucket.cancelling:
-                if (plasmoid.configuration.printerStateNameForBucketCancellingEnabled)
-                    name = plasmoid.configuration.printerStateNameForBucketCancelling
-                break
-            case Bucket.paused:
-                if (plasmoid.configuration.printerStateNameForBucketPausedEnabled)
-                    name = plasmoid.configuration.printerStateNameForBucketPaused
-                break
-            case Bucket.error:
-                if (plasmoid.configuration.printerStateNameForBucketErrorEnabled)
-                    name = plasmoid.configuration.printerStateNameForBucketError
-                break
-            case Bucket.idle:
-                if (plasmoid.configuration.printerStateNameForBucketIdleEnabled)
-                    name = plasmoid.configuration.printerStateNameForBucketIdle
-                break
-            case Bucket.disconnected:
-                if (plasmoid.configuration.printerStateNameForBucketDisconnectedEnabled)
-                    name = plasmoid.configuration.printerStateNameForBucketDisconnected
-                break
-        }
-
-        return name != '' ? name : bucket
-    }
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
     property string octoState: Bucket.connecting
     property string octoStateBucket: Bucket.connecting
     property string octoStateBucketName: Bucket.connecting
@@ -190,27 +119,6 @@ Item {
 
     property string previousOctoState: ""
     property string previousOctoStateBucket: ""
-
-    function updateOctoStateDescription() {
-        var desc = main.jobStateDescription;
-        if (desc == '') {
-            switch(main.octoStateBucket) {
-                case Bucket.unknown: desc = 'Unable to determine root cause.'; break;
-                case Bucket.paused: desc = 'Print job is PAUSED now.'; break;
-                case Bucket.idle: desc = 'Printer is operational and idle.'; break;
-                case Bucket.disconnected: desc = 'OctoPrint is not connected to the printer.'; break;
-                case Bucket.cancelling: desc = 'OctoPrint is cancelling current job.'; break;
-//              case Bucket.working: ""
-//              case Bucket.error: "error"
-                case 'unavailable': desc = 'Unable to connect to OctoPrint API.'; break;
-                case Bucket.connecting: desc = 'Connecting to OctoPrint API.'; break;
-
-                case 'configuration': desc = 'Widget is not configured!'; break;
-            }
-        }
-
-        main.octoStateDescription = desc;
-    }
 
     /*
     ** Constructs and posts desktop notification reflecting curent state.
@@ -301,68 +209,6 @@ Item {
         }
     }
 
-    /*
-    ** Calculates current octoState. Updates internal data if state changes.
-    **
-    ** Returns:
-    **  void
-    */
-    function updateOctoState() {
-        // calculate new octoState. If different from previous one, check what happened
-        // (i.e. was printing is idle) -> print successful
-
-        var jobInProgress = false
-        var printerConnected = osm.isPrinterConnected()
-        var currentStateBucket = osm.getPrinterStateBucket()
-        var currentStateBucketName = getPrinterStateBucketName(currentStateBucket);
-        var currentState = currentStateBucketName
-
-        main.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '')
-
-        if (main.apiConnected) {
-            jobInProgress = osm.isJobInProgress()
-            if (jobInProgress && main.jobState == "printing") currentState = main.jobState
-        } else {
-            currentState = (!main.apiAccessConfigured) ? 'configuration' : 'unavailable'
-        }
-
-        main.jobInProgress = jobInProgress
-        main.printerConnected = printerConnected
-
-//        console.debug(`currentState: ${currentState}, previous: ${main.previousOctoState}`);
-        if (currentState != main.previousOctoState) {
-            main.previousOctoState = main.octoState
-            main.previousOctoStateBucket = main.octoStateBucket
-
-            main.octoState = currentState
-            main.octoStateBucket = currentStateBucket
-            main.octoStateBucketName = currentStateBucketName
-            updateOctoStateDescription()
-
-            main.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
-            main.octoStateIcon = getOctoStateIcon()
-
-            postNotification()
-        }
-    }
-
-	/*
-	** Returns path to icon representing current Octo state (based on
-	** printer state bucket)
-	**
-	** Returns:
-	**	string: path to plasmoid's icon file
-	*/
-	function getOctoStateIcon() {
-   	    var bucket = 'dead'
-	    if (!main.apiAccessConfigured) {
-	        bucket = 'configuration'
-	    } else if (main.apiConnected) {
-            bucket = osm.getPrinterStateBucket()
-        }
-
-        return plasmoid.file("", `images/state-${bucket}.png`)
-	}
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -377,14 +223,14 @@ Item {
         var apiUrl = plasmoid.configuration.api_url
         var apiKey = plasmoid.configuration.api_key
 
-		if ( apiUrl + apiKey == "" ) return null;
-
-        var xhr = new XMLHttpRequest()
-        var url = `${apiUrl}/${req}`
-        xhr.open('GET', url)
-        xhr.setRequestHeader("Host", apiUrl)
-        xhr.setRequestHeader("X-Api-Key", apiKey)
-
+		if ( apiUrl != '' && apiKey != '' ) {
+            var xhr = null
+            xhr = new XMLHttpRequest()
+            var url = `${apiUrl}/${req}`
+            xhr.open('GET', url)
+            xhr.setRequestHeader("Host", apiUrl)
+            xhr.setRequestHeader("X-Api-Key", apiKey)
+        }
         return xhr
     }
 
@@ -414,25 +260,19 @@ Item {
 	function getJobStateFromApi() {
 //	function getJobStateFromApiReal() {
 	    var xhr = getXhr('job')
+        if (xhr !== null) {
+            xhr.onreadystatechange = (function () {
+                // We only care about DONE readyState.
+                if (xhr.readyState !== 4) return
 
-        if (xhr === null) {
-            updateOctoState()
-            return
+                // Ensure we managed to talk to the API
+                main.apiConnected = (xhr.status !== 0)
+
+//              console.debug(`ResponseText: "${xhr.responseText}"`)
+                osm.handleJobState(xhr)
+            });
+            xhr.send()
         }
-
-        xhr.onreadystatechange = (function () {
-            // We only care about DONE readyState.
-            if (xhr.readyState !== 4) return
-
-            // Ensure we managed to talk to the API
-            main.apiConnected = (xhr.status !== 0)
-
-//          console.debug(`ResponseText: "${xhr.responseText}"`)
-            osm.handleJobState(xhr)
-
-            updateOctoState()
-        });
-        xhr.send()
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -461,22 +301,12 @@ Item {
 //    function getPrinterStateFromApiReal() {
         var xhr = getXhr('printer')
 
-        if (xhr === null) {
-            updateOctoState()
-            return
+        if (xhr !== null) {
+            xhr.onreadystatechange = (function () {
+                osm.handlePrinterState(xhr)
+            });
+            xhr.send()
         }
-
-        xhr.onreadystatechange = (function () {
-            // We only care about DONE readyState.
-            if (xhr.readyState !== 4) return
-
-            // Ensure we managed to talk to the API
-            main.apiConnected = (xhr.status !== 0)
-
-            osm.handlePrinterState(xhr)
-            updateOctoState()
-        });
-        xhr.send()
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

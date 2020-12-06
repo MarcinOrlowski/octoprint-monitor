@@ -22,9 +22,10 @@ QtObject {
         state.fromXhr(xhr)
 
         // check HASH and add if different from last one
-
-        this.states.unshift(current)
-        this.current = state
+        if (state.jobState != current.jobState) {
+            this.states.unshift(states)
+            this.current = state
+        }
 
         if (this.states.length > 3) this.states.pop()
     }

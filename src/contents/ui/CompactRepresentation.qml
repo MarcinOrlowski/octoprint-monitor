@@ -117,7 +117,7 @@ GridLayout {
         id: compactStateIcon
         Layout.alignment: Qt.AlignCenter
         fillMode: Image.PreserveAspectFit
-        source: main.octoStateIcon
+        source: osm.octoStateIcon
         clip: true
         visible: {
             // If all is set hidden we will force icon display anyway.
@@ -125,7 +125,7 @@ GridLayout {
             if (!visibility) {
                 visibility =
                     (!isStateBucketNameShown()
-                        && !(main.jobInProgress && (
+                        && !(osm.jobInProgress && (
                             plasmoid.configuration.compactLayoutPercentageEnabled
                             || plasmoid.configuration.compactLayoutVerticalProgressBarEnabled
                             || plasmoid.configuration.compactLayoutShowPrintTime
@@ -160,10 +160,10 @@ GridLayout {
         Layout.alignment: Qt.AlignHCenter
         text: {
             var state = "";
-            if(isStateBucketNameShown()) state += main.octoState
-            if (main.jobInProgress && plasmoid.configuration.compactLayoutPercentageEnabled) {
+            if(isStateBucketNameShown()) state += osm.octoState
+            if (osm.jobInProgress && plasmoid.configuration.compactLayoutPercentageEnabled) {
                 if (state != '') state += ' '
-                state += `${main.jobCompletion}%`
+                state += `${osm.jobCompletion}%`
             }
             return Utils.ucfirst(state);
         }
@@ -173,27 +173,27 @@ GridLayout {
     PlasmaComponents.ProgressBar {
         visible: {
             return plasmoid.formFactor == PlasmaCore.Types.Vertical
-                && plasmoid.configuration.compactLayoutVerticalProgressBarEnabled && main.jobInProgress
+                && plasmoid.configuration.compactLayoutVerticalProgressBarEnabled && osm.jobInProgress
         }
         Layout.maximumWidth: compactContainer.width
         height: 4
-        value: main.jobCompletion/100
+        value: osm.jobCompletion/100
     }
 
     PlasmaComponents.Label {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        text: i18n('Elapsed: %1', main.jobPrintTime)
-        visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTime && main.jobPrintTime != ''
+        text: i18n('Elapsed: %1', osm.jobPrintTime)
+        visible: osm.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTime && osm.jobPrintTime != ''
     }
 
     PlasmaComponents.Label {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        text: i18n('Left: %1', main.jobPrintTimeLeft)
-        visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTimeLeft && main.jobPrintTimeLeft != ''
+        text: i18n('Left: %1', osm.jobPrintTimeLeft)
+        visible: osm.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTimeLeft && osm.jobPrintTimeLeft != ''
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

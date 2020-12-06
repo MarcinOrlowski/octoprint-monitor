@@ -28,7 +28,7 @@ ColumnLayout {
 	property string cameraView1Stamp: ""
 
 	function updateSnapshot() {
-        if (!main.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
+        if (!osm.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
             return
         }
 
@@ -89,13 +89,13 @@ ColumnLayout {
 
         var result = true
         switch (osm.getPrinterStateBucket()) {
-            case main.bucket_idle: result = !plasmoid.configuration.stopCameraPollForBucketIdle; break;
-            case main.bucket_unknown: result = !plasmoid.configuration.stopCameraPollForBucketUnknown; break;
-            case main.bucket_working: result = !plasmoid.configuration.stopCameraPollForBucketWorking; break;
-            case main.bucket_cancelling: result = !plasmoid.configuration.stopCameraPollForBucketCancelling; break;
-            case main.bucket_paused: result = !plasmoid.configuration.stopCameraPollForBucketPaused; break;
-            case main.bucket_error: result = !plasmoid.configuration.stopCameraPollForBucketError; break;
-            case main.bucket_disconnected: result = !plasmoid.configuration.stopCameraPollForBucketDisconnected; break;
+            case Bucket.idle: result = !plasmoid.configuration.stopCameraPollForBucketIdle; break;
+            case Bucket.unknown: result = !plasmoid.configuration.stopCameraPollForBucketUnknown; break;
+            case Bucket.working: result = !plasmoid.configuration.stopCameraPollForBucketWorking; break;
+            case Bucket.cancelling: result = !plasmoid.configuration.stopCameraPollForBucketCancelling; break;
+            case Bucket.paused: result = !plasmoid.configuration.stopCameraPollForBucketPaused; break;
+            case Bucket.error: result = !plasmoid.configuration.stopCameraPollForBucketError; break;
+            case Bucket.disconnected: result = !plasmoid.configuration.stopCameraPollForBucketDisconnected; break;
         }
         return result
     }
@@ -114,7 +114,7 @@ ColumnLayout {
 
             Layout.alignment: Qt.AlignCenter
             fillMode: Image.PreserveAspectFit
-            source: main.octoStateIcon
+            source: osm.octoStateIcon
             clip: true
             width: iconSize
             height: iconSize
@@ -135,9 +135,9 @@ ColumnLayout {
                 fontSizeMode: Text.Fit
                 minimumPointSize: 1
                 text: {
-                    var state = main.octoState;
-                    if (main.jobInProgress) {
-                        state += ` ${main.jobCompletion}%`
+                    var state = osm.octoState;
+                    if (osm.jobInProgress) {
+                        state += ` ${osm.jobCompletion}%`
                     }
                     return Utils.ucfirst(state);
                 }
@@ -146,26 +146,26 @@ ColumnLayout {
                 id: fullStateProgressBar
                 Layout.fillWidth: true
                 height: 4
-                value: main.jobCompletion/100
-                visible: main.jobInProgress
+                value: osm.jobCompletion/100
+                visible: osm.jobInProgress
             }
             PlasmaComponents.Label {
                 id: fullStateElapsedTime
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Elapsed: %1', main.jobPrintTime)
+                text: i18n('Elapsed: %1', osm.jobPrintTime)
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
-                visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
+                visible: osm.jobInProgress && plasmoid.configuration.showJobPrintTime && osm.jobPrintTime != ''
             }
             PlasmaComponents.Label {
                 id: fullStateRemainingTime
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Left: %1', main.jobPrintTimeLeft)
+                text: i18n('Left: %1', osm.jobPrintTimeLeft)
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
-                visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft && main.jobPrintTimeLeft != ''
+                visible: osm.jobInProgress && plasmoid.configuration.showJobTimeLeft && osm.jobPrintTimeLeft != ''
             }
         } // ColumnLayout
     } // RowLayout
@@ -176,8 +176,8 @@ ColumnLayout {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         elide: Text.ElideMiddle
-        text: main.jobFileName
-        visible: main.jobInProgress && plasmoid.configuration.showJobFileName
+        text: osm.jobFileName
+        visible: osm.jobInProgress && plasmoid.configuration.showJobFileName
     }
 
 //    MouseArea {
