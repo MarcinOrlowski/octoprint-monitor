@@ -10,11 +10,11 @@
  */
 
   // Printer status buckets
-  var unknown = "unknown";
-  var working = "working";
-  var cancelling = "cancelling";
-  var paused = "paused";
-  var error = "error";
-  var idle = "idle";
-  var disconnected = "disconnected";
-  var connecting = "connecting";
+  const unknown = "unknown";
+  const working = "working";
+  const cancelling = "cancelling";
+  const paused = "paused";
+  const error = "error";
+  const idle = "idle";
+  const disconnected = "disconnected";
+  const connecting = "connecting";
