@@ -102,25 +102,25 @@ QtObject {
         // calculate new octoState. If different from previous one, check what happened
         // (i.e. was printing is idle) -> print successful
         var newState = Qt.createComponent("OctoState.qml").createObject(null)
+        newState.printer = printer.current
+        newState.job = job.current
 
-        var jobInProgress = false
-//        console.debug('printer.current: TYPE ' + (typeof printer.current))
-//        console.debug('printer.current: ' + printer.current)
-        var currentStateBucket = printer.current.getPrinterStateBucket()
+        var currentStateBucket = newState.printer.getPrinterStateBucket()
         var currentStateBucketName = this.getPrinterStateBucketName(currentStateBucket);
         var currentState = currentStateBucketName
 
         this.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '')
 
+        var jobInProgress = false
         if (this.apiConnected) {
-            jobInProgress = printer.current.isJobInProgress()
-            if (jobInProgress && this.jobState == 'printing') currentState = job.current.jobState
+            jobInProgress = newState.printer.isJobInProgress()
+            if (jobInProgress && this.jobState == 'printing') currentState = newState.job.state
         } else {
             currentState = (!this.apiAccessConfigured) ? 'configuration' : 'unavailable'
         }
 
         this.jobInProgress = jobInProgress
-        this.printerConnected = printer.current.isPrinterConnected()
+        this.printerConnected = newState.printer.isPrinterConnected()
 
 //        console.debug(`currentState: ${currentState}, previous: ${this.previousOctoState}`);
         if (currentState != this.previousOctoState) {
@@ -131,7 +131,6 @@ QtObject {
 
             updateOctoStateDescription()
 
-//console.debug('job: ' + job.current)
             newState.jobFileName = job.current.fileName
             newState.jobCompletion = job.current.completion
             newState.jobPrintTime = job.current.printTime

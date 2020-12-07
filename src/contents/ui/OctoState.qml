@@ -21,5 +21,8 @@ QtObject {
     property double jobCompletion: 0
     property string jobPrintTime: ''
     property string jobPrintTimeLeft: ''
+
+    property var printer: undefined
+    property var job: undefined
 }
 

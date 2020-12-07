@@ -110,8 +110,8 @@ Item {
 				textFormat: Text.RichText
 				wrapMode: Text.NoWrap
 				text: {
-				    var msg = `${osm.bedTemperatureActual}°`
-				    if (osm.bedTemperatureTarget > 0) msg += ` of ${osm.bedTemperatureTarget}°`
+				    var msg = `${osm.current.printer.bedTemperatureActual}°`
+				    if (osm.current.printer.bedTemperatureTarget > 0) msg += ` of ${osm.current.printer.bedTemperatureTarget}°`
 				    return msg
                 }
 				font.pixelSize: Qt.application.font.pixelSize * 0.8
@@ -130,8 +130,8 @@ Item {
                 textFormat: Text.RichText
 				wrapMode: Text.NoWrap
 				text: {
-				    var msg = `${osm.extruder0TemperatureActual}°`
-				    if (osm.extruder0TemperatureTarget > 0) msg += ` of ${osm.extruder0TemperatureTarget}°`
+				    var msg = `${osm.current.printer.extruder0TemperatureActual}°`
+				    if (osm.current.printer.extruder0TemperatureTarget > 0) msg += ` of ${osm.current.printer.extruder0TemperatureTarget}°`
 				    return msg
                 }
 				font.pixelSize: Qt.application.font.pixelSize * 0.8
