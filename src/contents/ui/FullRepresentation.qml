@@ -13,6 +13,7 @@ import QtQuick 2.6
 import QtQuick.Layouts 1.5
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 3.0 as PlasmaComponents
+import "./PrinterStateBucket.js" as Bucket
 import "../js/utils.js" as Utils
 
 ColumnLayout {
@@ -22,13 +23,13 @@ ColumnLayout {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ""
+	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ''
 	property string cameraViewTimerState: i18n('Every %1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
-	property string cameraView0Stamp: ""
-	property string cameraView1Stamp: ""
+	property string cameraView0Stamp: ''
+	property string cameraView1Stamp: ''
 
 	function updateSnapshot() {
-        if (!main.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
+        if (!osm.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
             return
         }
 
@@ -88,14 +89,14 @@ ColumnLayout {
         if (!plasmoid.configuration.stopCameraPollForBuckets) return true
 
         var result = true
-        switch (getPrinterStateBucket()) {
-            case main.bucket_idle: result = !plasmoid.configuration.stopCameraPollForBucketIdle; break;
-            case main.bucket_unknown: result = !plasmoid.configuration.stopCameraPollForBucketUnknown; break;
-            case main.bucket_working: result = !plasmoid.configuration.stopCameraPollForBucketWorking; break;
-            case main.bucket_cancelling: result = !plasmoid.configuration.stopCameraPollForBucketCancelling; break;
-            case main.bucket_paused: result = !plasmoid.configuration.stopCameraPollForBucketPaused; break;
-            case main.bucket_error: result = !plasmoid.configuration.stopCameraPollForBucketError; break;
-            case main.bucket_disconnected: result = !plasmoid.configuration.stopCameraPollForBucketDisconnected; break;
+        switch (osm.octoStateBucket) {
+            case Bucket.idle: result = !plasmoid.configuration.stopCameraPollForBucketIdle; break;
+            case Bucket.unknown: result = !plasmoid.configuration.stopCameraPollForBucketUnknown; break;
+            case Bucket.working: result = !plasmoid.configuration.stopCameraPollForBucketWorking; break;
+            case Bucket.cancelling: result = !plasmoid.configuration.stopCameraPollForBucketCancelling; break;
+            case Bucket.paused: result = !plasmoid.configuration.stopCameraPollForBucketPaused; break;
+            case Bucket.error: result = !plasmoid.configuration.stopCameraPollForBucketError; break;
+            case Bucket.disconnected: result = !plasmoid.configuration.stopCameraPollForBucketDisconnected; break;
         }
         return result
     }
@@ -114,7 +115,7 @@ ColumnLayout {
 
             Layout.alignment: Qt.AlignCenter
             fillMode: Image.PreserveAspectFit
-            source: main.octoStateIcon
+            source: osm.octoStateIcon
             clip: true
             width: iconSize
             height: iconSize
@@ -135,9 +136,9 @@ ColumnLayout {
                 fontSizeMode: Text.Fit
                 minimumPointSize: 1
                 text: {
-                    var state = main.octoState;
-                    if (main.jobInProgress) {
-                        state += ` ${main.jobCompletion}%`
+                    var state = osm.octoState;
+                    if (osm.jobInProgress) {
+                        state += ` ${osm.jobCompletion}%`
                     }
                     return Utils.ucfirst(state);
                 }
@@ -146,145 +147,164 @@ ColumnLayout {
                 id: fullStateProgressBar
                 Layout.fillWidth: true
                 height: 4
-                value: main.jobCompletion/100
-                visible: main.jobInProgress
+                value: osm.jobCompletion/100
+                visible: osm.jobInProgress
             }
             PlasmaComponents.Label {
                 id: fullStateElapsedTime
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Elapsed: %1', main.jobPrintTime)
+                text: i18n('Elapsed: %1', osm.jobPrintTime)
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
-                visible: main.jobInProgress && plasmoid.configuration.showJobPrintTime && main.jobPrintTime != ''
+                visible: osm.jobInProgress && plasmoid.configuration.showJobPrintTime && osm.jobPrintTime != ''
             }
             PlasmaComponents.Label {
                 id: fullStateRemainingTime
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Left: %1', main.jobPrintTimeLeft)
+                text: i18n('Left: %1', osm.jobPrintTimeLeft)
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
-                visible: main.jobInProgress && plasmoid.configuration.showJobTimeLeft && main.jobPrintTimeLeft != ''
+                visible: osm.jobInProgress && plasmoid.configuration.showJobTimeLeft && osm.jobPrintTimeLeft != ''
             }
         } // ColumnLayout
     } // RowLayout
-
-    PlasmaComponents.Label {
-        id: fullStateJobFileName
-        Layout.fillWidth: true
-        fontSizeMode: Text.Fit
-        minimumPixelSize: 8
-        elide: Text.ElideMiddle
-        text: main.jobFileName
-        visible: main.jobInProgress && plasmoid.configuration.showJobFileName
-    }
 
 //    MouseArea {
 //        width: fullContainer.width
 //        Layout.minimumWidth: fullContainer.width
 //        Layout.maximumWidth: fullContainer.width
 
-    StackLayout {
-        id: cameraViewStack
+    ColumnLayout {
+        id: cameraViewContainer
 
-        width: fullContainer.width
-        Layout.minimumWidth: fullContainer.width
-        Layout.maximumWidth: fullContainer.width
+        StackLayout {
+            id: cameraViewStack
 
-        visible: isCameraViewEnabled
-        currentIndex: 0
-
-        ColumnLayout {
-            id: cameraViewContainer0
             width: fullContainer.width
             Layout.minimumWidth: fullContainer.width
+            Layout.maximumWidth: fullContainer.width
 
-            Image {
-                id: cameraView0
+            visible: isCameraViewEnabled
+            currentIndex: 0
+
+            ColumnLayout {
+                id: cameraViewContainer0
+                width: fullContainer.width
+                Layout.minimumWidth: fullContainer.width
+
+                Image {
+                    id: cameraView0
+                    Layout.minimumWidth: parent.width
+                    Layout.maximumWidth: parent.width
+
+                    sourceSize.width: cameraView0.width
+                    sourceSize.height: cameraView0.height
+                    fillMode: Image.PreserveAspectFit;
+                    horizontalAlignment: Image.AlignHCenter
+                    verticalAlignment: Image.AlignVCenter
+                    cache: false
+                    asynchronous: true
+                    Layout.alignment: Qt.AlignCenter
+                }
+                RowLayout {
+                    Layout.fillWidth: true
+                    PlasmaComponents.Label {
+                        maximumLineCount: 1
+                        Layout.maximumWidth: parent.width
+                        wrapMode: Text.NoWrap
+                        fontSizeMode: Text.Fit
+                        elide: Text.ElideRight
+                        font.pixelSize: Qt.application.font.pixelSize * 0.8
+                        text: cameraView0Stamp
+                    }
+                    Item {
+                        Layout.fillWidth: true
+                    }
+                    PlasmaComponents.Label {
+                        maximumLineCount: 1
+                        Layout.maximumWidth: parent.width
+                        wrapMode: Text.NoWrap
+                        fontSizeMode: Text.Fit
+                        elide: Text.ElideRight
+                        font.pixelSize: Qt.application.font.pixelSize * 0.8
+                        text: (cameraView0Stamp != '') ? cameraViewTimerState : ''
+                    }
+                }
+            }
+
+            ColumnLayout {
+                id: cameraViewContainer1
+                width: parent.width
                 Layout.minimumWidth: parent.width
                 Layout.maximumWidth: parent.width
+                Image {
+                    id: cameraView1
+                    Layout.minimumWidth: parent.width
+                    Layout.maximumWidth: parent.width
 
-                sourceSize.width: cameraView0.width
-                sourceSize.height: cameraView0.height
-                fillMode: Image.PreserveAspectFit;
-                horizontalAlignment: Image.AlignHCenter
-                verticalAlignment: Image.AlignVCenter
-                cache: false
-                asynchronous: true
-                Layout.alignment: Qt.AlignCenter
-            }
-            RowLayout {
-                Layout.fillWidth: true
-                PlasmaComponents.Label {
-                    maximumLineCount: 1
-                    Layout.maximumWidth: parent.width
-                    wrapMode: Text.NoWrap
-                    fontSizeMode: Text.Fit
-                    elide: Text.ElideRight
-                    font.pixelSize: Qt.application.font.pixelSize * 0.8
-                    text: cameraView0Stamp
+                    sourceSize.width: cameraView1.width
+                    sourceSize.height: cameraView1.height
+                    fillMode: Image.PreserveAspectFit;
+                    horizontalAlignment: Image.AlignHCenter
+                    verticalAlignment: Image.AlignVCenter
+                    cache: false
+                    asynchronous: true
+                    Layout.alignment: Qt.AlignCenter
                 }
-                Item {
+                RowLayout {
                     Layout.fillWidth: true
+                    PlasmaComponents.Label {
+                        maximumLineCount: 1
+                        Layout.maximumWidth: parent.width
+                        wrapMode: Text.NoWrap
+                        fontSizeMode: Text.Fit
+                        elide: Text.ElideRight
+                        font.pixelSize: Qt.application.font.pixelSize * 0.8
+                        text: cameraView1Stamp
+                    }
+                    Item {
+                        Layout.fillWidth: true
+                    }
+                    PlasmaComponents.Label {
+                        maximumLineCount: 1
+                        Layout.maximumWidth: parent.width
+                        wrapMode: Text.NoWrap
+                        fontSizeMode: Text.Fit
+                        elide: Text.ElideRight
+                        font.pixelSize: Qt.application.font.pixelSize * 0.8
+                        text: (cameraView1Stamp != '') ? cameraViewTimerState : ''
+                    }
                 }
-                PlasmaComponents.Label {
-                    maximumLineCount: 1
-                    Layout.maximumWidth: parent.width
-                    wrapMode: Text.NoWrap
-                    fontSizeMode: Text.Fit
-                    elide: Text.ElideRight
-                    font.pixelSize: Qt.application.font.pixelSize * 0.8
-                    text: (cameraView0Stamp != '') ? cameraViewTimerState : ''
-                }
+            }
+        } // StackLayout
+
+        Rectangle {
+            anchors.top: cameraViewContainer.top
+            anchors.left: cameraViewContainer.left
+            anchors.right: cameraViewContainer.right
+            height: fullStateJobFileName.height
+            Layout.fillWidth: true
+            color: "#aa222222"
+
+            PlasmaComponents.Label {
+                id: fullStateJobFileName
+
+                padding: 8
+
+                anchors.top: parent.top
+                anchors.left: parent.left
+                Layout.fillWidth: true
+                fontSizeMode: Text.Fit
+                minimumPixelSize: 8
+                elide: Text.ElideMiddle
+                text: osm.jobFileName
+                visible: osm.jobInProgress && plasmoid.configuration.showJobFileName
             }
         }
 
-        ColumnLayout {
-            id: cameraViewContainer1
-            width: parent.width
-            Layout.minimumWidth: parent.width
-            Layout.maximumWidth: parent.width
-            Image {
-                id: cameraView1
-                Layout.minimumWidth: parent.width
-                Layout.maximumWidth: parent.width
-
-                sourceSize.width: cameraView1.width
-                sourceSize.height: cameraView1.height
-                fillMode: Image.PreserveAspectFit;
-                horizontalAlignment: Image.AlignHCenter
-                verticalAlignment: Image.AlignVCenter
-                cache: false
-                asynchronous: true
-                Layout.alignment: Qt.AlignCenter
-            }
-            RowLayout {
-                Layout.fillWidth: true
-                PlasmaComponents.Label {
-                    maximumLineCount: 1
-                    Layout.maximumWidth: parent.width
-                    wrapMode: Text.NoWrap
-                    fontSizeMode: Text.Fit
-                    elide: Text.ElideRight
-                    font.pixelSize: Qt.application.font.pixelSize * 0.8
-                    text: cameraView1Stamp
-                }
-                Item {
-                    Layout.fillWidth: true
-                }
-                PlasmaComponents.Label {
-                    maximumLineCount: 1
-                    Layout.maximumWidth: parent.width
-                    wrapMode: Text.NoWrap
-                    fontSizeMode: Text.Fit
-                    elide: Text.ElideRight
-                    font.pixelSize: Qt.application.font.pixelSize * 0.8
-                    text: (cameraView1Stamp != '') ? cameraViewTimerState : ''
-                }
-            }
-        }
-    } // StackLayout
+    } // ColumnLayout (cameraViewContainer)
 
     RowLayout {
         id: cameraViewControButtons
@@ -329,7 +349,7 @@ ColumnLayout {
         }
 
         PlasmaComponents.Button {
-            text: ""
+            text: ''
             implicitWidth: units.gridUnit * 2
             icon.name: "view-refresh"
             onClicked: {

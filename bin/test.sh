@@ -15,8 +15,10 @@
 export QT_MESSAGE_PATTERN="%{file}:%{line}: %{message}"
 
 if [[ $# -ge 1 ]]; then
+  echo "Running FullRepresetaion"
   plasmoidviewer --applet src/
 else
+  echo "Running CompactRepresetaion"
   plasmoidviewer \
     --formfactor vertical \
     --location topedge \

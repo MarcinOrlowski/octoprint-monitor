@@ -10,12 +10,12 @@
  */
 
 function isVal(value) {
-    return value != null && value != "";
+    return (typeof value !== 'undefined') && value != null && value != "";
 }
 
 function getString(value, def) {
     if (def === undefined) {
-        def = "";
+        def = '';
     }
     return isVal(value) ? value : def;
 }
@@ -32,7 +32,7 @@ function isValidJsonString(jsonString) {
     if (!(typeof jsonString === "string")) {
         return false;
     }
-    if (jsonString === "") {
+    if (jsonString === '') {
         return false;
     }
 

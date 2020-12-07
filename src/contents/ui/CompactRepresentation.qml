@@ -18,6 +18,7 @@ import org.kde.plasma.extras 2.0 as Extras
 import org.kde.kquickcontrolsaddons 2.0
 import org.kde.kquickcontrolsaddons 2.0
 import QtQuick.Controls.Styles 1.4
+import "./PrinterStateBucket.js" as Bucket
 import "../js/utils.js" as Utils
 
 GridLayout {
@@ -69,14 +70,14 @@ GridLayout {
         if (!plasmoid.configuration.compactLayoutHideIconForBuckets) return true
 
         var result = true
-        switch (getPrinterStateBucket()) {
-            case main.bucket_idle: result = !plasmoid.configuration.compactLayoutHideIconForBucketIdle; break;
-            case main.bucket_unknown: result = !plasmoid.configuration.compactLayoutHideIconForBucketUnknown; break;
-            case main.bucket_cancelling: result = !plasmoid.configuration.compactLayoutHideIconForBucketCancelling; break;
-            case main.bucket_working: result = !plasmoid.configuration.compactLayoutHideIconForBucketWorking; break;
-            case main.bucket_paused: result = !plasmoid.configuration.compactLayoutHideIconForBucketPaused; break;
-            case main.bucket_error: result = !plasmoid.configuration.compactLayoutHideIconForBucketError; break;
-            case main.bucket_disconnected: result = !plasmoid.configuration.compactLayoutHideIconForBucketDisconnected; break;
+        switch (osm.octoStateBucket) {
+            case Bucket.idle: result = !plasmoid.configuration.compactLayoutHideIconForBucketIdle; break;
+            case Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideIconForBucketUnknown; break;
+            case Bucket.cancelling: result = !plasmoid.configuration.compactLayoutHideIconForBucketCancelling; break;
+            case Bucket.working: result = !plasmoid.configuration.compactLayoutHideIconForBucketWorking; break;
+            case Bucket.paused: result = !plasmoid.configuration.compactLayoutHideIconForBucketPaused; break;
+            case Bucket.error: result = !plasmoid.configuration.compactLayoutHideIconForBucketError; break;
+            case Bucket.disconnected: result = !plasmoid.configuration.compactLayoutHideIconForBucketDisconnected; break;
         }
         return result
     }
@@ -95,14 +96,14 @@ GridLayout {
         if (!plasmoid.configuration.compactLayoutHideBuckets) return true
 
         var result = true
-        switch (getPrinterStateBucket()) {
-            case main.bucket_idle: result = !plasmoid.configuration.compactLayoutHideBucketIdle; break;
-            case main.bucket_unknown: result = !plasmoid.configuration.compactLayoutHideBucketUnknown; break;
-            case main.bucket_working: result = !plasmoid.configuration.compactLayoutHideBucketWorking; break;
-            case main.bucket_cancelling: result = !plasmoid.configuration.compactLayoutHideBucketCancelling; break;
-            case main.bucket_paused: result = !plasmoid.configuration.compactLayoutHideBucketPaused; break;
-            case main.bucket_error: result = !plasmoid.configuration.compactLayoutHideBucketError; break;
-            case main.bucket_disconnected: result = !plasmoid.configuration.compactLayoutHideBucketDisconnected; break;
+        switch (osm.octoStateBucket) {
+            case Bucket.idle: result = !plasmoid.configuration.compactLayoutHideBucketIdle; break;
+            case Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideBucketUnknown; break;
+            case Bucket.working: result = !plasmoid.configuration.compactLayoutHideBucketWorking; break;
+            case Bucket.cancelling: result = !plasmoid.configuration.compactLayoutHideBucketCancelling; break;
+            case Bucket.paused: result = !plasmoid.configuration.compactLayoutHideBucketPaused; break;
+            case Bucket.error: result = !plasmoid.configuration.compactLayoutHideBucketError; break;
+            case Bucket.disconnected: result = !plasmoid.configuration.compactLayoutHideBucketDisconnected; break;
         }
         return result
     }
@@ -116,7 +117,7 @@ GridLayout {
         id: compactStateIcon
         Layout.alignment: Qt.AlignCenter
         fillMode: Image.PreserveAspectFit
-        source: main.octoStateIcon
+        source: osm.octoStateIcon
         clip: true
         visible: {
             // If all is set hidden we will force icon display anyway.
@@ -124,7 +125,7 @@ GridLayout {
             if (!visibility) {
                 visibility =
                     (!isStateBucketNameShown()
-                        && !(main.jobInProgress && (
+                        && !(osm.jobInProgress && (
                             plasmoid.configuration.compactLayoutPercentageEnabled
                             || plasmoid.configuration.compactLayoutVerticalProgressBarEnabled
                             || plasmoid.configuration.compactLayoutShowPrintTime
@@ -159,10 +160,10 @@ GridLayout {
         Layout.alignment: Qt.AlignHCenter
         text: {
             var state = "";
-            if(isStateBucketNameShown()) state += main.octoState
-            if (main.jobInProgress && plasmoid.configuration.compactLayoutPercentageEnabled) {
+            if(isStateBucketNameShown()) state += osm.octoState
+            if (osm.jobInProgress && plasmoid.configuration.compactLayoutPercentageEnabled) {
                 if (state != '') state += ' '
-                state += `${main.jobCompletion}%`
+                state += `${osm.jobCompletion}%`
             }
             return Utils.ucfirst(state);
         }
@@ -172,27 +173,27 @@ GridLayout {
     PlasmaComponents.ProgressBar {
         visible: {
             return plasmoid.formFactor == PlasmaCore.Types.Vertical
-                && plasmoid.configuration.compactLayoutVerticalProgressBarEnabled && main.jobInProgress
+                && plasmoid.configuration.compactLayoutVerticalProgressBarEnabled && osm.jobInProgress
         }
         Layout.maximumWidth: compactContainer.width
         height: 4
-        value: main.jobCompletion/100
+        value: osm.jobCompletion/100
     }
 
     PlasmaComponents.Label {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        text: i18n('Elapsed: %1', main.jobPrintTime)
-        visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTime && main.jobPrintTime != ''
+        text: i18n('Elapsed: %1', osm.jobPrintTime)
+        visible: osm.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTime && osm.jobPrintTime != ''
     }
 
     PlasmaComponents.Label {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        text: i18n('Left: %1', main.jobPrintTimeLeft)
-        visible: main.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTimeLeft && main.jobPrintTimeLeft != ''
+        text: i18n('Left: %1', osm.jobPrintTimeLeft)
+        visible: osm.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTimeLeft && osm.jobPrintTimeLeft != ''
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
