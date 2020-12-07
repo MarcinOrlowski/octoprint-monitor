@@ -152,30 +152,30 @@ Item {
                 post = true
                 switch (current) {
                     case Bucket.cancelling:
-                        summary = `Cancelling job '${osm.jobFileName}'.`
+                        summary = i18n('Cancelling job "%1".', osm.jobFileName)
                         break;
 
                     case Bucket.paused:
-                        summary = `Print job '${osm.jobFileName}' paused.`
+                        summary = i18n('Print job "%1" paused.', osm.jobFileName)
                         break
 
                     default:
                         if (osm.jobCompletion == 100) {
-                            summary = `Print '${osm.jobFileName}' completed.`
+                            summary = i18n('Print "%s" completed.', osm.jobFileName)
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobSuccessful
                         } else {
-                            summary = 'Print stopped.'
+                            summary = i18n('Print stopped.')
                             expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobFailed
                             var percentage = osm.jobCompletion > 0 ? osm.jobCompletion : osm.previousJobCompletion
                             if (percentage > 0) {
-                                body = `File '${osm.jobFileName}' stopped at ${percentage}%.`
+                                body = i18n('File "%1" stopped at %1%%.', osm.jobFileName, percentage)
                             } else {
-                               body = `File '${osm.jobFileName}'.`
+                               body = i18n('File "%1".', osm.jobFileName)
                             }
                         }
                         if (osm.jobPrintTime != '') {
                             if (body != '') body += ' '
-                            body += `Print time ${osm.jobPrintTime}.`
+                            body += i18n('Print time %1.', osm.jobPrintTime)
                         }
                         break
                 }
@@ -185,12 +185,13 @@ Item {
             if (!post && (current == Bucket.working) && (previous != Bucket.connecting)) {
                 post = true
                 expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
-                summary = 'New printing started.'
+                summary = i18n('New printing started.')
 
                 if (osm.jobFileName != '') {
-                    body = `File '${osm.jobFileName}'.`
-                    if (osm.jobPrintTimeLeft != '') {
-                        body += ` Est. print time ${osm.jobPrintTimeLeft}.`
+                    if (osm.jobPrintTimeLeft == '') {
+                        body = i18n('File "%1".', osm.jobFileName)
+                    } else {
+                        body = i18n('File "%1". Est. print time %2.', osm.jobFileName, osm.jobPrintTimeLeft)
                     }
                 }
             }
