@@ -21,18 +21,32 @@ QtObject {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
+    /*
+    ** Handles XmlHtmlREquest object with API response
+    **
+    ** Returns:
+    **  bool: true if handled xhr object successfuly, false otherwise.
+    */
     function handle(xhr) {
-        var newState = Qt.createComponent("JobState.qml").createObject(null)
-        newState.fromXhr(xhr)
+        try {
+            var newState = Qt.createComponent("JobState.qml").createObject(null)
+            newState.fromXhr(xhr)
 
-        // check HASH and add if different from last one
-//        console.debug(`job handle: new: '${newState.state}', current '${current.state}'`)
-        if (newState.state != current.state) {
-            this.states.unshift(newState)
-            this.current = newState
+            // check HASH and add if different from last one
+    //        console.debug(`job handle: new: '${newState.state}', current '${current.state}'`)
+            if (newState.state != current.state) {
+                this.states.unshift(newState)
+                this.current = newState
+            }
+
+            if (this.states.length > 3) this.states.pop()
+
+            return true
+        } catch (error) {
+            console.debug(error)
         }
 
-        if (this.states.length > 3) this.states.pop()
+        return false
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

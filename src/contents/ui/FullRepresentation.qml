@@ -285,8 +285,9 @@ ColumnLayout {
             anchors.left: cameraViewContainer.left
             anchors.right: cameraViewContainer.right
             height: fullStateJobFileName.height
-            Layout.fillWidth: true
             color: "#aa222222"
+            visible: osm.jobInProgress && plasmoid.configuration.showJobFileName
+            Layout.fillWidth: true
 
             PlasmaComponents.Label {
                 id: fullStateJobFileName
@@ -300,7 +301,6 @@ ColumnLayout {
                 minimumPixelSize: 8
                 elide: Text.ElideMiddle
                 text: osm.jobFileName
-                visible: osm.jobInProgress && plasmoid.configuration.showJobFileName
             }
         }
 

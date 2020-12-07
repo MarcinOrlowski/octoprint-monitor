@@ -56,8 +56,9 @@ QtObject {
         // Ensure we managed to talk to the API
         this.apiConnected = (xhr.status !== 0)
 
-        job.handle(xhr)
-        this.updateOctoState()
+        if (job.handle(xhr)) {
+            this.updateOctoState()
+        }
     }
 
     function handlePrinterState(xhr) {
@@ -67,8 +68,9 @@ QtObject {
         // Ensure we managed to talk to the API
         this.apiConnected = (xhr.status !== 0)
 
-        printer.handle(xhr)
-        this.updateOctoState()
+        if (printer.handle(xhr)) {
+            this.updateOctoState()
+        }
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -103,7 +105,9 @@ QtObject {
         // (i.e. was printing is idle) -> print successful
         var newState = Qt.createComponent("OctoState.qml").createObject(null)
         newState.printer = printer.current
+        console.debug('printer: ' + printer.current)
         newState.job = job.current
+        console.debug('job: ' + job.current)
 
         var currentStateBucket = newState.printer.getPrinterStateBucket()
         var currentStateBucketName = this.getPrinterStateBucketName(currentStateBucket);
