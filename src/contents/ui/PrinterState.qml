@@ -19,16 +19,16 @@ QtObject {
     // ------------------------------------------------------------------------------------------------------------------------
 
     // Printer state flags
-    property bool pf_cancelling: false		// working
-    property bool pf_closedOrError: false	// error
-    property bool pf_error: false			// error
-    property bool pf_finishing: false		// working
-    property bool pf_operational: false		// idle
-    property bool pf_paused: false			// paused
-    property bool pf_pausing: false			// working
-    property bool pf_printing: false		// working
-    property bool pf_ready: false			// idle
-    property bool pf_resuming: false		// working
+    property bool flagCancelling: false		// working
+    property bool flagClosedOrError: false	// error
+    property bool flagError: false			// error
+    property bool flagFinishing: false		// working
+    property bool flagOperational: false	// idle
+    property bool flagPaused: false			// paused
+    property bool flagPausing: false		// working
+    property bool flagPrinting: false		// working
+    property bool flagReady: false			// idle
+    property bool flagResuming: false		// working
 
     // printer state
     property string printer_state: ''
@@ -52,7 +52,7 @@ QtObject {
     **	bool
     */
     function isJobInProgress() {
-        var result = pf_printing || pf_paused || pf_resuming
+        var result = flagPrinting || flagPaused || flagResuming
         return result
     }
 
@@ -63,16 +63,16 @@ QtObject {
     **	bool
     */
     function isPrinterConnected() {
-        return  pf_cancelling
-             || pf_error
-             || pf_finishing
-             || pf_operational
-             || pf_paused
-             || pf_pausing
-             || pf_printing
-             || pf_ready
-             || pf_resuming
-//           || pf_closedOrError
+        return  flagCancelling
+             || flagError
+             || flagFinishing
+             || flagOperational
+             || flagPaused
+             || flagPausing
+             || flagPrinting
+             || flagReady
+             || flagResuming
+//           || flagClosedOrError
         ;
     }
 
@@ -85,15 +85,15 @@ QtObject {
     function getPrinterStateBucket() {
         var bucket = undefined;
 
-        if ( this.pf_finishing || this.pf_printing || this.pf_pausing ) {
+        if ( this.flagFinishing || this.flagPrinting || this.flagPausing ) {
             bucket = Bucket.working
-        } else if ( this.pf_cancelling ) {
+        } else if ( this.flagCancelling ) {
             bucket = Bucket.cancelling
-        } else if ( this.pf_closedOrError || this.pf_error ) {
+        } else if ( this.flagClosedOrError || this.flagError ) {
             bucket = Bucket.error
-        } else if ( this.pf_operational || this.pf_ready ) {
+        } else if ( this.flagOperational || this.flagReady ) {
             bucket = Bucket.idle
-        } else if ( this.pf_paused ) {
+        } else if ( this.flagPaused ) {
             bucket = Bucket.paused;
         }
 
@@ -108,7 +108,7 @@ QtObject {
     // ------------------------------------------------------------------------------------------------------------------------
 
     /**
-    ** Sets pf_* flags to given bool value. Just for DRY.
+    ** Sets pri ter flags to given bool value. Just for DRY.
     **
     ** Arguments:
     **  state: true/false to set all flags to.
@@ -117,16 +117,16 @@ QtObject {
     **  void
     */
     function setPrinterFlags(state) {
-        this.pf_cancelling = state
-        this.pf_closedOrError = state
-        this.pf_finishing = state
-        this.pf_operational = state
-        this.pf_paused = state
-        this.pf_pausing = state
-        this.pf_printing = state
-        this.pf_ready = state
-        this.pf_resuming = state
-        this.pf_error = state
+        this.flagCancelling = state
+        this.flagClosedOrError = state
+        this.flagFinishing = state
+        this.flagOperational = state
+        this.flagPaused = state
+        this.flagPausing = state
+        this.flagPrinting = state
+        this.flagReady = state
+        this.flagResuming = state
+        this.flagError = state
     }
 
     function fromXhr(xhr) {
@@ -140,7 +140,7 @@ QtObject {
                     console.debug(error)
 
                     this.setPrinterFlags(false)
-                    this.pf_error = true
+                    this.flagError = true
                 }
                 break
             case 409:
@@ -149,7 +149,7 @@ QtObject {
                 break
             default:
                 console.debug(`Unexpected printer response status code (${xhr.status}).`)
-                this.pf_error = true
+                this.flagError = true
                 break
         }
     }
@@ -166,16 +166,16 @@ QtObject {
     function fromJson(resp) {
         this.json = resp;
 
-        this.pf_cancelling = resp.state.flags.cancelling
-        this.pf_closedOrError = resp.state.flags.closedOrError
-        this.pf_error = resp.state.flags.error
-        this.pf_finishing = resp.state.flags.finishing
-        this.pf_operational = resp.state.flags.operational
-        this.pf_paused = resp.state.flags.paused
-        this.pf_pausing = resp.state.flags.pausing
-        this.pf_printing = resp.state.flags.printing
-        this.pf_ready = resp.state.flags.ready
-        this.pf_resuming = resp.state.flags.resuming
+        this.flagCancelling = resp.state.flags.cancelling
+        this.flagClosedOrError = resp.state.flags.closedOrError
+        this.flagError = resp.state.flags.error
+        this.flagFinishing = resp.state.flags.finishing
+        this.flagOperational = resp.state.flags.operational
+        this.flagPaused = resp.state.flags.paused
+        this.flagPausing = resp.state.flags.pausing
+        this.flagPrinting = resp.state.flags.printing
+        this.flagReady = resp.state.flags.ready
+        this.flagResuming = resp.state.flags.resuming
 
         // Textural representation of printer state as returned by API
         this.printer_state = resp.state.text

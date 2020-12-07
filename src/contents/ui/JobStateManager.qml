@@ -26,7 +26,7 @@ QtObject {
         newState.fromXhr(xhr)
 
         // check HASH and add if different from last one
-        console.debug(`job handle: new: '${newState.state}', current '${current.state}'`)
+//        console.debug(`job handle: new: '${newState.state}', current '${current.state}'`)
         if (newState.state != current.state) {
             this.states.unshift(newState)
             this.current = newState
