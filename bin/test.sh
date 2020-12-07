@@ -11,8 +11,9 @@
 #  @link      https://github.com/MarcinOrlowski/octoprint-monitor
 
 # https://stackoverflow.com/questions/41409273/file-line-and-function-for-qml-files
+# https://doc.qt.io/qt-5/qtglobal.html#qSetMessagePattern
 #export QT_MESSAGE_PATTERN="[%{type}] %{appname} (%{file}:%{line}) - %{message}"
-export QT_MESSAGE_PATTERN="%{file}:%{line}: %{message}"
+export QT_MESSAGE_PATTERN="%{time} %{file}:%{line}: %{message}"
 
 if [[ $# -ge 1 ]]; then
   echo "Running FullRepresetaion"
