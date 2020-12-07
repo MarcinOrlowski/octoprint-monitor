@@ -104,10 +104,15 @@ QtObject {
         // calculate new octoState. If different from previous one, check what happened
         // (i.e. was printing is idle) -> print successful
         var newState = Qt.createComponent("OctoState.qml").createObject(null)
+
+//        console.debug('printer ' + (printer.current instanceof JobState))
+//        console.debug('job ' + (job.current instanceof JobState))
+
+        if (!(printer.current instanceof PrinterState)) return
+        if (!(job.current instanceof JobState)) return
+
         newState.printer = printer.current
-        console.debug('printer: ' + printer.current)
         newState.job = job.current
-        console.debug('job: ' + job.current)
 
         var currentStateBucket = newState.printer.getPrinterStateBucket()
         var currentStateBucketName = this.getPrinterStateBucketName(currentStateBucket);
