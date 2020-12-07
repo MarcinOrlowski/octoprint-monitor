@@ -23,10 +23,10 @@ ColumnLayout {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ""
-	property string cameraViewTimerState: i18n('Every%1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
-	property string cameraView0Stamp: ""
-	property string cameraView1Stamp: ""
+	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ''
+	property string cameraViewTimerState: i18n('Every %1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
+	property string cameraView0Stamp: ''
+	property string cameraView1Stamp: ''
 
 	function updateSnapshot() {
         if (!osm.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
@@ -280,21 +280,21 @@ ColumnLayout {
             }
         } // StackLayout
 
-//        Rectangle {
-//            anchors.top: cameraViewContainer.top
-//            anchors.left: cameraViewContainer.left
-//            anchors.right: cameraViewContainer.right
-//            height: fullStateJobFileName.height
-//            Layout.fillWidth: true
-//            color: "#aa222222"
+        Rectangle {
+            anchors.top: cameraViewContainer.top
+            anchors.left: cameraViewContainer.left
+            anchors.right: cameraViewContainer.right
+            height: fullStateJobFileName.height
+            Layout.fillWidth: true
+            color: "#aa222222"
 
             PlasmaComponents.Label {
                 id: fullStateJobFileName
 
                 padding: 8
 
-//                anchors.top: parent.top
-//                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.left: parent.left
                 Layout.fillWidth: true
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
@@ -302,7 +302,7 @@ ColumnLayout {
                 text: osm.jobFileName
                 visible: osm.jobInProgress && plasmoid.configuration.showJobFileName
             }
-//        }
+        }
 
     } // ColumnLayout (cameraViewContainer)
 
@@ -324,7 +324,7 @@ ColumnLayout {
                     buttonStartPause.text = i18n('Start')
                     buttonStartPause.icon.name = "media-playback-start"
                 } else {
-                    cameraViewTimerState = i18n('Every') + ' ' + Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval)
+                    cameraViewTimerState = i18n('Every %1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
                     cameraViewTimer.start()
                     buttonStartPause.text = i18n('Pause')
                     buttonStartPause.icon.name = "media-playback-pause"
@@ -349,7 +349,7 @@ ColumnLayout {
         }
 
         PlasmaComponents.Button {
-            text: ""
+            text: ''
             implicitWidth: units.gridUnit * 2
             icon.name: "view-refresh"
             onClicked: {

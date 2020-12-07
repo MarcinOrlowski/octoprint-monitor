@@ -34,9 +34,9 @@ QtObject {
 
     property string jobFileName: ''
     property double jobCompletion: 0
-    property string jobStateDescription: ""
-    property string jobPrintTime: ""
-    property string jobPrintTimeLeft: ""
+    property string jobStateDescription: ''
+    property string jobPrintTime: ''
+    property string jobPrintTimeLeft: ''
 
     // ------------------------------------------------------------------------------------------------------------------------
 

@@ -54,7 +54,7 @@ Item {
 			maximumLineCount: 1
 			wrapMode: Text.NoWrap
 			textFormat: Text.RichText
-            text: '<b>' + i18n('State changed') + `:</b> ${osm.lastOctoStateChangeStamp}`
+            text: i18n('<b>State changed:</b> %1', osm.lastOctoStateChangeStamp)
             font.pixelSize: Qt.application.font.pixelSize * 0.8
             visible: osm.lastOctoStateChangeStamp != ''
 		}
@@ -67,10 +67,10 @@ Item {
 			text: {
 			    var msg = ''
 			    if (osm.jobPrintTime != '')
-			        msg += '<b>' + i18n('Print time') + `:</b> ${osm.jobPrintTime}`
+			        msg += i18n('<b>Print time:</b> %1', osm.jobPrintTime)
                 if (osm.jobPrintTimeLeft != '') {
                     if (msg != '') msg += ', '
-                    msg += '<b>' + i18n('Time left') + `:</b> ${osm.jobPrintTimeLeft}`
+                    msg += i18n('<b>Time left:</b> %1', osm.jobPrintTimeLeft)
                 }
                 return msg
             }
@@ -84,7 +84,7 @@ Item {
 			wrapMode: Text.NoWrap
 			elide: Text.ElideMiddle
 			textFormat: Text.RichText
-			text: '<b>' + i18n('File') + `:</b> ${osm.jobFileName}`
+			text: i18n('<b>File:</b> %1', osm.jobFileName)
 			font.pixelSize: Qt.application.font.pixelSize * 0.8
 			visible: osm.jobFileName != ''
 		}
@@ -100,7 +100,7 @@ Item {
 				maximumLineCount: 1
 				wrapMode: Text.NoWrap
 				textFormat: Text.RichText
-				text: '<b>' + i18n("Hot bed") + ':</b> '
+				text: i18n('<b>Hot bed:</b>')
 				font.pixelSize: Qt.application.font.pixelSize * 0.8
 			}
 

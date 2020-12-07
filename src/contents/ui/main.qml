@@ -23,6 +23,12 @@ import "./PrinterStateBucket.js" as Bucket
 Item {
     id: main
 
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    OctoStateManager {
+        id: osm
+    }
+
     // Debug switch to mimic API access using hardcded JSONs
     readonly property bool fakeApiAccess: false
 
@@ -310,19 +316,6 @@ Item {
         }
     }
 
-    // ------------------------------------------------------------------------------------------------------------------------
-
-//    JobStateManager {
-//        id: jobStateManager
-//    }
-//
-//    PrinterStateManager {
-//        id: printerStateManager
-//    }
-
-    OctoStateManager {
-        id: osm
-    }
 
     // ------------------------------------------------------------------------------------------------------------------------
 
