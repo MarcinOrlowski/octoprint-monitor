@@ -13,21 +13,19 @@ import QtQuick 2.0
 import "../js/utils.js" as Utils
 
 QtObject {
-    property var json: ''
+    property var json: null
 
     // ------------------------------------------------------------------------------------------------------------------------
 
     // Job related stats (if any in progress)
-    property string jobState: "N/A"
-//    property string previousJobState: "N/A"
-    property string jobStateDescription: ""
-    property string jobFileName: ""
-    property double jobCompletion: 0
-//    property double previousJobCompletion: 0
+    property string state: ''
+    property string stateDescription: ''
 
-    property string jobPrintTime: ""
-	property string jobPrintStartStamp: ""
-	property string jobPrintTimeLeft: ""
+    property string fileName: ''
+    property double completion: 0
+
+    property string printTime: ''
+	property string printTimeLeft: ''
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -52,44 +50,28 @@ QtObject {
     ** Parses printing job status JSON response object.
     **
     ** Arguments:
-    **	resp: response JSON object
+    **	json: response JSON object
     **
     ** Returns:
     **	void
     */
-    function fromJson(resp) {
-        this.json = resp
+    function fromJson(json) {
+        this.json = json
+        this.state = json.state.split(/[ ,]+/)[0].toLowerCase()
 
-        var state = resp.state.split(/[ ,]+/)[0]
-        this.jobState = state.toLowerCase()
+        var stateSplit = json.state.match(/\w+\s+\((.*)\)/)
+        this.stateDescription = (stateSplit !== null) ? stateSplit[1] : ''
 
-        var stateSplit = resp.state.match(/\w+\s+\((.*)\)/)
-        this.jobStateDescription = (stateSplit !== null) ? stateSplit[1] : ''
+        this.fileName = Utils.getString(json.job.file.display)
+        this.completion = Utils.isVal(json.progress.completion) ? Utils.roundFloat(json.progress.completion) : 0
 
-//        if (state != main.jobState) {
-//            main.previousJobState = main.jobState
-//            main.jobState = state.toLowerCase()
+        var jobPrintTime = json.progress.printTime
+        this.printTime = Utils.isVal(jobPrintTime) ? Utils.secondsToString(jobPrintTime) : ''
+        var jobPrintTimeLeft = json.progress.printTimeLeft
+        this.printTimeLeft = Utils.isVal(jobPrintTimeLeft) ? Utils.secondsToString(jobPrintTimeLeft) : ''
 
-//            var stateSplit = resp.state.match(/\w+\s+\((.*)\)/)
-//            main.jobStateDescription = (stateSplit !== null) ? stateSplit[1] : ''
-//            updateOctoStateDescription()
-//        }
-
-        this.jobFileName = Utils.getString(resp.job.file.display)
-
-        this.jobCompletion = Utils.isVal(resp.progress.completion) ? Utils.roundFloat(resp.progress.completion) : 0
-
-//        var jobCompletion = Utils.isVal(resp.progress.completion) ? Utils.roundFloat(resp.progress.completion) : 0
-//        if (jobCompletion != main.jobCompletion) {
-//            main.previousJobCompletion = main.jobCompletion
-//            main.jobCompletion = jobCompletion
-//        }
-
-        var jobPrintTime = resp.progress.printTime
-        this.jobPrintTime = Utils.isVal(jobPrintTime) ? Utils.secondsToString(jobPrintTime) : ''
-
-        var printTimeLeft = resp.progress.printTimeLeft
-        this.jobPrintTimeLeft = Utils.isVal(printTimeLeft) ? Utils.secondsToString(printTimeLeft) : ''
+//        console.debug('state ' + this.state)
     }
 
+    // ------------------------------------------------------------------------------------------------------------------------
 }

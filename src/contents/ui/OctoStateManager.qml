@@ -14,19 +14,20 @@ import "./PrinterStateBucket.js" as Bucket
 
 QtObject {
     property var current: OctoState
+	property string lastOctoStateChangeStamp: ''
+
     property var states: []
+
     property var job: JobStateManager {}
     property var printer: PrinterStateManager {}
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    property string octoState: 'N/A'
+    property string octoState: ''
     property string octoStateDescription: ''
     property string octoStateBucket: ''
     property string octoStateBucketName: ''
     property string octoStateIcon: ''
-
-	property string lastOctoStateChangeStamp: ''
 
     // Indicates if print job is currently in progress.
 	property bool jobInProgress: false
@@ -35,8 +36,7 @@ QtObject {
     property double jobCompletion: 0
     property string jobStateDescription: ""
     property string jobPrintTime: ""
-	property string jobPrintStartStamp: ""
-	property string jobPrintTimeLeft: ""
+    property string jobPrintTimeLeft: ""
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -73,18 +73,6 @@ QtObject {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    /*
-    ** Returns name of printer state's bucket.
-    **
-    ** Returns:
-    **	string: printer state bucket
-    */
-    function getPrinterStateBucket() {
-        return printer.current.getPrinterStateBucket()
-    }
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
 	/*
 	** Returns path to icon representing current Octo state (based on
 	** printer state bucket)
@@ -97,7 +85,7 @@ QtObject {
 	    if (!this.apiAccessConfigured) {
 	        bucket = 'configuration'
 	    } else if (this.apiConnected) {
-            bucket = osm.getPrinterStateBucket()
+            bucket = osm.octoStateBucket
         }
 
         return plasmoid.file("", `images/state-${bucket}.png`)
@@ -113,10 +101,12 @@ QtObject {
     function updateOctoState() {
         // calculate new octoState. If different from previous one, check what happened
         // (i.e. was printing is idle) -> print successful
-        var state = Qt.createComponent("OctoState.qml").createObject(null)
+        var newState = Qt.createComponent("OctoState.qml").createObject(null)
 
         var jobInProgress = false
-        var currentStateBucket = this.getPrinterStateBucket()
+//        console.debug('printer.current: TYPE ' + (typeof printer.current))
+//        console.debug('printer.current: ' + printer.current)
+        var currentStateBucket = printer.current.getPrinterStateBucket()
         var currentStateBucketName = this.getPrinterStateBucketName(currentStateBucket);
         var currentState = currentStateBucketName
 
@@ -134,19 +124,24 @@ QtObject {
 
 //        console.debug(`currentState: ${currentState}, previous: ${this.previousOctoState}`);
         if (currentState != this.previousOctoState) {
-            state.icon = osm.getOctoStateIcon()
-            state.state = currentState
-            state.stateBucket = currentStateBucket
-            state.stateBucketName = currentStateBucketName
-
-            this.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
-
-            this.states.unshift(states)
-            this.current = state
+            newState.icon = osm.getOctoStateIcon()
+            newState.state = currentState
+            newState.stateBucket = currentStateBucket
+            newState.stateBucketName = currentStateBucketName
 
             updateOctoStateDescription()
-            exposeCurrentState()
 
+//console.debug('job: ' + job.current)
+            newState.jobFileName = job.current.fileName
+            newState.jobCompletion = job.current.completion
+            newState.jobPrintTime = job.current.printTime
+            newState.jobPrintTimeLeft = job.current.printTimeLeft
+
+            this.states.unshift(newState)
+            this.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
+            this.current = newState
+
+            exposeCurrentState()
 
 //            postNotification()
         }
@@ -158,10 +153,10 @@ QtObject {
         this.octoStateBucketName = current.stateBucketName
         this.octoStateIcon = current.icon
 
-        this.jobFileName = job.current.jobFileName
-        this.jobCompletion = job.current.jobCompletion
-        this.jobPrintTime = job.current.jobPrintTime
-        this.jobPrintTimeLeft = job.current.jobPrintTimeLeft
+        this.jobFileName = current.jobFileName
+        this.jobCompletion = current.jobCompletion
+        this.jobPrintTime = current.jobPrintTime
+        this.jobPrintTimeLeft = current.jobPrintTimeLeft
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

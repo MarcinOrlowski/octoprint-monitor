@@ -14,7 +14,7 @@ import "../js/utils.js" as Utils
 import "PrinterStateBucket.js" as Bucket
 
 QtObject {
-    property var json: ''
+    property var json: null
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -31,12 +31,12 @@ QtObject {
     property bool pf_resuming: false		// working
 
     // printer state
-    property string printer_state: ""
+    property string printer_state: ''
 
     // Bed temperature
-    property double p_bed_actual: 0
-    property double p_bed_offset: 0
-    property double p_bed_target: 0
+    property double bedTemperatureActual: 0
+    property double bedTemperatureOffset: 0
+    property double bedTemperatureTarget: 0
 
     // Hotend temperature
     property double extruder0TemperatureActual: 0
@@ -181,9 +181,9 @@ QtObject {
         this.printer_state = resp.state.text
 
         // temepratures
-        this.p_bed_actual = Utils.getFloat(resp.temperature.bed.actual)
-        this.p_bed_offset = Utils.getFloat(resp.temperature.bed.offset)
-        this.p_bed_target = Utils.getFloat(resp.temperature.bed.target)
+        this.bedTemperatureActual = Utils.getFloat(resp.temperature.bed.actual)
+        this.bedTemperatureOffset = Utils.getFloat(resp.temperature.bed.offset)
+        this.bedTemperatureTarget = Utils.getFloat(resp.temperature.bed.target)
 
         // hot-ends
         // FIXME: check for more than one

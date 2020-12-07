@@ -17,6 +17,7 @@ QtObject {
     property string stateBucketName: ''
     property string icon: ''
 
+    property string jobFileName: ''
     property double jobCompletion: 0
     property string jobPrintTime: ''
     property string jobPrintTimeLeft: ''

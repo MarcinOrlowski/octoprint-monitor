@@ -12,19 +12,24 @@
 import QtQuick 2.0
 
 QtObject {
-    property var current: JobState
+    property var current: null
     property var states: []
+
+    Component.onCompleted: {
+        current = Qt.createComponent("JobState.qml").createObject(null)
+    }
 
     // ------------------------------------------------------------------------------------------------------------------------
 
     function handle(xhr) {
-        var state = Qt.createComponent("JobState.qml").createObject(null)
-        state.fromXhr(xhr)
+        var newState = Qt.createComponent("JobState.qml").createObject(null)
+        newState.fromXhr(xhr)
 
         // check HASH and add if different from last one
-        if (state.jobState != current.jobState) {
-            this.states.unshift(states)
-            this.current = state
+        console.debug(`job handle: new: '${newState.state}', current '${current.state}'`)
+        if (newState.state != current.state) {
+            this.states.unshift(newState)
+            this.current = newState
         }
 
         if (this.states.length > 3) this.states.pop()

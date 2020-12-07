@@ -70,7 +70,7 @@ GridLayout {
         if (!plasmoid.configuration.compactLayoutHideIconForBuckets) return true
 
         var result = true
-        switch (osm.getPrinterStateBucket()) {
+        switch (osm.octoStateBucket) {
             case Bucket.idle: result = !plasmoid.configuration.compactLayoutHideIconForBucketIdle; break;
             case Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideIconForBucketUnknown; break;
             case Bucket.cancelling: result = !plasmoid.configuration.compactLayoutHideIconForBucketCancelling; break;
@@ -96,7 +96,7 @@ GridLayout {
         if (!plasmoid.configuration.compactLayoutHideBuckets) return true
 
         var result = true
-        switch (osm.getPrinterStateBucket()) {
+        switch (osm.octoStateBucket) {
             case Bucket.idle: result = !plasmoid.configuration.compactLayoutHideBucketIdle; break;
             case Bucket.unknown: result = !plasmoid.configuration.compactLayoutHideBucketUnknown; break;
             case Bucket.working: result = !plasmoid.configuration.compactLayoutHideBucketWorking; break;

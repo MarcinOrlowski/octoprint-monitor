@@ -72,7 +72,7 @@ Item {
             } else {
                 // Do not query Job state if we can tell there's no running job
                 var buckets = [ Bucket.error, Bucket.idle, Bucket.disconnected ];
-                if (buckets.includes(osm.getPrinterStateBucket()) === false) {
+                if (buckets.includes(osm.octoStateBucket) === false) {
                     getJobStateFromApi()
                 }
             }

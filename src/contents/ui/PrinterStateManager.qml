@@ -31,7 +31,7 @@ QtObject {
 
         // check HASH and add if different
 
-        this.states.unshift(states)
+        this.states.unshift(state)
         this.current = state
 
         if (this.states.length > 3) this.states.pop()

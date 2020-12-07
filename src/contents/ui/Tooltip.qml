@@ -54,9 +54,9 @@ Item {
 			maximumLineCount: 1
 			wrapMode: Text.NoWrap
 			textFormat: Text.RichText
-            text: '<b>' + i18n('State changed') + `:</b> ${lastOctoStateChangeStamp}`
+            text: '<b>' + i18n('State changed') + `:</b> ${osm.lastOctoStateChangeStamp}`
             font.pixelSize: Qt.application.font.pixelSize * 0.8
-            visible: lastOctoStateChangeStamp != ''
+            visible: osm.lastOctoStateChangeStamp != ''
 		}
 
 		PlasmaComponents.Label {
@@ -110,8 +110,8 @@ Item {
 				textFormat: Text.RichText
 				wrapMode: Text.NoWrap
 				text: {
-				    var msg = `${osm.p_bed_actual}°`
-				    if (osm.p_bed_target > 0) msg += ` of ${osm.p_bed_target}°`
+				    var msg = `${osm.bedTemperatureActual}°`
+				    if (osm.bedTemperatureTarget > 0) msg += ` of ${osm.bedTemperatureTarget}°`
 				    return msg
                 }
 				font.pixelSize: Qt.application.font.pixelSize * 0.8
