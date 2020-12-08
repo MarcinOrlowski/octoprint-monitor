@@ -74,7 +74,7 @@ function secondsToString(seconds, always_include_seconds) {
     }
 
     // do not show seconds until last minute (unless enforced)
-    if (result == '' || always_include_seconds) {
+    if (result == '' || (always_include_seconds && (s > 0))) {
         if (result != '') result += ' ';
         result += `${s}s`;
     }
