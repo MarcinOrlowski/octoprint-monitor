@@ -185,9 +185,9 @@ Item {
                                body = i18n('File "%1".', osm.jobFileName)
                             }
                         }
-                        if (osm.jobPrintTime != '') {
+                        if (osm.jobPrintTimeSeconds != 0) {
                             if (body != '') body += ' '
-                            body += i18n('Print time %1.', osm.jobPrintTime)
+                            body += i18n('Print time %1.', Utils.secondsToString(osm.jobPrintTimeSeconds))
                         }
                         break
                 }
@@ -200,10 +200,10 @@ Item {
                 summary = i18n('New printing started.')
 
                 if (osm.jobFileName != '') {
-                    if (osm.jobPrintTimeLeft == '') {
+                    if (osm.jobPrintTimeLeftSeconds == 0) {
                         body = i18n('File "%1".', osm.jobFileName)
                     } else {
-                        body = i18n('File "%1". Est. print time %2.', osm.jobFileName, osm.jobPrintTimeLeft)
+                        body = i18n('File "%1". Est. print time %2.', osm.jobFileName, Utils.secondsToString(osm.jobPrintTimeLeftSeconds))
                     }
                 }
             }

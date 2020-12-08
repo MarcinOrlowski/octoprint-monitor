@@ -17,12 +17,11 @@ QtObject {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    // Job related stats (if any in progress)
     property string state: ''
     property string stateDescription: ''
 
     property string fileName: ''
-    property double completion: 0
+    property double completion: 0.0
 
     property int    printTimeSeconds: 0
 	property int    printTimeLeftSeconds: 0
@@ -57,18 +56,15 @@ QtObject {
     */
     function fromJson(json) {
         this.json = json
-        this.state = json.state.split(/[ ,]+/)[0].toLowerCase()
 
+        this.state = json.state.split(/[ ,]+/)[0].toLowerCase()
         var stateSplit = json.state.match(/\w+\s+\((.*)\)/)
         this.stateDescription = (stateSplit !== null) ? stateSplit[1] : ''
 
         this.fileName = Utils.getString(json.job.file.display)
-        this.completion = Utils.isVal(json.progress.completion) ? Utils.roundFloat(json.progress.completion) : 0
-
-        var jobPrintTimeSeconds = json.progress.printTime
-        this.printTimeSeconds = Utils.isVal(jobPrintTimeSeconds) ? jobPrintTimeSeconds : 0
-        var jobPrintTimeLeftSeconds = json.progress.printTimeLeft
-        this.printTimeLeftSeconds = Utils.isVal(jobPrintTimeLeftSeconds) ? jobPrintTimeLeftSeconds : 0
+        this.completion = Utils.getFloat(Utils.roundFloat(json.progress.completion))
+        this.printTimeSeconds = Utils.getInt(json.progress.printTime)
+        this.printTimeLeftSeconds = Utils.getInt(json.progress.printTimeLeft)
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

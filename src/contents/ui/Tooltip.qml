@@ -66,16 +66,16 @@ Item {
 			wrapMode: Text.NoWrap
 			text: {
 			    var msg = ''
-			    if (osm.jobPrintTime != '')
-			        msg += i18n('<b>Print time:</b> %1', osm.jobPrintTime)
-                if (osm.jobPrintTimeLeft != '') {
+			    if (osm.jobPrintTimeSeconds != 0)
+			        msg += i18n('<b>Print time:</b> %1', Utils.secondsToString(osm.jobPrintTimeSeconds))
+                if (osm.jobPrintTimeLeftSeconds != 0) {
                     if (msg != '') msg += ', '
-                    msg += i18n('<b>Time left:</b> %1', osm.jobPrintTimeLeft)
+                    msg += i18n('<b>Time left:</b> %1', Utils.secondsToString(osm.jobPrintTimeLeftSeconds))
                 }
                 return msg
             }
 			font.pixelSize: Qt.application.font.pixelSize * 0.8
-			visible: osm.jobPrintTime != '' || osm.jobPrintTimeLeft != ''
+			visible: osm.jobPrintTimeSeconds != 0 || osm.jobPrintTimeLeftSeconds != 0
 		}
 
 		PlasmaComponents.Label {

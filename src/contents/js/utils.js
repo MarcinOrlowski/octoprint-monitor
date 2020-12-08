@@ -13,14 +13,19 @@ function isVal(value) {
     return (typeof value !== 'undefined') && value != null && value != "";
 }
 
+function getInt(value, def) {
+    if (def === undefined) def = 0;
+    return isVal(value) ? value : def;
+}
+
 function getString(value, def) {
     if (def === undefined) def = '';
     return isVal(value) ? value : def;
 }
 
-function getFloat(f) {
-    if (isVal(f)) return parseFloat(f).toFixed();
-    return 0.0;
+function getFloat(value, def) {
+    if (def === undefined) def = 0.0;
+    return isVal(value) ? value : def;
 }
 
 function isValidJsonString(jsonString) {

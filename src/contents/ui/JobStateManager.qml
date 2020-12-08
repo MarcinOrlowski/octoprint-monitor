@@ -32,12 +32,8 @@ QtObject {
             var newState = Qt.createComponent("JobState.qml").createObject(null)
             newState.fromXhr(xhr)
 
-            // check HASH and add if different from last one
-    //        console.debug(`job handle: new: '${newState.state}', current '${current.state}'`)
-            if (newState.state != current.state) {
-                this.states.unshift(newState)
-                this.current = newState
-            }
+            this.states.unshift(newState)
+            this.current = newState
 
             if (this.states.length > 3) this.states.pop()
 

@@ -36,8 +36,8 @@ QtObject {
     property string jobFileName: ''
     property double jobCompletion: 0
     property string jobStateDescription: ''
-    property string jobPrintTime: ''
-    property string jobPrintTimeLeft: ''
+    property int jobPrintTimeSeconds: 0
+    property int jobPrintTimeLeftSeconds: 0
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -129,24 +129,31 @@ QtObject {
         this.jobInProgress = jobInProgress
         this.printerConnected = newState.printer.isPrinterConnected()
 
-        if (currentState != this.previousOctoState) {
-            newState.icon = osm.getOctoStateIcon()
-            newState.state = currentState
-            newState.stateBucket = currentStateBucket
-            newState.stateBucketName = currentStateBucketName
 
-            updateOctoStateDescription()
+        newState.icon = osm.getOctoStateIcon()
+        newState.state = currentState
+        newState.stateBucket = currentStateBucket
+        newState.stateBucketName = currentStateBucketName
 
-            newState.jobFileName = job.current.fileName
-            newState.jobCompletion = job.current.completion
+        updateOctoStateDescription()
 
-            this.states.unshift(newState)
-            this.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
-            this.current = newState
+        newState.jobFileName = job.current.fileName
+        newState.jobCompletion = job.current.completion
+        newState.jobPrintTimeSeconds = job.current.printTimeSeconds
+        newState.jobPrintTimeLeftSeconds = job.current.printTimeLeftSeconds
 
-            exposeCurrentState()
+        this.states.unshift(newState)
+        if (this.states.length > 3) this.states.pop()
 
-//            postNotification()
+        this.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
+        this.current = newState
+
+        exposeCurrentState()
+
+        // do not announce the same state over and over again. We need this check as we still keep
+        // recording state changes (i.e. for progress and timers)
+        if ((this.states.length == 1) || (current.state != this.states[1].state)) {
+            postNotification()
         }
     }
 
@@ -158,8 +165,8 @@ QtObject {
 
         this.jobFileName = current.jobFileName
         this.jobCompletion = current.jobCompletion
-        this.jobPrintTime = current.jobPrintTime
-        this.jobPrintTimeLeft = current.jobPrintTimeLeft
+        this.jobPrintTimeSeconds = current.jobPrintTimeSeconds
+        this.jobPrintTimeLeftSeconds = current.jobPrintTimeLeftSeconds
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -231,8 +238,10 @@ QtObject {
     // ------------------------------------------------------------------------------------------------------------------------
 
     function tick() {
-        this.jobPrintTime = job.current.printTimeSeconds != 0 ? Utils.secondsToString(job.current.printTimeSeconds) : ''
-        this.jobPrintTimeLeft = job.current.printTimeLeftSeconds != 0 ? Utils.secondsToString(job.current.printTimeLeftSeconds) : ''
+        if (this.jobPrintTimeSeconds != 0) this.jobPrintTimeSeconds++
+        if (this.jobPrintTimeLeftSeconds != 0) this.jobPrintTimeLeftSeconds--
+//        console.debug(`tick(): printTime ${this.jobPrintTimeSeconds} ` + Utils.secondsToString(this.jobPrintTimeSeconds)
+//            + `, TimeLeft: ${jobPrintTimeLeftSeconds} ` + Utils.secondsToString(jobPrintTimeLeftSeconds))
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

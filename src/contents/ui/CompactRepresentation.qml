@@ -184,16 +184,16 @@ GridLayout {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        text: i18n('Elapsed: %1', osm.jobPrintTime)
-        visible: osm.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTime && osm.jobPrintTime != ''
+        text: i18n('Elapsed: %1', Utils.secondsToString(osm.jobPrintTimeSeconds))
+        visible: osm.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTime && osm.jobPrintTimeSeconds != 0
     }
 
     PlasmaComponents.Label {
         fontSizeMode: Text.Fit
         minimumPixelSize: 8
         Layout.alignment: Qt.AlignHCenter
-        text: i18n('Left: %1', osm.jobPrintTimeLeft)
-        visible: osm.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTimeLeft && osm.jobPrintTimeLeft != ''
+        text: i18n('Left: %1', Utils.secondsToString(osm.jobPrintTimeLeftSeconds))
+        visible: osm.jobInProgress && plasmoid.configuration.compactLayoutShowPrintTimeLeft && osm.jobPrintTimeLeftSeconds != 0
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

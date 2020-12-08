@@ -169,7 +169,7 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Elapsed: %1', osm.jobPrintTime)
+                text: i18n('Elapsed: %1', Utils.secondsToString(osm.jobPrintTimeSeconds, plasmoid.configuration.showJobPrintTimeAlwaysShowSeconds))
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
                 visible: osm.jobInProgress && plasmoid.configuration.showJobPrintTime && osm.jobPrintTime != ''
             }
@@ -178,9 +178,11 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Left: %1', osm.jobPrintTimeLeft)
+                text: i18n('Left: %1', Utils.secondsToString(osm.jobPrintTimeLeftSeconds, plasmoid.configuration.showJobPrintTimeLeftAlwaysShowSeconds))
+//                text: i18n('Left: %1', Utils.secondsToString(osm.jobPrintTimeLeftSeconds))
+
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
-                visible: osm.jobInProgress && plasmoid.configuration.showJobTimeLeft && osm.jobPrintTimeLeft != ''
+                visible: osm.jobInProgress && plasmoid.configuration.showJobPrintTimeLeft && osm.jobPrintTimeLeft != ''
             }
         } // ColumnLayout
     } // RowLayout

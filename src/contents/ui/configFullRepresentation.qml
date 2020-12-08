@@ -25,7 +25,9 @@ ColumnLayout {
 
     property alias cfg_showJobFileName: showJobFileName.checked
     property alias cfg_showJobPrintTime: showJobPrintTime.checked
-    property alias cfg_showJobTimeLeft: showJobTimeLeft.checked
+    property alias cfg_showJobPrintTimeAlwaysShowSeconds: showJobPrintTimeAlwaysShowSeconds.checked
+    property alias cfg_showJobPrintTimeLeft: showJobPrintTimeLeft.checked
+    property alias cfg_showJobPrintTimeLeftAlwaysShowSeconds: showJobPrintTimeLeftAlwaysShowSeconds.checked
 
     property alias cfg_showSnapshotTimestamp: showSnapshotTimestamp.checked
     property alias cfg_showSnapshotTimestampElapsed: showSnapshotTimestampElapsed.checked
@@ -176,17 +178,39 @@ ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            CheckBox {
-                id: showJobPrintTime
-                Kirigami.FormData.label: i18n("Show elapsed print time")
+            GridLayout {
+                readonly property int indent: 24
+                columns: 1
+                CheckBox {
+                    id: showJobPrintTime
+                    text: i18n("Show elapsed print time")
+                }
+                CheckBox {
+                    id: showJobPrintTimeAlwaysShowSeconds
+                    enabled: cfg_showJobPrintTime
+                    Layout.leftMargin: parent.indent
+                    text: i18n("Always show seconds")
+                }
             }
-            CheckBox {
-                id: showJobTimeLeft
-                Kirigami.FormData.label: i18n("Show estimated remaining time")
+
+            GridLayout {
+                readonly property int indent: 24
+                columns: 1
+                CheckBox {
+                    id: showJobPrintTimeLeft
+                    text: i18n("Show estimated remaining time")
+                }
+                CheckBox {
+                    id: showJobPrintTimeLeftAlwaysShowSeconds
+                    enabled: cfg_showJobPrintTimeLeft
+                    Layout.leftMargin: parent.indent
+                    text: i18n("Always show seconds")
+                }
             }
+
             CheckBox {
                 id: showJobFileName
-                Kirigami.FormData.label: i18n("Show job file name")
+                text: i18n("Show job file name")
             }
         }
     }

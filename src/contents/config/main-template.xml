@@ -141,8 +141,14 @@
         <entry name="showJobPrintTime" type="Bool">
             <default>false</default>
         </entry>
-        <entry name="showJobTimeLeft" type="Bool">
+        <entry name="showJobPrintTimeAlwaysShowSeconds" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="showJobPrintTimeLeft" type="Bool">
             <default>true</default>
+        </entry>
+        <entry name="showJobPrintTimeLeftAlwaysShowSeconds" type="Bool">
+            <default>false</default>
         </entry>
 
 

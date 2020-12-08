@@ -19,8 +19,8 @@ QtObject {
 
     property string jobFileName: ''
     property double jobCompletion: 0
-    property int jobPrintTime: 0
-    property int jobPrintTimeLeft: 0
+    property int jobPrintTimeSeconds: 0
+    property int jobPrintTimeLeftSeconds: 0
 
     property var printer: undefined
     property var job: undefined
