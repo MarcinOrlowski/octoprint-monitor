@@ -312,6 +312,7 @@ ColumnLayout {
 
                 anchors.top: parent.top
                 anchors.left: parent.left
+                anchors.right: parent.right
                 Layout.fillWidth: true
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
