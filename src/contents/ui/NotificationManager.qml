@@ -1,3 +1,14 @@
+/**
+ * OctoPrint Monitor
+ *
+ * Plasmoid to monitor OctoPrint instance and print job progress.
+ *
+ * @author    Marcin Orlowski <mail (#) marcinOrlowski (.) com>
+ * @copyright 2020 Marcin Orlowski
+ * @license   http://www.opensource.org/licenses/mit-license.php MIT
+ * @link      https://github.com/MarcinOrlowski/octoprint-monitor
+ */
+
 import QtQuick 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import QtMultimedia 5.4
@@ -15,7 +26,6 @@ QtObject {
     function post(args) {
         var useNotifySend = plasmoid.configuration.notificationsUseNotifySend
 
-        console.debug(`useNotifySend: ${useNotifySend}`)
         if (useNotifySend) {
             var params = [`--app-name="${args.title}"`]
             if (args.icon) params.push(`--icon="${args.icon}"`)
@@ -26,16 +36,16 @@ QtObject {
 
 //            console.debug(JSON.stringify(args))
             var cmd='notify-send ' + params.join(' ')
-            console.debug(`cmd: ${cmd}`)
+//            console.debug(`cmd: ${cmd}`)
             executable.exec(cmd)
         } else {
             // https://github.com/KDE/plasma-workspace/blob/master/dataengines/notifications/notifications.operations
             var service = dataSource.serviceForSource("notification")
             var operation = service.operationDescription("createNotification")
             operation.appName = args.title
-            operation.appIcon = args.icon || ""
-            operation.summary = args.summary || ""
-            operation.body = args.body || ""
+            operation.appIcon = args.icon || ''
+            operation.summary = args.summary || ''
+            operation.body = args.body || ''
             if (typeof args.expireTimeout !== undefined) {
                 operation.expireTimeout = args.expireTimeout
             }

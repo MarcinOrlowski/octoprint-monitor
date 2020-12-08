@@ -21,6 +21,8 @@ ColumnLayout {
     property alias cfg_cameraViewEnabled: cameraViewEnabled.checked
     property alias cfg_cameraViewUpdateInterval: cameraViewUpdateInterval.value
     property alias cfg_cameraViewSnapshotUrl: cameraViewSnapshotUrl.text
+    property alias cfg_cameraViewControlsEnabled: cameraViewControlsEnabled.checked
+
     property alias cfg_showJobFileName: showJobFileName.checked
     property alias cfg_showJobPrintTime: showJobPrintTime.checked
     property alias cfg_showJobTimeLeft: showJobTimeLeft.checked
@@ -28,6 +30,7 @@ ColumnLayout {
     property alias cfg_stopCameraPollForBuckets: stopCameraPollForBuckets.checked
     property alias cfg_stopCameraPollForBucketUnknown: stopCameraPollForBucketUnknown.checked
     property alias cfg_stopCameraPollForBucketWorking: stopCameraPollForBucketWorking.checked
+    property alias cfg_stopCameraPollForBucketCancelling: stopCameraPollForBucketCancelling.checked
     property alias cfg_stopCameraPollForBucketPaused: stopCameraPollForBucketPaused.checked
     property alias cfg_stopCameraPollForBucketError: stopCameraPollForBucketError.checked
     property alias cfg_stopCameraPollForBucketIdle: stopCameraPollForBucketIdle.checked
@@ -41,16 +44,16 @@ ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: cameraViewEnabled
-                Kirigami.FormData.label: i18n("Enable camera snapshot view") + ':'
+                Kirigami.FormData.label: i18n("Enable camera snapshot view")
             }
 
             TextField {
                 id: cameraViewSnapshotUrl
                 enabled: cfg_cameraViewEnabled
                 validator: RegExpValidator { regExp: /http(s)?:.{5,}/ }
-                Kirigami.FormData.label: i18n("Camera snapshot URL") + ':'
+                Kirigami.FormData.label: i18n("Camera snapshot URL")
             }
 
             PlasmaComponents.SpinBox {
@@ -61,8 +64,15 @@ ColumnLayout {
                 to: 3600
                 stepSize: 5
 
-                Kirigami.FormData.label: i18n("Camera update interval (seconds)") + ':'
+                Kirigami.FormData.label: i18n("Camera update interval (secs)")
             }
+
+            CheckBox {
+                id: cameraViewControlsEnabled
+                enabled: cfg_cameraViewEnabled
+                Kirigami.FormData.label: i18n("Show camera view controls")
+            }
+
         }
     }
 
@@ -74,7 +84,7 @@ ColumnLayout {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: stopCameraPollForBuckets
                 enabled: cfg_cameraViewEnabled
                 text: i18n("Stop camera pooling for state buckets")
@@ -85,37 +95,43 @@ ColumnLayout {
 
                 GridLayout {
                     columns: 2
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketUnknown
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Unknown")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketWorking
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Working")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
+                        id: stopCameraPollForBucketCancelling
+                        enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
+                        Layout.leftMargin: clsStates.indent
+                        text: i18n("Cancelling")
+                    }
+                    CheckBox {
                         id: stopCameraPollForBucketPaused
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Paused")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketError
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Error")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketIdle
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
                         text: i18n("Idle")
                     }
-                    PlasmaComponents.CheckBox {
+                    CheckBox {
                         id: stopCameraPollForBucketDisconnected
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
                         Layout.leftMargin: clsStates.indent
@@ -136,15 +152,15 @@ ColumnLayout {
 
             CheckBox {
                 id: showJobPrintTime
-                Kirigami.FormData.label: i18n("Show elapsed print time") + ':'
+                Kirigami.FormData.label: i18n("Show elapsed print time")
             }
             CheckBox {
                 id: showJobTimeLeft
-                Kirigami.FormData.label: i18n("Show estimated job time left") + ':'
+                Kirigami.FormData.label: i18n("Show estimated remaining time")
             }
             CheckBox {
                 id: showJobFileName
-                Kirigami.FormData.label: i18n("Show job file name") + ':'
+                Kirigami.FormData.label: i18n("Show job file name")
             }
         }
     }

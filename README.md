@@ -12,6 +12,8 @@
  * [License](#license)
  * [Changelog](CHANGES.md)
 
+ * [Contributions](docs/contributions.md)
+
 ---
 
 ## Introduction ##
@@ -34,7 +36,7 @@ Multiple configuration options let you tweak it as you like.
 - Graphical representation of your 3D printer states
 - State and progress of on-going printing job
 - Optional "live" Webcam view directly in the widget
-- Can report printer temperatures (bed, hotends, etc).
+- Can report printer temperatures (bed, extruders, etc).
 - Extensively configurable
 
 ---
@@ -84,6 +86,12 @@ update webcam view in such case (hence 'STOPPED' mark next to screenshot timesta
 ![Desktop widget #2](img/desktop2.png)
 
 Widget now shows additional infomation related to ongoing printing job.
+
+### Camera view manual controls ###
+
+![Desktop widget #3](img/desktop3.png)
+
+Since v1.2.0 you can manually refresh camera view or pause it on demand.
 
 ---
 

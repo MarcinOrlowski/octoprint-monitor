@@ -11,73 +11,47 @@
 
 import QtQuick 2.1
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.3
 import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.kirigami 2.6 as Kirigami
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
-import "../js/utils.js" as Util
+import "../js/utils.js" as Utils
+import "../js/version.js" as Version
+import "./PrinterStateBucket.js" as Bucket
 
 Item {
     id: main
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    OctoStateManager {
+        id: osm
+    }
+
+    // Debug switch to mimic API access using hardcded JSONs
+    readonly property bool fakeApiAccess: false
 
     Plasmoid.compactRepresentation: CompactRepresentation {}
     Plasmoid.fullRepresentation: FullRepresentation {}
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    // Printer state flags
-    property bool pf_cancelling: false		// working
-    property bool pf_closedOrError: false	// error
-    property bool pf_error: false			// error
-    property bool pf_finishing: false		// working
-    property bool pf_operational: false		// idle
-    property bool pf_paused: false			// paused
-    property bool pf_pausing: false			// working
-    property bool pf_printing: false		// working
-    property bool pf_ready: false			// idle
-    property bool pf_resuming: false		// working
+    property string plasmoidTitle: ''
+    readonly property string plasmoidVersion: Version.version
+    readonly property string plasmoidUrl: 'https://github.com/marcinorlowski/octoprint-monitor'
 
-    // printer state
-    property string printer_state: ""
-
-    // Bed temperature
-    property double p_bed_actual: 0
-    property double p_bed_offset: 0
-    property double p_bed_target: 0
-
-    // Hotend temperature
-    property double p_he0_actual: 0
-    property double p_he0_offset: 0
-    property double p_he0_target: 0
-
-    // True if printer is connected to OctoPrint
-    property bool printerConnected: false
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
-    // Job related stats (if any in progress)
-    property string jobState: "N/A"
-    property string jobStateDescription: ""
-    property string jobFileName: ""
-    property double jobCompletion: 0
-
-    property string jobPrintTime: ""
-	property string jobPrintStartStamp: ""
-	property string jobPrintTimeLeft: ""
-
-    // Indicates if print job is currently in progress.
-	property bool jobInProgress: false
+    Component.onCompleted: {
+        plasmoidTitle = Plasmoid.title
+        plasmoid.setAction("showAboutDialog", i18n('About %1…', plasmoidTitle));
+    }
 
     // ------------------------------------------------------------------------------------------------------------------------
 
     // Indicates we were able to successfuly connect to OctoPrint API
     property bool apiConnected: false
 
-    // Tells if plasmoid API access is already confugred.
-    property bool apiAccessConfigured: false;
-
     // ------------------------------------------------------------------------------------------------------------------------
-
-    property bool firstApiRequest: true
 
     /*
     ** State fetching timer. We fetch printer state first and job state only
@@ -85,6 +59,8 @@ Item {
     */
 	Timer {
 		id: mainTimer
+
+        property bool firstApiRequest: true
 
         interval: plasmoid.configuration.statusPollInterval * 1000
         repeat: true
@@ -96,13 +72,13 @@ Item {
             // First time we need to fire both requests unconditionally, otherwise
             // job state request will neede to wait for another timer trigger, causing
             // odd delay in widget update.
-            if (main.firstApiRequest) {
-                main.firstApiRequest = false;
+            if (this.firstApiRequest) {
+                this.firstApiRequest = false;
                 getJobStateFromApi();
             } else {
                 // Do not query Job state if we can tell there's no running job
-                var buckets = [ main.bucket_error, main.bucket_idle, main.bucket_disconnected ];
-                if (buckets.includes(getPrinterStateBucket()) === false) {
+                var buckets = [ Bucket.error, Bucket.idle, Bucket.disconnected ];
+                if (buckets.includes(osm.octoStateBucket) === false) {
                     getJobStateFromApi()
                 }
             }
@@ -139,77 +115,9 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    // Printer status buckets
-    readonly property string bucket_unknown: "unknown"
-    readonly property string bucket_working: "working"
-    readonly property string bucket_paused: "paused"
-    readonly property string bucket_error: "error"
-    readonly property string bucket_idle: "idle"
-    readonly property string bucket_disconnected: "disconnected"
-
-    /*
-    ** Returns name of printer state's bucket.
-    **
-    ** Returns:
-    **	string: printer state bucket name
-    */
-    function getPrinterStateBucket() {
-        var bucket = undefined;
-
-        if ( main.pf_cancelling || main.pf_finishing || main.pf_printing || main.pf_pausing ) {
-            bucket = main.bucket_working
-        } else if ( main.pf_closedOrError || main.pf_error ) {
-            bucket = main.bucket_error
-        } else if ( main.pf_operational || main.pf_ready ) {
-            bucket = main.bucket_idle
-        } else if ( main.pf_paused ) {
-            bucket = main.bucket_paused;
-        }
-
-        if (bucket == undefined) {
-            bucket = main.bucket_disconnected
-        }
-
-        return bucket;
-    }
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
-    /*
-    ** Checks if current printer status flags indicate there's actually print in progress.
-    **
-    ** Returns:
-    **	bool
-    */
-    function isJobInProgress() {
-        var result = main.pf_printing || main.pf_paused || main.pf_resuming;
-        return result;
-    }
-
-    /*
-    ** Checks if current printer status flags indicate device is offline or not.
-    **
-    ** Returns:
-    **	bool
-    */
-    function isPrinterConnected() {
-        return  main.pf_cancelling
-             || main.pf_error
-             || main.pf_finishing
-             || main.pf_operational
-             || main.pf_paused
-             || main.pf_pausing
-             || main.pf_printing
-             || main.pf_ready
-             || main.pf_resuming
-//           || main.pf_closedOrError
-        ;
-    }
-
-    // ------------------------------------------------------------------------------------------------------------------------
-
-    property string octoState: "connecting"
-    property string octoStateBucket: "connecting"
+    property string octoState: Bucket.connecting
+    property string octoStateBucket: Bucket.connecting
+    property string octoStateBucketName: Bucket.connecting
     // FIXME we should have SVG icons here
     property string octoStateIcon: plasmoid.file("", "images/state-unknown.png")
     property string octoStateDescription: 'Connecting to OctoPrint API.'
@@ -217,26 +125,6 @@ Item {
 
     property string previousOctoState: ""
     property string previousOctoStateBucket: ""
-
-    function updateOctoStateDescription() {
-        var desc = main.jobStateDescription;
-        if (desc == '') {
-            switch(main.octoState) {
-                case bucket_unknown: desc = 'Unable to determine root cause.'; break;
-                case bucket_paused: desc = 'Print job is PAUSED now.'; break;
-                case bucket_idle: desc = 'Printer is operational and idle.'; break;
-                case bucket_disconnected: desc = 'OctoPrint is not connected to the printer.'; break;
-//              case bucket_working: ""
-//              case bucket_error: "error"
-                case 'unavailable': desc = 'Unable to connect to OctoPrint API.'; break;
-                case 'connecting': desc = 'Connecting to OctoPrint API.'; break;
-
-                case 'configuration': desc = 'Widget is not configured!'; break;
-            }
-        }
-
-        main.octoStateDescription = desc;
-    }
 
     /*
     ** Constructs and posts desktop notification reflecting curent state.
@@ -247,96 +135,88 @@ Item {
     **  void
     */
     function postNotification() {
-        var current = main.octoStateBucket
-        var previous = main.previousOctoStateBucket
+        var current = osm.octoStateBucket
+        // carlos
+        var previous = osm.previousOctoStateBucket
         var post = false
         var expireTimeout = 0
+        var summary = ''
+        var body = ''
 
         if (!plasmoid.configuration.notificationsEnabled) return
 
+        var body = osm.octoStateDescription
         if (current != previous) {
-            // switching back from working to anything but paused
-            post = !post && (previous == bucket_working && current != bucket_paused)
-
-            // switching from from anything to working
-            if (!post && (current == bucket_working)) {
+            // switching back from "Working"
+            if (!post && (previous == Bucket.working)) {
                 post = true
-                expireTimeout = 15000
+                switch (current) {
+                    case Bucket.cancelling:
+                        summary = i18n('Cancelling job "%1".', osm.jobFileName)
+                        break;
+
+                    case Bucket.paused:
+                        summary = i18n('Print job "%1" paused.', osm.jobFileName)
+                        break
+
+                    default:
+                        if (osm.jobCompletion == 100) {
+                            summary = i18n('Print "%s" completed.', osm.jobFileName)
+                            expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobSuccessful
+                        } else {
+                            summary = i18n('Print stopped.')
+                            expireTimeout = plasmoid.configuration.notificationsTimeoutBucketPrintJobFailed
+                            var percentage = osm.jobCompletion > 0 ? osm.jobCompletion : osm.previousJobCompletion
+                            if (percentage > 0) {
+                                body = i18n('File "%1" stopped at %1%%.', osm.jobFileName, percentage)
+                            } else {
+                               body = i18n('File "%1".', osm.jobFileName)
+                            }
+                        }
+                        if (osm.jobPrintTime != '') {
+                            if (body != '') body += ' '
+                            body += i18n('Print time %1.', osm.jobPrintTime)
+                        }
+                        break
+                }
+            }
+
+            // switching from anything (but connecting) to bucket "Working"
+            if (!post && (current == Bucket.working) && (previous != Bucket.connecting)) {
+                post = true
+                expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
+                summary = i18n('New printing started.')
+
+                if (osm.jobFileName != '') {
+                    if (osm.jobPrintTimeLeft == '') {
+                        body = i18n('File "%1".', osm.jobFileName)
+                    } else {
+                        body = i18n('File "%1". Est. print time %2.', osm.jobFileName, osm.jobPrintTimeLeft)
+                    }
+                }
             }
         }
 
-//        console.debug(`post: ${post}, prev: ${previous}, current: ${current}, expTimeout: ${expireTimeout}`);
-        if (post) notificationManager.post({
-            'title': Plasmoid.title,
-            'icon': main.octoStateIcon,
-            'summary': `State changed from '${main.previousOctoState}' to '${main.octoState}'.`,
-            'body': main.octoStateDescription,
-            'expireTimeout': expireTimeout,
-        });
-    }
-
-    /*
-    ** Calculates current octoState. Updates internal data if state changes.
-    **
-    ** Returns:
-    **  void
-    */
-    function updateOctoState() {
-        // calculate new octoState. If different from previous one, check what happened
-        // (i.e. was printing is idle) -> print successful
-
-        var jobInProgress = false
-        var printerConnected = isPrinterConnected()
-        var currentStateBucket = getPrinterStateBucket()
-        var currentState = currentStateBucket
-
-        main.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '')
-
-        if (main.apiConnected) {
-            jobInProgress = isJobInProgress()
-            if (jobInProgress && main.jobState == "printing") {
-                currentState = main.jobState
+//        console.debug(`post: ${post}, state: ${previous}=>${current}, timeout: ${expireTimeout}, body: "${body}"`)
+        if (post) {
+            var title = main.plasmoidTitle
+            // there's system timer shown (xx ago) shown for non expiring notifications
+            if (expireTimeout == 0) {
+                title += ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
             }
-        } else {
-            currentState = (!main.apiAccessConfigured) ? 'configuration' : 'unavailable'
-        }
-
-        main.jobInProgress = jobInProgress
-        main.printerConnected = printerConnected
-
-        console.debug(`currentState: ${currentState}, previous: ${main.previousOctoState}`);
-        if (currentState != main.previousOctoState) {
-            main.previousOctoState = main.octoState
-            main.previousOctoStateBucket = main.octoStateBucket
-
-            main.octoState = currentState
-            main.octoStateBucket = currentStateBucket
-            updateOctoStateDescription()
-
-            main.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
-            main.octoStateIcon = getOctoStateIcon()
-
-            postNotification()
+            if (summary == '') {
+                summary = "Printer new state: '" + Utils.ucfirst(osm.octoState) + "'."
+            }
+            notificationManager.post({
+                'title': title,
+                'icon': osm.octoStateIcon,
+                'summary': summary,
+                'body': body,
+                'expireTimeout': expireTimeout * 1000,
+            });
         }
     }
 
-	/*
-	** Returns path to icon representing current Octo state (based on
-	** printer state bucket)
-	**
-	** Returns:
-	**	string: path to plasmoid's icon file
-	*/
-	function getOctoStateIcon() {
-   	    var bucket = 'dead'
-	    if (!main.apiAccessConfigured) {
-	        bucket = 'configuration'
-	    } else if (main.apiConnected) {
-            bucket = getPrinterStateBucket()
-        }
-
-        return plasmoid.file("", `images/state-${bucket}.png`)
-	}
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -351,14 +231,14 @@ Item {
         var apiUrl = plasmoid.configuration.api_url
         var apiKey = plasmoid.configuration.api_key
 
-		if ( apiUrl + apiKey == "" ) return null;
-
-        var xhr = new XMLHttpRequest()
-        var url = `${apiUrl}/${req}`
-        xhr.open('GET', url)
-        xhr.setRequestHeader("Host", apiUrl)
-        xhr.setRequestHeader("X-Api-Key", apiKey)
-
+		if ( apiUrl != '' && apiKey != '' ) {
+            var xhr = null
+            xhr = new XMLHttpRequest()
+            var url = `${apiUrl}/${req}`
+            xhr.open('GET', url)
+            xhr.setRequestHeader("Host", apiUrl)
+            xhr.setRequestHeader("X-Api-Key", apiKey)
+        }
         return xhr
     }
 
@@ -370,65 +250,38 @@ Item {
 	** Returns:
 	**	void
     */
+//	function getJobStateFromApi() {
+//	    if (!main.fakeApiAccess) {
+//	        getJobStateFromApiReal()
+//        } else {
+//            getJobStateFromApiFake()
+//        }
+//	}
+//
+//    function getJobStateFromApiFake() {
+//        main.apiConnected = true
+//        var json='{"job":{"averagePrintTime":null,"estimatedPrintTime":19637.457560140414,"filament":{"tool0":{"length":9744.308959960938,"volume":68.87846124657558}},"file":{"date":1607166777,"display":"deercraft-stick.gcode","name":"deercraft-stick.gcode","origin":"local","path":"deercraft-stick.gcode","size":17025823},"lastPrintTime":null,"user":"_api"},"progress":{"completion":15.966200282946675,"filepos":2718377,"printTime":2582,"printTimeLeft":16499,"printTimeLeftOrigin":"genius"},"state":"Printing"}'
+//        printerStateManager.handle(JSON.parse(json))
+//        updateOctoState()
+//    }
+
 	function getJobStateFromApi() {
+//	function getJobStateFromApiReal() {
 	    var xhr = getXhr('job')
+        if (xhr !== null) {
+            xhr.onreadystatechange = (function () {
+                // We only care about DONE readyState.
+                if (xhr.readyState !== 4) return
 
-        if (xhr === null) {
-            updateOctoState()
-            return
+////                 Ensure we managed to talk to the API
+//                main.apiConnected = (xhr.status !== 0)
+
+//              console.debug(`ResponseText: "${xhr.responseText}"`)
+                osm.handleJobState(xhr)
+            });
+            xhr.send()
         }
-
-        xhr.onreadystatechange = (function () {
-            // We only care about DONE readyState.
-            if (xhr.readyState !== 4) return
-
-            // Ensure we managed to talk to the API
-            main.apiConnected = (xhr.status !== 0)
-
-            if (xhr.status === 200) {
-//                console.debug(`ResponseText: "${xhr.responseText}"`)
-                try {
-                    parseJobStatusResponse(JSON.parse(xhr.responseText))
-                } catch (error) {
-                    console.debug('Error handling API job state response.')
-                    console.debug(error)
-                }
-                updateOctoState()
-            } else {
-                console.debug(`Unexpected job response status code ('${xhr.status}').`)
-            }
-        });
-        xhr.send()
     }
-
-	/*
-	** Parses printing job status JSON response object.
-	**
-	** Arguments:
-	**	resp: response JSON object
-	**
-	** Returns:
-	**	void
-	*/
-	function parseJobStatusResponse(resp) {
-		var state = resp.state.split(/[ ,]+/)[0]
-
-		main.jobState = state.toLowerCase()
-
-		var stateSplit = resp.state.match(/(.+)\s+\((.*)\)/)
-		main.jobStateDescription = (stateSplit !== null) ? stateSplit[2] : ''
-		updateOctoStateDescription()
-
-		main.jobFileName = Util.getString(resp.job.file.display)
-
-       	main.jobCompletion = (Util.isVal(resp.progress.completion)) ? Util.roundFloat(resp.progress.completion) : 0
-
-		var jobPrintTime = resp.progress.printTime
-		main.jobPrintTime = (Util.isVal(jobPrintTime)) ? Util.secondsToString(jobPrintTime) : '???'
-
-		var printTimeLeft = resp.progress.printTimeLeft
-        main.jobPrintTimeLeft = (Util.isVal(printTimeLeft)) ? Util.secondsToString(printTimeLeft) : '???'
-	}
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -438,102 +291,53 @@ Item {
 	** Returns:
 	**	void
     */
+//    function getPrinterStateFromApi() {
+//        if (!main.fakeApiAccess) {
+//            getPrinterStateFromApiReal()
+//        } else {
+//            getPrinterStateFromApiFake()
+//        }
+//    }
+
+//    function getPrinterStateFromApiFake() {
+//        var json = '{"state":{"flags":{"cancelling":false,"closedOrError":false,"error":false,"finishing":false,"operational":true,"paused":false,"pausing":false,"printing":true,"ready":false,"resuming":false,"sdReady":false},"text":"Printing"},"temperature":{"bed":{"actual":65.0,"offset":0,"target":65.0},"tool0":{"actual":200.0,"offset":0,"target":200.0}}}';
+//        parsePrinterStateResponse(JSON.parse(json))
+//        updateOctoState();
+//    }
+
     function getPrinterStateFromApi() {
+//    function getPrinterStateFromApiReal() {
         var xhr = getXhr('printer')
 
-        if (xhr === null) {
-            updateOctoState()
-            return
+        if (xhr !== null) {
+            xhr.onreadystatechange = (function () {
+                osm.handlePrinterState(xhr)
+            });
+            xhr.send()
         }
-
-        xhr.onreadystatechange = (function () {
-            // We only care about DONE readyState.
-            if (xhr.readyState !== 4) return
-
-            // Ensure we managed to talk to the API
-            main.apiConnected = (xhr.status !== 0)
-
-            switch (xhr.status) {
-                case 200:
-//                  console.debug(`ResponseText: "'${xhr.responseText}'"`)
-                    try {
-                        parsePrinterStateResponse(JSON.parse(xhr.responseText))
-                    } catch (error) {
-                        setPrinterFlags(false)
-                        main.pf_error = true
-                    }
-                    break
-                case 409:
-                    // Printer is not operational
-                    setPrinterFlags(false)
-                    break
-                default:
-                    console.debug(`Unexpected printer response status code ('${xhr.status}').`)
-                    main.pf_error = true
-                    break
-            }
-            updateOctoState();
-        });
-        xhr.send()
     }
 
-    /**
-    ** Sets pf_* flags to given bool value. Just for DRY.
-    **
-    ** Arguments:
-    **  state: true/false to set all flags to.
-    **
-    ** Returns:
-    **  void
-    */
-    function setPrinterFlags(state) {
-        main.pf_cancelling = state
-        main.pf_closedOrError = state
-        main.pf_finishing = state
-        main.pf_operational = state
-        main.pf_paused = state
-        main.pf_pausing = state
-        main.pf_printing = state
-        main.pf_ready = state
-        main.pf_resuming = state
-        main.pf_error = state
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    UpdateChecker {
+        id: updateChecker
+        plasmoidUMetaDataUrl: 'https://raw.githubusercontent.com/MarcinOrlowski/octoprint-monitor/master/src/metadata.desktop'
+        plasmoidTitle: main.plasmoidTitle
+        plasmoidVersion: main.plasmoidVersion
     }
 
-	/*
-	** Parses printer status JSON response object.
-	**
-	** Arguments:
-	**	resp: response JSON object
-	**
-	** Returns:
-	**	void
-	*/
-	function parsePrinterStateResponse(resp) {
-		main.pf_cancelling = resp.state.flags.cancelling
-		main.pf_closedOrError = resp.state.flags.closedOrError
-		main.pf_error = resp.state.flags.error
-		main.pf_finishing = resp.state.flags.finishing
-		main.pf_operational = resp.state.flags.operational
-		main.pf_paused = resp.state.flags.paused
-		main.pf_pausing = resp.state.flags.pausing
-		main.pf_printing = resp.state.flags.printing
-		main.pf_ready = resp.state.flags.ready
-		main.pf_resuming = resp.state.flags.resuming
+    // ------------------------------------------------------------------------------------------------------------------------
 
-		// Textural representation of printer state as returned by API
-		main.printer_state = resp.state.text
+    function action_showAboutDialog() {
+        aboutDialog.visible = true
+    }
 
-		// temepratures
-		main.p_bed_actual = Util.getFloat(resp.temperature.bed.actual)
-		main.p_bed_offset = Util.getFloat(resp.temperature.bed.offset)
-		main.p_bed_target = Util.getFloat(resp.temperature.bed.target)
-
-		// hot-ends
-		// FIXME: check for more than one
-		main.p_he0_actual = Util.getFloat(resp.temperature.tool0.actual)
-		main.p_he0_offset = Util.getFloat(resp.temperature.tool0.offset)
-		main.p_he0_target = Util.getFloat(resp.temperature.tool0.target)
-	}
+    AboutDialog {
+        id: aboutDialog
+        plasmoidTitle: main.plasmoidTitle
+        plasmoidVersion: main.plasmoidVersion
+    }
 
     // ------------------------------------------------------------------------------------------------------------------------
 

@@ -14,10 +14,14 @@
      * [Configuration](#configuration)
        * [Compact layout](#compact-layout)
        * [Full layout](#full-layout)
+       * [Desktop notifications](#desktop-notifications)
+       * [Printer states](#printer-states)
        * [OctoPrint API](#octoprint-api)
    * [Troubleshooting](troubles.md)
    * [License](../README.md/#license)
    * [Changelog](../CHANGES.md)
+
+   * [Contributions](docs/contributions.md)
 
 ---
 
@@ -61,27 +65,38 @@ used when you put it into your vertical or horizontal panel.
  - **State icon** - graphical state representation (octopus icons)
    - **Disable state icon** - controls visibility of state icon. 
    - **Override maximum state icon size** - by default visible state icons adapts its size to
-   dimensions of the container it sits in. In some cases, esp. with vertical panels this may
-   cause icon to occupy too much space for no actual benefits. This option lets you set
-   max allowed icon size and if the container is bigger, then icon will not grow beyong
-   specified dimensions.
+     dimensions of the container it sits in. In some cases, esp. with vertical panels this may
+     cause icon to occupy too much space for no actual benefits. This option lets you set
+     max allowed icon size and if the container is bigger, then icon will not grow beyong
+     specified dimensions.
+   - **Hide state icon for specific buckets** - you may want to see the state icon 
+     for specific states only to make widgets as small as possible. **NOTE:** if there will be
+     no other information to show for given state (i.e. you hide both icon and state name)
+     this setting will be ignored and icon will be shown regardless.
 
 - **State text** - textual representation of state
   - **Display text state line** - controls visibility of text state shown usually below the icon.
-  This line ususally contains just state bucket name (i.e. "Idle") and print job progress
-  percentage (if print job is currently ongoing). Disabling this element hides both types
-  of presented information.
+    This line ususally contains just state bucket name (i.e. "Idle") and print job progress
+    percentage (if print job is currently ongoing). Disabling this element hides both types
+    of presented information.
   - **Show state bucket name** - you may want to disable state name completely, w/o affecting
-  other information presented in this line. If this option is enabled you will not see any
-  state info but you may still see the progress percentage.
+    other information presented in this line. If this option is enabled you will not see any
+    state info but you may still see the progress percentage.
   - **Hide state text for specific buckets** - you may want to hide this information
-  for specific states only to make widgets as small as possible.
+    for specific states only to make widgets as small as possible.
   - **Display print progress percentage** - if enabled, will as name indicates show
-  percentage of ongoing print job. If nothing is being printed, this element is hidden.
+    percentage of ongoing print job. If nothing is being printed, this element is hidden.
 
 - **Job progress**
   - **Show print job progress bar** - if enabled, small progress bar will be shown as
-  soon as print job is started.
+    soon as print job is started.
+  - **Show elapsed print time** - contrils visibiliy of elapsed print time. If there's
+    no print job in progress, this info is hidden.
+  - **Show estimated remaining time** - displays **estimated** time needed to complete
+    ongoing print. This information comes from OctoPrint and, unfortunatelly is often
+    not very accurate, so to speak. You may want to disable it and using percentage
+    or progress bar instead. If there's no print job in progress, this info is hidden.
+
 
 > **HINT:** with default settings, active print job is presented as "Printing 12.1%",
 > which is somehow redundant as percentage is only shown for active print job. You may
@@ -97,35 +112,66 @@ Full layout is being used when `OctoPrint Monitor` is used as regular desktop wi
 
  - **Camera view**
    - **Enable camera snapshot view** - if your setup includes OctoPrint connected webcam
-   then you may enable this option in `OctoPrint Monitor` to show frequently updated
-   snapshots from your webcam directly on your desktop.
+     then you may enable this option in `OctoPrint Monitor` to show frequently updated
+     snapshots from your webcam directly on your desktop.
    - **Camera snapshot URL** - complete address to OctoPrint snapshot feature. By default
-   it should be `http://<OCTOPRINT>/webcam/?action=snapshot` where `<OCTOPRINT>` is either
-   IP address of your OctoPrint instance or its domain name (i.e. `octoprint.local` that
-   you use). You can find that URL in OctoPrint settings in "Webcam and timelapse" section.
-   **NOTE:** note, that OctoPrint uses `127.0.0.1` as IP address in default settings. This
-   will of course not work if copied - you must replace `127.0.0.1` by proper IP address
-   of your OctoPrint.
+     it should be `http://<OCTOPRINT>/webcam/?action=snapshot` where `<OCTOPRINT>` is either
+     IP address of your OctoPrint instance or its domain name (i.e. `octoprint.local` that
+     you use). You can find that URL in OctoPrint settings in "Webcam and timelapse" section.
+     **NOTE:** note, that OctoPrint uses `127.0.0.1` as IP address in default settings. This
+     will of course not work if copied - you must replace `127.0.0.1` by proper IP address
+     of your OctoPrint.
    - **Camera update intervals** - specify how frequently you want webcam snapshot view
-   to be updated. You may want to increase the interval, to reduce network traffic and
-   drop the load off OctoPrint.
+     to be updated. You may want to increase the interval, to reduce network traffic and
+     drop the load off OctoPrint.
+   - **Show camera view controls** - enables visibility of "Start/Pause", "Stop" and 
+     "Refresh" camera view control buttons.
+
  - **Camera view control**
    - **Stop camera polling for state buckets** - if enabled, camera snapshot polling
-   will stop if printer enters selected states. You may want to i.e. enable this
-   option for i.e. "Idle" and "Disconnected" states as most likely there will be nothing
-   interesting to watch in these states.  
+     will stop if printer enters selected states. You may want to i.e. enable this
+     option for i.e. "Idle" and "Disconnected" states as most likely there will be nothing
+     interesting to watch in these states.  
  - **Misclaneous**
    - **Show elapsed print time** - contrils visibiliy of elapsed print time. If there's
-   no print job in progress, this info is hidden.
-   - **Show estimated job time left** - displays **estimated** time needed to complete
-   ongoing print. This information comes from OctoPrint and, unfortunatelly is often
-   not very accurate, so to speak. You may want to disable it and using percentage
-   or progress bar instead. If there's no print job in progress, this info is hidden.
+     no print job in progress, this info is hidden.
+   - **Show estimated remaining time** - displays **estimated** time needed to complete
+     ongoing print. This information comes from OctoPrint and, unfortunatelly is often
+     not very accurate, so to speak. You may want to disable it and using percentage
+     or progress bar instead. If there's no print job in progress, this info is hidden.
    - **Show job file name** - if enabled, name of currently printer GCODE file will
-   be shown in the widget. If there's no print job in progress, this info is hidden.
+     be shown in the widget. If there's no print job in progress, this info is hidden.
    
  **NOTE:** You must configure OctoPrint properly and ensure its snapshot URL is accessible
  form other machines in your network (simply check using your browser).   
+
+### Desktop notifications ###
+
+`OctoPrint Monitor` can post desktop notifications to attract user attention. 
+
+![Desktop notifications](img/config-notifications.png)
+
+ - **Post desktop notifications** - when checked, various events (like printer state changes etc)
+   will additionally announced by posting desktop notification.
+ - **Notification timeouts**
+   - **Print job started** - timeout (in seconds) for desktop notification of new print job started. 
+     Setting to `0` means no timeout.
+   - **Print job successful** - timeout (in seconds) for desktop notification of successful completion
+     of print job. Setting to `0` means no timeout.
+   - **Print job failed** - timeout (in seconds) for desktop notification of failed (aborted, stopped,
+     printer disconnected etc) print job. Setting to `0` means no timeout.
+
+### Printer states ###
+
+Several printer state names can be configured to your liking. So you can i.e. have status icon
+hidden for `Idle` state and at the same time set `Idle` bucket name to i.e. `Printer #2 is idle.`
+which may be more useful in several cases.
+
+![Printer states](img/config-printer.png)
+
+- **Custom printer state names** - when checked, provided text will be used in place of original
+  state bucket name. If custom string is enabled but not provided (empty string), default value
+  will be used instead.
 
 ## OctoPrint API ##
 
@@ -135,11 +181,10 @@ Configure OctoPrint API access here.
 
  - **API access**
    - **API key** - put OctoPrint "Global API Access Key" here (can be found in "API"
-   section of OctoPrint preferences).
+     section of OctoPrint preferences).
    - **OctoPrint API URL** - put full URL to your OctoPrint REST API. This is usually
-   construced as `http://<OCTOPRINT>/api` where `<OCTOPRINT>` is IP address or domain
-   name of your OctoPrint installation.
+     construced as `http://<OCTOPRINT>/api` where `<OCTOPRINT>` is IP address or domain
+     name of your OctoPrint installation.
  - **Data polling**
    - **Status poll interval** - controls how often `OctoPrint Monitor` will query
-   OctoPrint about its status and the printer. 
-
+     OctoPrint about its status and the printer. 

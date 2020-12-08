@@ -13,6 +13,8 @@
    * [License](../README.md/#license)
    * [Changelog](../CHANGES.md)
 
+   * [Contributions](docs/contributions.md)
+
 ---
 
 ## Troubleshooting ##

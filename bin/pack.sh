@@ -1,5 +1,14 @@
 #!/bin/bash
 
+#  OctoPrint Monitor
+#
+#  Packs plasmoid into distributable archive
+#
+#  @author    Marcin Orlowski <mail (#) marcinOrlowski (.) com>
+#  @copyright 2020 Marcin Orlowski
+#  @license   http://www.opensource.org/licenses/mit-license.php MIT
+#  @link      https://github.com/MarcinOrlowski/octoprint-monitor
+
 declare -r src_dir="src"
 
 if [[ ! -d "${src_dir}" ]]; then

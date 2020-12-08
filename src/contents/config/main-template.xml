@@ -23,6 +23,36 @@
         <entry name="compactLayoutStateIconEnabled" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="compactLayoutHideIconForBuckets" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketUnknown" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketWorking" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketCancelling" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketPaused" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketError" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketIdle" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideIconForBucketDisconnected" type="Bool">
+            <default>false</default>
+        </entry>
+
+
+
+
+
+
         <entry name="compactLayoutStateEnabled" type="Bool">
             <default>true</default>
         </entry>
@@ -33,6 +63,13 @@
             <default>true</default>
         </entry>
 
+        <entry name="compactLayoutShowPrintTime" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutShowPrintTimeLeft" type="Bool">
+            <default>true</default>
+        </entry>
+
 
         <entry name="compactLayoutCustomIconSizeEnabled" type="Bool">
             <default>true</default>
@@ -40,8 +77,6 @@
         <entry name="compactLayoutCustomIconSize" type="Int">
             <default>96</default>
         </entry>
-
-
 
 
 
@@ -59,6 +94,9 @@
             <default>false</default>
         </entry>
         <entry name="compactLayoutHideBucketWorking" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="compactLayoutHideBucketCancelling" type="Bool">
             <default>false</default>
         </entry>
         <entry name="compactLayoutHideBucketPaused" type="Bool">
@@ -83,11 +121,15 @@
         <entry name="cameraViewUpdateInterval" type="Int">
             <default>10</default>
         </entry>
+        <entry name="cameraViewControlsEnabled" type="Bool">
+            <default>true</default>
+        </entry>
+
         <entry name="showJobFileName" type="Bool">
             <default>true</default>
         </entry>
         <entry name="showJobPrintTime" type="Bool">
-            <default>true</default>
+            <default>false</default>
         </entry>
         <entry name="showJobTimeLeft" type="Bool">
             <default>true</default>
@@ -102,6 +144,9 @@
             <default>false</default>
         </entry>
         <entry name="stopCameraPollForBucketWorking" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="stopCameraPollForBucketCancelling" type="Bool">
             <default>false</default>
         </entry>
         <entry name="stopCameraPollForBucketPaused" type="Bool">
@@ -126,6 +171,69 @@
         <entry name="notificationsUseNotifySend" type="Bool">
             <default>false</default>
         </entry>
+
+        <entry name="notificationsTimeoutPrintJobStarted" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="notificationsTimeoutPrintJobSuccessful" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="notificationsTimeoutPrintJobFailed" type="Int">
+            <default>0</default>
+        </entry>
+    </group>
+
+
+    <group name="PrinterStates">
+        <entry name="printerStateNameForBucketUnknownEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketUnknown" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketWorkingEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketWorking" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketCancellingEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketCancelling" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketPausedEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketPaused" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketErrorEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketError" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketIdleEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketIdle" type="String">
+            <default></default>
+        </entry>
+
+        <entry name="printerStateNameForBucketDisconnectedEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="printerStateNameForBucketDisconnected" type="String">
+            <default></default>
+        </entry>
+
     </group>
 
 </kcfg>

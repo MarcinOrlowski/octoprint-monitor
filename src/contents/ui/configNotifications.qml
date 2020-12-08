@@ -19,7 +19,11 @@ ColumnLayout {
     width: childrenRect.width
 
 	property alias cfg_notificationsEnabled:	notificationsEnabled.checked
-	property alias cfg_useNotifySend:		    notificationsUseNotifySend.checked
+//	property alias cfg_useNotifySend:		    notificationsUseNotifySend.checked
+
+    property alias cfg_notificationsTimeoutPrintJobStarted: notificationsTimeoutPrintJobStarted.value
+    property alias cfg_notificationsTimeoutPrintJobSuccessful: notificationsTimeoutPrintJobSuccessful.value
+    property alias cfg_notificationsTimeoutPrintJobFailed: notificationsTimeoutPrintJobFailed.value
 
     GroupBox {
         title: i18n("Desktop notifications")
@@ -28,11 +32,11 @@ ColumnLayout {
         Kirigami.FormLayout {
             anchors.left: parent.left
             anchors.right: parent.right
-            PlasmaComponents.CheckBox {
+            CheckBox {
                 id: notificationsEnabled
                 text: i18n("Post desktop notifications")
             }
-//            PlasmaComponents.CheckBox {
+//            CheckBox {
 //                id: notificationsUseNotifySend
 //                enabled: cfg_notificationsEnabled
 //                text: i18n("Use notify-send instead")
@@ -40,6 +44,43 @@ ColumnLayout {
         }
     } // GroupBox
 
+    GroupBox {
+        title: i18n("Notification timeouts")
+        Layout.fillWidth: true
+
+	    Kirigami.FormLayout {
+    	    anchors.left: parent.left
+        	anchors.right: parent.right
+
+            PlasmaComponents.SpinBox {
+                id: notificationsTimeoutPrintJobStarted
+                editable: true
+                enabled: cfg_notificationsEnabled
+                from: 0
+                to: 60
+                Kirigami.FormData.label: i18n("Print job started (secs)")
+	        }
+
+            PlasmaComponents.SpinBox {
+                id: notificationsTimeoutPrintJobSuccessful
+                editable: true
+                enabled: cfg_notificationsEnabled
+                from: 0
+                to: 60
+                Kirigami.FormData.label: i18n("Print job successful (secs)")
+	        }
+
+            PlasmaComponents.SpinBox {
+                id: notificationsTimeoutPrintJobFailed
+                editable: true
+                enabled: cfg_notificationsEnabled
+                from: 0
+                to: 60
+                Kirigami.FormData.label: i18n("Print job failed (secs)")
+	        }
+
+        }
+    }
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true

@@ -29,13 +29,13 @@ ConfigModel {
         source: "configNotifications.qml"
     }
     ConfigCategory {
+        name: i18n("Printer states")
+        icon: "printer"
+        source: "configPrinter.qml"
+    }
+    ConfigCategory {
         name: i18n("OctoPrint API")
         icon: "configure"
         source: "configApi.qml"
-    }
-    ConfigCategory {
-        name: i18n("About")
-        icon: "dialog-information"
-        source: "configAbout.qml"
     }
 }
