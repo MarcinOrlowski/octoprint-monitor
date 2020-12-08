@@ -11,6 +11,7 @@
 
   // Printer status buckets
   const unknown = "unknown";
+  const preparing = "preparing";
   const working = "working";
   const cancelling = "cancelling";
   const paused = "paused";

@@ -201,14 +201,14 @@ Item {
                 if (osm.jobCompletion == 0) {
                     summary = i18n('New print started.')
                 } else {
-                    summary = i18n('Print already progress (%1%% completed).', osm.jobCompletion)
+                    summary = i18n('Print already in progress (%1% completed).', osm.jobCompletion)
                 }
 
                 if (osm.jobFileName != '') {
                     if (osm.jobPrintTimeLeftSeconds == 0) {
                         body = i18n('File "%1".', osm.jobFileName)
                     } else {
-                        body = i18n('Est. print time left %2. File "%1".', Utils.secondsToString(osm.jobPrintTimeLeftSeconds), osm.jobFileName)
+                        body = i18n('Est. print time left %1. File "%2".', Utils.secondsToString(osm.jobPrintTimeLeftSeconds), osm.jobFileName)
                     }
                 }
             }

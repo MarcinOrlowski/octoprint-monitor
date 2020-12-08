@@ -121,7 +121,8 @@ QtObject {
         var jobInProgress = false
         if (this.apiConnected) {
             jobInProgress = newState.printer.isJobInProgress()
-            if (jobInProgress && this.jobState == 'printing') currentState = newState.job.state
+//            if (jobInProgress && this.jobState == 'printing') currentState = newState.job.state
+            if (jobInProgress && newState.job.state == 'printing') currentState = newState.job.state
         } else {
             currentState = (!this.apiAccessConfigured) ? 'configuration' : 'unavailable'
         }
