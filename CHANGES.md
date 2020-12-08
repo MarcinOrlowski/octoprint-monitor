@@ -4,7 +4,7 @@
 
 ## CHANGE LOG ##
 
-* @dev
+* v1.2.0 (2020-12-08)
    * Added camera view controls.
    * Fixed notification config panel.
    * Reworked desktop notification content to contain more information.
