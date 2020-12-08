@@ -27,6 +27,10 @@ ColumnLayout {
     property alias cfg_showJobPrintTime: showJobPrintTime.checked
     property alias cfg_showJobTimeLeft: showJobTimeLeft.checked
 
+    property alias cfg_showSnapshotTimestamp: showSnapshotTimestamp.checked
+    property alias cfg_showSnapshotTimestampElapsed: showSnapshotTimestampElapsed.checked
+    property alias cfg_showSnapshotTimestampElapsedAlwaysShowSeconds: showSnapshotTimestampElapsedAlwaysShowSeconds.checked
+
     property alias cfg_stopCameraPollForBuckets: stopCameraPollForBuckets.checked
     property alias cfg_stopCameraPollForBucketUnknown: stopCameraPollForBucketUnknown.checked
     property alias cfg_stopCameraPollForBucketWorking: stopCameraPollForBucketWorking.checked
@@ -85,56 +89,78 @@ ColumnLayout {
             anchors.right: parent.right
 
             CheckBox {
+                id: showSnapshotTimestamp
+                enabled: cfg_cameraViewEnabled
+                text: i18n("Show snapshot time stamp")
+            }
+            GridLayout {
+                readonly property int indent: 24
+                columns: 1
+                CheckBox {
+                    id: showSnapshotTimestampElapsed
+                    enabled: cfg_cameraViewEnabled && cfg_showSnapshotTimestamp
+                    Layout.leftMargin: parent.indent
+                    text: i18n("Show as elapsed time")
+                }
+                CheckBox {
+                    id: showSnapshotTimestampElapsedAlwaysShowSeconds
+                    enabled: cfg_cameraViewEnabled && cfg_showSnapshotTimestamp && cfg_showSnapshotTimestampElapsed
+                    Layout.leftMargin: parent.indent * 2
+                    text: i18n("Always show seconds")
+                }
+            }
+
+            CheckBox {
                 id: stopCameraPollForBuckets
                 enabled: cfg_cameraViewEnabled
                 text: i18n("Stop camera pooling for state buckets")
             }
             ColumnLayout {
                 id: clsStates
-                readonly property int indent: 24
 
                 GridLayout {
+                    readonly property int indent: 24
                     columns: 2
                     CheckBox {
                         id: stopCameraPollForBucketUnknown
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: parent.indent
                         text: i18n("Unknown")
                     }
                     CheckBox {
                         id: stopCameraPollForBucketWorking
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: parent.indent
                         text: i18n("Working")
                     }
                     CheckBox {
                         id: stopCameraPollForBucketCancelling
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: parent.indent
                         text: i18n("Cancelling")
                     }
                     CheckBox {
                         id: stopCameraPollForBucketPaused
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: parent.indent
                         text: i18n("Paused")
                     }
                     CheckBox {
                         id: stopCameraPollForBucketError
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: parent.indent
                         text: i18n("Error")
                     }
                     CheckBox {
                         id: stopCameraPollForBucketIdle
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: parent.indent
                         text: i18n("Idle")
                     }
                     CheckBox {
                         id: stopCameraPollForBucketDisconnected
                         enabled: cfg_stopCameraPollForBuckets && cfg_cameraViewEnabled
-                        Layout.leftMargin: clsStates.indent
+                        Layout.leftMargin: parent.indent
                         text: i18n("Disconnected")
                     }
                 }

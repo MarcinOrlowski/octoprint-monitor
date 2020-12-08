@@ -4,6 +4,9 @@
 
 ## CHANGE LOG ##
 
+* @dev
+   * Camera snapshot time stamp is now shown as elapsed timer
+
 * v1.2.0 (2020-12-08)
    * Added camera view controls.
    * Fixed notification config panel.

@@ -26,12 +26,16 @@ ColumnLayout {
 	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ''
 	property string cameraViewTimerState: i18n('Every %1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
 	property string cameraView0Stamp: ''
+	property var cameraView0StampMillis: 0
 	property string cameraView1Stamp: ''
+	property var cameraView1StampMillis: 0
+
+    function isSnapshotEnabled() {
+         return osm.apiConnected && plasmoid.expanded && isCameraViewEnabled && isCameraViewPollActive()
+    }
 
 	function updateSnapshot() {
-        if (!osm.apiConnected || plasmoid.expanded == false || !isCameraViewEnabled || !isCameraViewPollActive()) {
-            return
-        }
+	    if (!isSnapshotEnabled()) return
 
         var targetImageView = (cameraViewStack.currentIndex === 0) ? cameraView0 : cameraView1
         targetImageView.source = `${plasmoid.configuration.cameraViewSnapshotUrl}#random` + Math.floor(Math.random() * 1000)
@@ -41,11 +45,10 @@ ColumnLayout {
                 targetImageView.statusChanged.disconnect(finishImage)
                 cameraViewStack.currentIndex = (cameraViewStack.currentIndex+1) % 2
 
-                var stamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
                 if (cameraViewStack.currentIndex === 0) {
-                    cameraView0Stamp = stamp
+                    cameraView0StampMillis = Date.now()
                 } else {
-                    cameraView1Stamp = stamp
+                    cameraView1StampMillis = Date.now()
                 }
             }
         }
@@ -57,22 +60,33 @@ ColumnLayout {
         }
 	}
 
-    Timer {
-        id: cameraViewTimer;
-
-        property int foo: {
-            var interval = plasmoid.configuration.cameraViewUpdateInterval * 1000
-            cameraViewTimer.interval = interval
-            cameraViewTimer.restart()
-            return interval
-         }
-
-        interval: plasmoid.configuration.cameraViewUpdateInterval * 1000
-
+	Timer {
+	    id: cameraViewSnapshotTimeUpdater
+        interval: 1000
         repeat: true
         running: plasmoid.expanded
         triggeredOnStart: plasmoid.expanded
+        onTriggered: {
+            if (!isSnapshotEnabled()) return
 
+            if (plasmoid.configuration.showSnapshotTimestampElapsed) {
+                var showSeconds = plasmoid.configuration.showSnapshotTimestampElapsedAlwaysShowSeconds
+                var now = Date.now()
+                if (cameraView0StampMillis != 0) cameraView0Stamp = i18n('Updated %1 ago', Utils.secondsToString(Math.floor((now-cameraView0StampMillis)/1000), showSeconds))
+                if (cameraView1StampMillis != 0) cameraView1Stamp = i18n('Updated %1 ago', Utils.secondsToString(Math.floor((now-cameraView1StampMillis)/1000), showSeconds))
+            } else {
+                if (cameraView0StampMillis != 0) cameraView0Stamp = new Date(cameraView0StampMillis).toLocaleString(Qt.locale(), Locale.ShortFormat)
+                if (cameraView1StampMillis != 0) cameraView1Stamp = new Date(cameraView1StampMillis).toLocaleString(Qt.locale(), Locale.ShortFormat)
+            }
+        }
+	}
+
+    Timer {
+        id: cameraViewTimer;
+        interval: plasmoid.configuration.cameraViewUpdateInterval * 1000
+        repeat: true
+        running: plasmoid.expanded
+        triggeredOnStart: plasmoid.expanded
         onTriggered: updateSnapshot()
 	}
 
@@ -210,6 +224,7 @@ ColumnLayout {
                 }
                 RowLayout {
                     Layout.fillWidth: true
+                    visible: plasmoid.configuration.showSnapshotTimestamp
                     PlasmaComponents.Label {
                         maximumLineCount: 1
                         Layout.maximumWidth: parent.width
@@ -255,6 +270,7 @@ ColumnLayout {
                 }
                 RowLayout {
                     Layout.fillWidth: true
+                    visible: plasmoid.configuration.showSnapshotTimestamp
                     PlasmaComponents.Label {
                         maximumLineCount: 1
                         Layout.maximumWidth: parent.width

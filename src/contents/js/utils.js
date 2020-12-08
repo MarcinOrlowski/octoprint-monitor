@@ -14,27 +14,18 @@ function isVal(value) {
 }
 
 function getString(value, def) {
-    if (def === undefined) {
-        def = '';
-    }
+    if (def === undefined) def = '';
     return isVal(value) ? value : def;
 }
 
 function getFloat(f) {
-    if (isVal(f)) {
-        return parseFloat(f).toFixed();
-    }
-
+    if (isVal(f)) return parseFloat(f).toFixed();
     return 0.0;
 }
 
 function isValidJsonString(jsonString) {
-    if (!(typeof jsonString === "string")) {
-        return false;
-    }
-    if (jsonString === '') {
-        return false;
-    }
+    if (!(typeof jsonString === "string")) return false;
+    if (jsonString === '') return false;
 
     try {
         JSON.parse(jsonString);
@@ -54,12 +45,10 @@ function roundFloat(num, decimals) {
     return num;
 }
 
-function secondsToString(seconds) {
-    if (seconds == null || seconds == "") {
-        seconds = 0;
-    }
-
-    var result = "";
+function secondsToString(seconds, always_include_seconds) {
+    if (always_include_seconds === undefined) always_include_seconds = false
+    if (seconds == null || seconds == '') seconds = 0;
+    var result = '';
 
     var d = Math.floor(seconds / (3600 * 24));
     var h = Math.floor(seconds / 3600);
@@ -67,36 +56,27 @@ function secondsToString(seconds) {
     var s = Math.floor(seconds % 60);
 
     if (d > 0) {
-        if (result != "") {
-            result += " ";
-        }
-        result += d + 'd';
+        if (result != '') result += ' ';
+        result += `${d}d`;
     }
     if (h > 0) {
-        if (result != "") {
-            result += " ";
-        }
-        result += h + 'h';
+        if (result != '') result += ' ';
+        result += `${h}h`;
     }
     if (m > 0) {
-        if (result != "") {
-            result += " ";
-        }
-        result += m + 'm';
+        if (result != '') result += ' ';
+        result += `${m}m`;
     }
 
-    // do not show seconds untill last minute
-    if (result == "") {
-        result += s + 's';
+    // do not show seconds until last minute (unless enforced)
+    if (result == '' || always_include_seconds) {
+        if (result != '') result += ' ';
+        result += `${s}s`;
     }
 
     return result;
 }
 
 function ucfirst(string) {
-    if (string.length > 1) {
-        return string.substr(0, 1).toUpperCase() + string.substr(1);
-    } else {
-        return string.toUpperCase();
-    }
+    return (string.length > 1) ? string.substr(0, 1).toUpperCase() + string.substr(1) : string.toUpperCase();
 }

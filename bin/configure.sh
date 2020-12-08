@@ -62,7 +62,7 @@ if [[ "$#" -eq 0 ]]; then
 	op_api_key=$(escape "${OCTOPRINT_API_KEY}")
 	op_snapshot_url=$(escape "${OCTOPRINT_SNAPSHOT_URL}")
 else
-	echo "Creating empty config file: ${cfg_config_file}"
+	echo "Creating EMPTY config file: ${cfg_config_file}"
 fi
 
 cat "${cfg_template_file}" | sed -e "s/{OCTOPRINT_API_URL}/${op_api_url}/g" | sed -e "s/{OCTOPRINT_API_KEY}/${op_api_key}/g" | sed -e "s/{OCTOPRINT_SNAPSHOT_URL}/${op_snapshot_url}/g" > "${cfg_config_file}"

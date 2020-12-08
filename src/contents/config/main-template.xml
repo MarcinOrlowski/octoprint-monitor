@@ -125,6 +125,16 @@
             <default>true</default>
         </entry>
 
+        <entry name="showSnapshotTimestamp" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="showSnapshotTimestampElapsed" type="Bool">
+            <default>true:</default>
+        </entry>
+        <entry name="showSnapshotTimestampAlwaysShowSeconds" type="Bool">
+            <default>false</default>
+        </entry>
+
         <entry name="showJobFileName" type="Bool">
             <default>true</default>
         </entry>
