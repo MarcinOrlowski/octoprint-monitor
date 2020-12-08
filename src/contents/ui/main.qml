@@ -203,7 +203,7 @@ Item {
                     if (osm.jobPrintTimeLeftSeconds == 0) {
                         body = i18n('File "%1".', osm.jobFileName)
                     } else {
-                        body = i18n('File "%1". Est. print time %2.', osm.jobFileName, Utils.secondsToString(osm.jobPrintTimeLeftSeconds))
+                        body = i18n('Est. print time %2. File "%1".', Utils.secondsToString(osm.jobPrintTimeLeftSeconds), osm.jobFileName)
                     }
                 }
             }

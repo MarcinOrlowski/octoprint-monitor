@@ -52,8 +52,7 @@ QtObject {
     **	bool
     */
     function isJobInProgress() {
-        var result = flagPrinting || flagPaused || flagResuming
-        return result
+        return flagPrinting || flagPaused || flagResuming
     }
 
     /*
@@ -85,15 +84,15 @@ QtObject {
     function getPrinterStateBucket() {
         var bucket = undefined;
 
-        if ( this.flagFinishing || this.flagPrinting || this.flagPausing ) {
+        if ( flagFinishing || flagPrinting || flagPausing ) {
             bucket = Bucket.working
-        } else if ( this.flagCancelling ) {
+        } else if ( flagCancelling ) {
             bucket = Bucket.cancelling
-        } else if ( this.flagClosedOrError || this.flagError ) {
+        } else if ( flagClosedOrError || flagError ) {
             bucket = Bucket.error
-        } else if ( this.flagOperational || this.flagReady ) {
+        } else if ( flagOperational || flagReady ) {
             bucket = Bucket.idle
-        } else if ( this.flagPaused ) {
+        } else if ( flagPaused ) {
             bucket = Bucket.paused;
         }
 
@@ -117,16 +116,16 @@ QtObject {
     **  void
     */
     function setPrinterFlags(state) {
-        this.flagCancelling = state
-        this.flagClosedOrError = state
-        this.flagFinishing = state
-        this.flagOperational = state
-        this.flagPaused = state
-        this.flagPausing = state
-        this.flagPrinting = state
-        this.flagReady = state
-        this.flagResuming = state
-        this.flagError = state
+        flagCancelling = state
+        flagClosedOrError = state
+        flagFinishing = state
+        flagOperational = state
+        flagPaused = state
+        flagPausing = state
+        flagPrinting = state
+        flagReady = state
+        flagResuming = state
+        flagError = state
     }
 
     function fromXhr(xhr) {
@@ -139,8 +138,8 @@ QtObject {
                     console.debug('Error handling API printer state response.')
                     console.debug(error)
 
-                    this.setPrinterFlags(false)
-                    this.flagError = true
+                    setPrinterFlags(false)
+                    flagError = true
                 }
                 break
             case 409:
@@ -149,7 +148,7 @@ QtObject {
                 break
             default:
                 console.debug(`Unexpected printer response status code (${xhr.status}).`)
-                this.flagError = true
+                flagError = true
                 break
         }
     }
@@ -166,30 +165,29 @@ QtObject {
     function fromJson(resp) {
         this.json = resp;
 
-        this.flagCancelling = resp.state.flags.cancelling
-        this.flagClosedOrError = resp.state.flags.closedOrError
-        this.flagError = resp.state.flags.error
-        this.flagFinishing = resp.state.flags.finishing
-        this.flagOperational = resp.state.flags.operational
-        this.flagPaused = resp.state.flags.paused
-        this.flagPausing = resp.state.flags.pausing
-        this.flagPrinting = resp.state.flags.printing
-        this.flagReady = resp.state.flags.ready
-        this.flagResuming = resp.state.flags.resuming
+        flagCancelling = resp.state.flags.cancelling
+        flagClosedOrError = resp.state.flags.closedOrError
+        flagError = resp.state.flags.error
+        flagFinishing = resp.state.flags.finishing
+        flagOperational = resp.state.flags.operational
+        flagPaused = resp.state.flags.paused
+        flagPausing = resp.state.flags.pausing
+        flagPrinting = resp.state.flags.printing
+        flagReady = resp.state.flags.ready
+        flagResuming = resp.state.flags.resuming
 
         // Textural representation of printer state as returned by API
         this.printer_state = resp.state.text
 
         // temepratures
-        this.bedTemperatureActual = Utils.getFloat(resp.temperature.bed.actual)
-        this.bedTemperatureOffset = Utils.getFloat(resp.temperature.bed.offset)
-        this.bedTemperatureTarget = Utils.getFloat(resp.temperature.bed.target)
+        bedTemperatureActual = Utils.getFloat(resp.temperature.bed.actual)
+        bedTemperatureOffset = Utils.getFloat(resp.temperature.bed.offset)
+        bedTemperatureTarget = Utils.getFloat(resp.temperature.bed.target)
 
-        // hot-ends
-        // FIXME: check for more than one
-        this.extruder0TemperatureActual = Utils.getFloat(resp.temperature.tool0.actual)
-        this.extruder0TemperatureOffset = Utils.getFloat(resp.temperature.tool0.offset)
-        this.extruder0TemperatureTarget = Utils.getFloat(resp.temperature.tool0.target)
+        // FIXME: check for more than one extruder
+        extruder0TemperatureActual = Utils.getFloat(resp.temperature.tool0.actual)
+        extruder0TemperatureOffset = Utils.getFloat(resp.temperature.tool0.offset)
+        extruder0TemperatureTarget = Utils.getFloat(resp.temperature.tool0.target)
     }
 
 }

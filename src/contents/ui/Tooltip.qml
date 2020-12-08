@@ -94,7 +94,7 @@ Item {
 			width: parent.width
 			Layout.fillWidth: true
 			columns: 2
-			visible: osm.printerConnected && osm.apiConnected
+			visible: osm.printerConnected && osm.apiConnected && osm.current.printer !== undefined
 
 			PlasmaComponents.Label {
 				maximumLineCount: 1

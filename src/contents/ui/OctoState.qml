@@ -12,7 +12,7 @@
 import QtQuick 2.0
 
 QtObject {
-    property string state: 'N/A'
+    property string state: ''
     property string stateBucket: ''
     property string stateBucketName: ''
     property string icon: ''
@@ -22,7 +22,7 @@ QtObject {
     property int jobPrintTimeSeconds: 0
     property int jobPrintTimeLeftSeconds: 0
 
-    property var printer: undefined
-    property var job: undefined
+    property var printer: PrinterState {}
+    property var job: JobState {}
 }
 
