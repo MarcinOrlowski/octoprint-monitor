@@ -29,6 +29,15 @@ Item {
         id: osm
     }
 
+    Timer {
+        id: octoStateTimer
+        interval: 1000
+        repeat: true
+        running: osm.jobInProgress
+        triggeredOnStart: true
+        onTriggered: osm.tick()
+    }
+
     // Debug switch to mimic API access using hardcded JSONs
     readonly property bool fakeApiAccess: false
 
@@ -36,6 +45,9 @@ Item {
     Plasmoid.fullRepresentation: FullRepresentation {}
 
     // ------------------------------------------------------------------------------------------------------------------------
+
+    JobState {
+    }
 
     property string plasmoidTitle: ''
     readonly property string plasmoidVersion: Version.version

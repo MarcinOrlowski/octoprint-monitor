@@ -10,6 +10,7 @@
  */
 
 import QtQuick 2.0
+import "../js/utils.js" as Utils
 import "./PrinterStateBucket.js" as Bucket
 
 QtObject {
@@ -41,9 +42,9 @@ QtObject {
     // ------------------------------------------------------------------------------------------------------------------------
 
     // Tells if plasmoid API access is already confugred.
-    property bool apiAccessConfigured: false;
+    property bool apiAccessConfigured: false
 
-    property bool apiConnected: false;
+    property bool apiConnected: false
 
 	property bool printerConnected: false
 
@@ -105,9 +106,6 @@ QtObject {
         // (i.e. was printing is idle) -> print successful
         var newState = Qt.createComponent("OctoState.qml").createObject(null)
 
-//        console.debug('printer ' + (printer.current instanceof JobState))
-//        console.debug('job ' + (job.current instanceof JobState))
-
         if (!(printer.current instanceof PrinterState)) return
         if (!(job.current instanceof JobState)) return
 
@@ -115,7 +113,7 @@ QtObject {
         newState.job = job.current
 
         var currentStateBucket = newState.printer.getPrinterStateBucket()
-        var currentStateBucketName = this.getPrinterStateBucketName(currentStateBucket);
+        var currentStateBucketName = this.getPrinterStateBucketName(currentStateBucket)
         var currentState = currentStateBucketName
 
         this.apiAccessConfigured = (plasmoid.configuration.api_url != '' && plasmoid.configuration.api_key != '')
@@ -131,7 +129,6 @@ QtObject {
         this.jobInProgress = jobInProgress
         this.printerConnected = newState.printer.isPrinterConnected()
 
-//        console.debug(`currentState: ${currentState}, previous: ${this.previousOctoState}`);
         if (currentState != this.previousOctoState) {
             newState.icon = osm.getOctoStateIcon()
             newState.state = currentState
@@ -142,8 +139,6 @@ QtObject {
 
             newState.jobFileName = job.current.fileName
             newState.jobCompletion = job.current.completion
-            newState.jobPrintTime = job.current.printTime
-            newState.jobPrintTimeLeft = job.current.printTimeLeft
 
             this.states.unshift(newState)
             this.lastOctoStateChangeStamp = new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
@@ -213,9 +208,8 @@ QtObject {
         return name != '' ? name : bucket
     }
 
-
     function updateOctoStateDescription() {
-        var desc = this.jobStateDescription;
+        var desc = this.jobStateDescription
         if (desc == '') {
             switch(this.octoStateBucket) {
                 case Bucket.unknown: desc = 'Unable to determine root cause.'; break;
@@ -231,7 +225,14 @@ QtObject {
                 case 'configuration': desc = 'Widget is not configured!'; break;
             }
         }
-        this.octoStateDescription = desc;
+        this.octoStateDescription = desc
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    function tick() {
+        this.jobPrintTime = job.current.printTimeSeconds != 0 ? Utils.secondsToString(job.current.printTimeSeconds) : ''
+        this.jobPrintTimeLeft = job.current.printTimeLeftSeconds != 0 ? Utils.secondsToString(job.current.printTimeLeftSeconds) : ''
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

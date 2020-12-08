@@ -24,8 +24,8 @@ QtObject {
     property string fileName: ''
     property double completion: 0
 
-    property string printTime: ''
-	property string printTimeLeft: ''
+    property int    printTimeSeconds: 0
+	property int    printTimeLeftSeconds: 0
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -65,12 +65,10 @@ QtObject {
         this.fileName = Utils.getString(json.job.file.display)
         this.completion = Utils.isVal(json.progress.completion) ? Utils.roundFloat(json.progress.completion) : 0
 
-        var jobPrintTime = json.progress.printTime
-        this.printTime = Utils.isVal(jobPrintTime) ? Utils.secondsToString(jobPrintTime) : ''
-        var jobPrintTimeLeft = json.progress.printTimeLeft
-        this.printTimeLeft = Utils.isVal(jobPrintTimeLeft) ? Utils.secondsToString(jobPrintTimeLeft) : ''
-
-//        console.debug('state ' + this.state)
+        var jobPrintTimeSeconds = json.progress.printTime
+        this.printTimeSeconds = Utils.isVal(jobPrintTimeSeconds) ? jobPrintTimeSeconds : 0
+        var jobPrintTimeLeftSeconds = json.progress.printTimeLeft
+        this.printTimeLeftSeconds = Utils.isVal(jobPrintTimeLeftSeconds) ? jobPrintTimeLeftSeconds : 0
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
