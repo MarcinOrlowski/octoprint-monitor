@@ -197,13 +197,18 @@ Item {
             if (!post && (current == Bucket.working) && (previous != Bucket.connecting)) {
                 post = true
                 expireTimeout = plasmoid.configuration.notificationsTimeoutPrintJobStarted
-                summary = i18n('New printing started.')
+
+                if (osm.jobCompletion == 0) {
+                    summary = i18n('New print started.')
+                } else {
+                    summary = i18n('Print already progress (%1%% completed).', osm.jobCompletion)
+                }
 
                 if (osm.jobFileName != '') {
                     if (osm.jobPrintTimeLeftSeconds == 0) {
                         body = i18n('File "%1".', osm.jobFileName)
                     } else {
-                        body = i18n('Est. print time %2. File "%1".', Utils.secondsToString(osm.jobPrintTimeLeftSeconds), osm.jobFileName)
+                        body = i18n('Est. print time left %2. File "%1".', Utils.secondsToString(osm.jobPrintTimeLeftSeconds), osm.jobFileName)
                     }
                 }
             }

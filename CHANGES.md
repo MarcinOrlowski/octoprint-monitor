@@ -5,9 +5,9 @@
 ## CHANGE LOG ##
 
 * @dev
-   * Camera snapshot time stamp is now shown as elapsed timer
-   * Print and remaining times can now be shown as ticking clocks
-   * Fixed desktop notifications not working properly
+   * Camera snapshot time stamp is now shown as elapsed timer.
+   * Print and remaining times can now be shown as ticking clocks.
+   * Fixed desktop notifications not working properly.
 
 * v1.2.0 (2020-12-08)
    * Added camera view controls.
