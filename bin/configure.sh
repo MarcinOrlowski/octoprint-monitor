@@ -15,7 +15,9 @@ function escape() {
 	echo $(echo "${str}" | sed -e 's/[]\/$*.^[]/\\&/g')
 }
 
-declare -r src_dir="src"
+# shellcheck disable=SC2155
+declare -r ROOT_DIR="$(dirname "$(realpath "${0}")")"
+declare -r src_dir="${ROOT_DIR}/../src"
 
 if [[ ! -d "${src_dir}" ]]; then
 	echo "*** Source dir not found: ${src_dir}"

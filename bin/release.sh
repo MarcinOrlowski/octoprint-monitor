@@ -9,7 +9,9 @@
 #  @license   http://www.opensource.org/licenses/mit-license.php MIT
 #  @link      https://github.com/MarcinOrlowski/octoprint-monitor
 
-declare -r src_dir="src"
+# shellcheck disable=SC2155
+declare -r ROOT_DIR="$(dirname "$(realpath "${0}")")"
+declare -r src_dir="${ROOT_DIR}/../src"
 
 if [[ ! -d "${src_dir}" ]]; then
 	echo "*** Source dir not found: ${src_dir}"
