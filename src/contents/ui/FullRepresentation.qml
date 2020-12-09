@@ -34,7 +34,6 @@ ColumnLayout {
          return osm.apiConnected && plasmoid.expanded && isCameraViewEnabled && isCameraViewPollActive()
     }
 
-
     property bool frontImageVisible: true
     property bool initialLoad: true
     readonly property string imageSourceUrl: plasmoid.configuration.cameraViewSnapshotUrl + '#'
@@ -169,8 +168,8 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Elapsed: %1', Utils.secondsToString(osm.jobPrintTimeSeconds, plasmoid.configuration.showJobPrintTimeAlwaysShowSeconds))
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
+                text: i18n('Elapsed: %1', Utils.secondsToString(osm.jobPrintTimeSeconds, plasmoid.configuration.showJobPrintTimeAlwaysShowSeconds))
                 visible: osm.jobInProgress && plasmoid.configuration.showJobPrintTime && osm.jobPrintTime != ''
             }
             PlasmaComponents.Label {
@@ -178,32 +177,31 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
                 fontSizeMode: Text.Fit
                 minimumPixelSize: 8
-                text: i18n('Left: %1', Utils.secondsToString(osm.jobPrintTimeLeftSeconds, plasmoid.configuration.showJobPrintTimeLeftAlwaysShowSeconds))
-//                text: i18n('Left: %1', Utils.secondsToString(osm.jobPrintTimeLeftSeconds))
-
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
+                text: i18n('Left: %1', Utils.secondsToString(osm.jobPrintTimeLeftSeconds, plasmoid.configuration.showJobPrintTimeLeftAlwaysShowSeconds))
                 visible: osm.jobInProgress && plasmoid.configuration.showJobPrintTimeLeft && osm.jobPrintTimeLeft != ''
             }
+            PlasmaComponents.Label {
+                id: fullStateJobFileName
+                Layout.alignment: Qt.AlignHCenter
+                fontSizeMode: Text.Fit
+                minimumPixelSize: 8
+                elide: Text.ElideMiddle
+                text: osm.jobFileName
+                font.pixelSize: Qt.application.font.pixelSize * 0.8
+                visible: osm.jobInProgress && plasmoid.configuration.showJobFileName && osm.jobInProgress != ''
+            }
+
         } // ColumnLayout
-    } // RowLayout
-
-//    MouseArea {
-//        width: fullContainer.width
-//        Layout.minimumWidth: fullContainer.width
-//        Layout.maximumWidth: fullContainer.width
-
+    } // RowLayout (fullStateContainerTopRow)
 
     readonly property int xfadeDuration: 300
 
     ParallelAnimation {
         id: showBackImageViewAnimation
-//        onStarted: {
-//            console.debug(`showBackImageViewAnimation: STARTED op: B: ${cameraImageViewBack.opacity}, F: ${cameraImageViewFront.opacity}`)
-//        }
         onStopped: {
-            cameraImageViewFront.visible = false
+//            cameraImageViewFront.visible = false
             cameraImageViewFront.source = imageSourceUrl + Date.now()
-//            console.debug('showBackImageViewAnimation STOPPED. Setting url for front')
         }
         PropertyAnimation {
             target: cameraImageViewBack
@@ -225,13 +223,9 @@ ColumnLayout {
 
     ParallelAnimation {
         id: showFrontImageViewAnimation
-//        onStarted: {
-//            console.debug(`showFrontImageViewAnimation: STARTED op: B: ${cameraImageViewBack.opacity}, F: ${cameraImageViewFront.opacity}`)
-//        }
         onStopped: {
-            cameraImageViewBack.visible = false
+//            cameraImageViewBack.visible = false
             cameraImageViewBack.source = imageSourceUrl + Date.now()
-//            console.debug('showFrontImageViewAnimation STOPPED. Setting url for back')
         }
         PropertyAnimation {
             target: cameraImageViewBack
@@ -252,64 +246,31 @@ ColumnLayout {
     }
 
     ColumnLayout {
+        id: cameraViewContainer
+
         width: fullContainer.width
         Layout.minimumWidth: fullContainer.width
         Layout.maximumWidth: fullContainer.width
 
         anchors.top: fullStateContainerTopRow.bottom
 
-        layer.enabled: true
-
         Image {
             id: cameraImageViewBack
-//            width: 400
-//            height: 300
-//            Layout.minimumWidth: 400
-//            Layout.maximumWidth: 300
-//            Layout.minimumHeight: 400
-//            Layout.maximumHeight: 300
-
+            Layout.fillWidth: true
             Layout.minimumWidth: parent.width
             Layout.maximumWidth: parent.width
-//            Layout.minimumHeight: parent.width
-//            Layout.maximumHeight: parent.width
-
-//            sourceSize.width: cameraView0.width
-//            sourceSize.height: cameraView0.height
             fillMode: Image.PreserveAspectFit;
             horizontalAlignment: Image.AlignHCenter
             verticalAlignment: Image.AlignVCenter
             cache: false
             asynchronous: true
-            Layout.alignment: Qt.AlignHCenter
-//            onStatusChanged: {
-//                var msg=`Back ${status} (op: ${opacity}): `
-//                var name='???'
-//                switch(status) {
-//                    case Image.Null: name='Null'; break
-//                    case Image.Ready: name='Ready'; break
-//                    case Image.Loading: name='Loading ' + source; break
-//                    case Image.Error: name='Error'; break
-//                }
-//                msg += name
-//                console.debug(msg)
-//            }
-//            source: 'https://www.shareicon.net/data/2016/10/20/846418_letter_512x512.png'
             opacity: 0
         }
         Image {
             id: cameraImageViewFront
-//            width: 400
-//            height: 300
-//            Layout.minimumWidth: 400
-//            Layout.maximumWidth: 300
-//            Layout.minimumHeight: 400
-//            Layout.maximumHeight: 300
-
             Layout.minimumWidth: parent.width
             Layout.maximumWidth: parent.width
-//            Layout.minimumHeight: parent.width
-//            Layout.maximumHeight: parent.width
+            Layout.fillWidth: true
 
             // we need them overlapping
             anchors.fill: cameraImageViewBack
@@ -321,168 +282,8 @@ ColumnLayout {
             verticalAlignment: Image.AlignVCenter
             cache: false
             asynchronous: true
-            Layout.alignment: Qt.AlignHCenter
-//            onStatusChanged: console.debug('Front: ' + status + ' ' + getStatusName(status))
-//            onStatusChanged: {
-//                var msg=`Front ${status} (op: ${opacity}): `
-//                var name='???'
-//                switch(status) {
-//                    case Image.Null: name='Null'; break
-//                    case Image.Ready: name='Ready'; break
-//                    case Image.Loading: name='Loading ' + source; break
-//                    case Image.Error: name='Error'; break
-//                }
-//                msg += name
-//                console.debug(msg)
-//            }
-
-//            source: 'https://www.shareicon.net/data/2016/10/20/846391_alphabet-f-letter-letters-red_512x512.png'
-
             opacity: 1
         }
-    }
-
-
-    ColumnLayout {
-        id: cameraViewContainer
-
-
-        StackLayout {
-            id: cameraViewStack
-
-            width: fullContainer.width
-            Layout.minimumWidth: fullContainer.width
-            Layout.maximumWidth: fullContainer.width
-
-//            visible: isCameraViewEnabled
-visible: false
-            currentIndex: 0
-
-            ColumnLayout {
-                id: cameraViewContainer0
-                width: fullContainer.width
-                Layout.minimumWidth: fullContainer.width
-
-                Image {
-                    id: cameraView0
-                    width: 400
-                    height: 300
-                    Layout.minimumWidth: parent.width
-                    Layout.maximumWidth: parent.width
-
-                    sourceSize.width: cameraView0.width
-                    sourceSize.height: cameraView0.height
-                    fillMode: Image.PreserveAspectFit;
-                    horizontalAlignment: Image.AlignHCenter
-                    verticalAlignment: Image.AlignVCenter
-                    cache: false
-                    asynchronous: true
-                    Layout.alignment: Qt.AlignCenter
-                    source: "camera"
-                }
-                RowLayout {
-                    Layout.fillWidth: true
-                    visible: plasmoid.configuration.showSnapshotTimestamp
-                    PlasmaComponents.Label {
-                        maximumLineCount: 1
-                        Layout.maximumWidth: parent.width
-                        wrapMode: Text.NoWrap
-                        fontSizeMode: Text.Fit
-                        elide: Text.ElideRight
-                        font.pixelSize: Qt.application.font.pixelSize * 0.8
-                        text: cameraView0Stamp
-                    }
-                    Item {
-                        Layout.fillWidth: true
-                    }
-                    PlasmaComponents.Label {
-                        maximumLineCount: 1
-                        Layout.maximumWidth: parent.width
-                        wrapMode: Text.NoWrap
-                        fontSizeMode: Text.Fit
-                        elide: Text.ElideRight
-                        font.pixelSize: Qt.application.font.pixelSize * 0.8
-                        text: (cameraView0Stamp != '') ? cameraViewTimerState : ''
-                    }
-                }
-            }
-
-            ColumnLayout {
-                id: cameraViewContainer1
-                width: parent.width
-                Layout.minimumWidth: parent.width
-                Layout.maximumWidth: parent.width
-                Image {
-                    id: cameraView1
-                    Layout.minimumWidth: parent.width
-                    Layout.maximumWidth: parent.width
-
-                    width: 400
-                    height: 300
-
-                    sourceSize.width: cameraView1.width
-                    sourceSize.height: cameraView1.height
-                    fillMode: Image.PreserveAspectFit;
-                    horizontalAlignment: Image.AlignHCenter
-                    verticalAlignment: Image.AlignVCenter
-                    cache: false
-                    asynchronous: true
-                    Layout.alignment: Qt.AlignCenter
-                    source: "camera"
-                }
-                RowLayout {
-                    Layout.fillWidth: true
-                    visible: plasmoid.configuration.showSnapshotTimestamp
-                    PlasmaComponents.Label {
-                        maximumLineCount: 1
-                        Layout.maximumWidth: parent.width
-                        wrapMode: Text.NoWrap
-                        fontSizeMode: Text.Fit
-                        elide: Text.ElideRight
-                        font.pixelSize: Qt.application.font.pixelSize * 0.8
-                        text: cameraView1Stamp
-                    }
-                    Item {
-                        Layout.fillWidth: true
-                    }
-                    PlasmaComponents.Label {
-                        maximumLineCount: 1
-                        Layout.maximumWidth: parent.width
-                        wrapMode: Text.NoWrap
-                        fontSizeMode: Text.Fit
-                        elide: Text.ElideRight
-                        font.pixelSize: Qt.application.font.pixelSize * 0.8
-                        text: (cameraView1Stamp != '') ? cameraViewTimerState : ''
-                    }
-                }
-            }
-        } // StackLayout
-
-        Rectangle {
-            anchors.top: cameraViewContainer.top
-            anchors.left: cameraViewContainer.left
-            anchors.right: cameraViewContainer.right
-            height: fullStateJobFileName.height
-            color: "#aa222222"
-            visible: osm.jobInProgress && plasmoid.configuration.showJobFileName
-            Layout.fillWidth: true
-
-            PlasmaComponents.Label {
-                id: fullStateJobFileName
-
-                padding: 8
-
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                Layout.fillWidth: true
-                fontSizeMode: Text.Fit
-                minimumPixelSize: 8
-                elide: Text.ElideMiddle
-                text: osm.jobFileName
-            }
-        }
-
     } // ColumnLayout (cameraViewContainer)
 
     RowLayout {
