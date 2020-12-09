@@ -29,7 +29,6 @@ QtObject {
     property string octoStateBucket: ''
     property string octoStateBucketName: ''
     property string octoStateIcon: ''
-    //plasmoid.file("", `images/state-dead.png`)
 
     // Indicates if print job is currently in progress.
 	property bool jobInProgress: false

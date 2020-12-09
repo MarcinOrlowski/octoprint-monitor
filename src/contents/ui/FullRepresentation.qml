@@ -19,8 +19,6 @@ import "../js/utils.js" as Utils
 ColumnLayout {
     id: fullContainer
 
-    Layout.fillWidth: true
-
     // ------------------------------------------------------------------------------------------------------------------------
 
 	property bool isCameraViewEnabled: plasmoid.configuration.cameraViewEnabled && plasmoid.configuration.cameraViewSnapshotUrl != ''
@@ -30,32 +28,36 @@ ColumnLayout {
 	property string cameraView1Stamp: ''
 	property var cameraView1StampMillis: 0
 
+	property var cameraViewUpdateStampMillis: 0
+	property string cameraViewUpdateStamp: ''
+
     function isSnapshotEnabled() {
          return osm.apiConnected && plasmoid.expanded && isCameraViewEnabled && isCameraViewPollActive()
     }
 
     property bool frontImageVisible: true
-    property bool initialLoad: true
+    property bool cameraViewInitialized: true
     readonly property string imageSourceUrl: plasmoid.configuration.cameraViewSnapshotUrl + '#'
 
     function updateSnapshot() {
 	    if (!isSnapshotEnabled()) return
 
         var url = imageSourceUrl + Date.now()
-        if (initialLoad) {
-            cameraImageViewFront.source = url
+        if (!cameraViewInitialized) {
+//            cameraImageViewFront.source = url
             cameraImageViewBack.source = url
-            initialLoad = false
+            cameraViewInitialized = true
             return
         }
 
         if (frontImageVisible) {
-            cameraImageViewBack.visible = true
+//            cameraImageViewBack.visible = true
             showBackImageViewAnimation.start()
         } else {
-            cameraImageViewFront.visible = true
+//            cameraImageViewFront.visible = true
             showFrontImageViewAnimation.start()
         }
+        cameraViewUpdateStampMillis = Date.now()
         frontImageVisible = !frontImageVisible
     }
 
@@ -71,11 +73,9 @@ ColumnLayout {
             if (plasmoid.configuration.showSnapshotTimestampElapsed) {
                 var showSeconds = plasmoid.configuration.showSnapshotTimestampElapsedAlwaysShowSeconds
                 var now = Date.now()
-                if (cameraView0StampMillis != 0) cameraView0Stamp = i18n('Updated %1 ago', Utils.secondsToString(Math.floor((now-cameraView0StampMillis)/1000), showSeconds))
-                if (cameraView1StampMillis != 0) cameraView1Stamp = i18n('Updated %1 ago', Utils.secondsToString(Math.floor((now-cameraView1StampMillis)/1000), showSeconds))
+                if (cameraViewUpdateStampMillis != 0) cameraViewUpdateStamp = i18n('Updated %1 ago', Utils.secondsToString(Math.floor((now-cameraViewUpdateStampMillis)/1000), showSeconds))
             } else {
-                if (cameraView0StampMillis != 0) cameraView0Stamp = new Date(cameraView0StampMillis).toLocaleString(Qt.locale(), Locale.ShortFormat)
-                if (cameraView1StampMillis != 0) cameraView1Stamp = new Date(cameraView1StampMillis).toLocaleString(Qt.locale(), Locale.ShortFormat)
+                if (cameraViewUpdateStampMillis != 0) cameraViewUpdateStamp = new Date(cameraViewUpdateStampMillis).toLocaleString(Qt.locale(), Locale.ShortFormat)
             }
         }
 	}
@@ -116,12 +116,62 @@ ColumnLayout {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
+    readonly property int xfadeDuration: 300
+    ParallelAnimation {
+        id: showBackImageViewAnimation
+        onStarted: cameraImageViewBack.opacity = 0
+        onStopped: cameraImageViewFront.source = imageSourceUrl + Date.now()
+        PropertyAnimation {
+            target: cameraImageViewBack
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: xfadeDuration
+            alwaysRunToEnd: true
+        }
+        PropertyAnimation {
+            target: cameraImageViewFront
+            property: "opacity"
+            from: 1
+            to: 0
+            duration: xfadeDuration
+            alwaysRunToEnd: true
+        }
+    }
+
+    ParallelAnimation {
+        id: showFrontImageViewAnimation
+        onStarted: cameraImageViewFront.opacity = 0
+        onStopped: cameraImageViewBack.source = imageSourceUrl + Date.now()
+        PropertyAnimation {
+            target: cameraImageViewBack
+            property: "opacity"
+            from: 1
+            to: 0
+            duration: xfadeDuration
+            alwaysRunToEnd: true
+        }
+        PropertyAnimation {
+            target: cameraImageViewFront
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: xfadeDuration
+            alwaysRunToEnd: true
+        }
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
     RowLayout {
         id: fullStateContainerTopRow
         Layout.fillWidth: true
 
+        anchors.left: fullContainer.left
+        anchors.right: fullContainer.right
+        anchors.top: fullContainer.top
+
         Image {
-//            readonly property int iconSize: PlasmaCore.Units.iconSizes.huge
             readonly property int iconSize: 96
 
             id: fullStateIcon
@@ -142,6 +192,7 @@ ColumnLayout {
             id: fullStateTopContainer
 
             Layout.fillWidth: true
+            anchors.left: fullStateIcon.right
             anchors.right: fullStateContainerTopRow.right
 
             PlasmaComponents.Label {
@@ -191,155 +242,157 @@ ColumnLayout {
                 font.pixelSize: Qt.application.font.pixelSize * 0.8
                 visible: osm.jobInProgress && plasmoid.configuration.showJobFileName && osm.jobInProgress != ''
             }
-
         } // ColumnLayout
     } // RowLayout (fullStateContainerTopRow)
 
-    readonly property int xfadeDuration: 300
-
-    ParallelAnimation {
-        id: showBackImageViewAnimation
-        onStopped: {
-//            cameraImageViewFront.visible = false
-            cameraImageViewFront.source = imageSourceUrl + Date.now()
-        }
-        PropertyAnimation {
-            target: cameraImageViewBack
-            property: "opacity"
-            from: 0
-            to: 1
-            duration: xfadeDuration
-            alwaysRunToEnd: true
-        }
-        PropertyAnimation {
-            target: cameraImageViewFront
-            property: "opacity"
-            from: 1
-            to: 0
-            duration: xfadeDuration
-            alwaysRunToEnd: true
-        }
-    }
-
-    ParallelAnimation {
-        id: showFrontImageViewAnimation
-        onStopped: {
-//            cameraImageViewBack.visible = false
-            cameraImageViewBack.source = imageSourceUrl + Date.now()
-        }
-        PropertyAnimation {
-            target: cameraImageViewBack
-            property: "opacity"
-            from: 1
-            to: 0
-            duration: xfadeDuration
-            alwaysRunToEnd: true
-        }
-        PropertyAnimation {
-            target: cameraImageViewFront
-            property: "opacity"
-            from: 0
-            to: 1
-            duration: xfadeDuration
-            alwaysRunToEnd: true
-        }
-    }
-
     ColumnLayout {
         id: cameraViewContainer
-
-        width: fullContainer.width
-        Layout.minimumWidth: fullContainer.width
-        Layout.maximumWidth: fullContainer.width
-
         anchors.top: fullStateContainerTopRow.bottom
+        anchors.left: fullContainer.left
+        anchors.right: fullContainer.right
+        anchors.bottom: fullContainer.bottom
 
-        Image {
-            id: cameraImageViewBack
-            Layout.fillWidth: true
-            Layout.minimumWidth: parent.width
-            Layout.maximumWidth: parent.width
-            fillMode: Image.PreserveAspectFit;
-            horizontalAlignment: Image.AlignHCenter
-            verticalAlignment: Image.AlignVCenter
-            cache: false
-            asynchronous: true
-            opacity: 0
+        visible: isCameraViewEnabled
+
+        Rectangle {
+            anchors.fill: parent
+            color: "#ff0000"
+            opacity: 0.5
         }
-        Image {
-            id: cameraImageViewFront
-            Layout.minimumWidth: parent.width
-            Layout.maximumWidth: parent.width
-            Layout.fillWidth: true
 
-            // we need them overlapping
-            anchors.fill: cameraImageViewBack
+        ColumnLayout {
+            id: cameraViewExtrasContainer
 
-//            sourceSize.width: cameraView0.width
-//            sourceSize.height: cameraView0.height
-            fillMode: Image.PreserveAspectFit;
-            horizontalAlignment: Image.AlignHCenter
-            verticalAlignment: Image.AlignVCenter
-            cache: false
-            asynchronous: true
-            opacity: 1
-        }
-    } // ColumnLayout (cameraViewContainer)
+            anchors.left: fullContainer.left
+            anchors.right: fullContainer.right
+            anchors.bottom: fullContainer.bottom
 
-    RowLayout {
-        id: cameraViewControButtons
+            Rectangle {
+                anchors.fill: parent
+                color: "#00ff00"
+                opacity: 0.5
+            }
 
-        visible: plasmoid.configuration.cameraViewControlsEnabled && isCameraViewEnabled
-        Layout.fillWidth: true
+            RowLayout {
+                id: cameraViewTimestampContainer
 
-        PlasmaComponents.Button {
-            id: buttonStartPause
-            text: i18n("Pause")
-//            implicitWidth: minimumWidth
-            icon.name: "media-playback-pause"
-            onClicked: {
-                if (cameraViewTimer.running) {
-                    cameraViewTimer.stop()
-                    cameraViewTimerState = i18n('PAUSED')
-                    buttonStartPause.text = i18n('Start')
-                    buttonStartPause.icon.name = "media-playback-start"
-                } else {
-                    cameraViewTimerState = i18n('Every %1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
-                    cameraViewTimer.start()
-                    buttonStartPause.text = i18n('Pause')
-                    buttonStartPause.icon.name = "media-playback-pause"
+                anchors.left: cameraViewExtrasContainer.left
+                anchors.right: cameraViewExtrasContainer.right
+
+                PlasmaComponents.Label {
+                    Layout.alignment: Qt.AlignHCenter
+                    fontSizeMode: Text.Fit
+                    minimumPixelSize: 8
+                    font.pixelSize: Qt.application.font.pixelSize * 0.8
+                    text: cameraViewUpdateStamp
                 }
-            }
-        }
+            } // cameraViewTimestampContainer
 
-        PlasmaComponents.Button {
-            text: "Stop"
-//            implicitWidth: minimumWidth
-            icon.name: "media-playback-stop"
-            onClicked: {
-                cameraViewTimer.stop()
-                cameraViewTimerState = i18n('STOPPED')
-                buttonStartPause.text = i18n('Start')
-                buttonStartPause.icon.name = "media-playback-start"
-            }
-        }
+            RowLayout {
+                id: cameraViewControlButtonsContainer
 
-        Item {
-            Layout.fillWidth: true
-        }
+                anchors.left: cameraViewExtrasContainer.left
+                anchors.right: cameraViewExtrasContainer.right
+                anchors.bottom: cameraViewContainer.bottom
 
-        PlasmaComponents.Button {
-            text: ''
-            implicitWidth: units.gridUnit * 2
-            icon.name: "view-refresh"
-            onClicked: {
-                if (cameraViewTimer.running) {
-                    cameraViewTimer.restart()
+                visible: plasmoid.configuration.cameraViewControlsEnabled
+                Layout.fillWidth: true
+
+                PlasmaComponents.Button {
+                    id: buttonStartPause
+                    text: i18n("Pause")
+                    icon.name: "media-playback-pause"
+                    onClicked: {
+                        if (cameraViewTimer.running) {
+                            cameraViewTimer.stop()
+                            cameraViewTimerState = i18n('PAUSED')
+                            buttonStartPause.text = i18n('Start')
+                            buttonStartPause.icon.name = "media-playback-start"
+                        } else {
+                            cameraViewTimerState = i18n('Every %1', Utils.secondsToString(plasmoid.configuration.cameraViewUpdateInterval))
+                            cameraViewTimer.start()
+                            buttonStartPause.text = i18n('Pause')
+                            buttonStartPause.icon.name = "media-playback-pause"
+                        }
+                    }
                 }
-                updateSnapshot()
+
+                PlasmaComponents.Button {
+                    text: "Stop"
+                    icon.name: "media-playback-stop"
+                    onClicked: {
+                        cameraViewTimer.stop()
+                        cameraViewTimerState = i18n('STOPPED')
+                        buttonStartPause.text = i18n('Start')
+                        buttonStartPause.icon.name = "media-playback-start"
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                PlasmaComponents.Button {
+                    implicitWidth: units.gridUnit * 2
+                    icon.name: "view-refresh"
+                    onClicked: updateSnapshot()
+                }
+            } // cameraViewControlButtonsContainer
+        } // cameraViewExtrasContainer
+
+        ColumnLayout {
+            id: cameraViewImageContainer
+
+            anchors.top: cameraViewContainer.top
+            anchors.left: cameraViewContainer.left
+            anchors.right: cameraViewContainer.right
+//            anchors.bottom: cameraViewExtrasContainer.top
+
+            Rectangle {
+                anchors.fill: parent
+                color: "#0000ff"
+                opacity: 0.5
             }
-        }
-    }
+
+            Image {
+                id: cameraImageViewBack
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.left: parent.left
+//                anchors.fill: parent
+                Layout.minimumWidth: parent.width
+                Layout.maximumWidth: parent.width
+                Layout.minimumHeight: 200
+                fillMode: Image.PreserveAspectFit;
+                horizontalAlignment: Image.AlignHCenter
+                verticalAlignment: Image.AlignVCenter
+                cache: false
+                asynchronous: true
+                opacity: 0
+            }
+            Image {
+                id: cameraImageViewFront
+                // we need them overlapping
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.left: parent.left
+//                anchors.fill: parent
+//                Layout.minimumWidth: 320
+//                Layout.maximumWidth: 200
+                Layout.minimumWidth: parent.width
+                Layout.maximumWidth: parent.width
+                Layout.minimumHeight: 200
+                fillMode: Image.PreserveAspectFit;
+                horizontalAlignment: Image.AlignHCenter
+                verticalAlignment: Image.AlignVCenter
+                cache: false
+                asynchronous: true
+                opacity: 1
+                source: plasmoid.file("", `images/logo.png`)
+            }
+        } // cameraViewImageContainer
+
+    } // cameraViewContainer
 
     // ------------------------------------------------------------------------------------------------------------------------
 }
