@@ -146,6 +146,9 @@ QtObject {
                 // Printer is not operational
                 this.setPrinterFlags(false)
                 break
+            case 0:
+                flagError = true
+                break;
             default:
                 console.debug(`Unexpected printer response status code (${xhr.status}).`)
                 flagError = true
