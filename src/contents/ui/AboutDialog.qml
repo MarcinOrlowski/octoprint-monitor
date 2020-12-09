@@ -12,12 +12,13 @@
 import QtQuick 2.1
 import QtQuick.Layouts 1.1
 import org.kde.plasma.components 3.0 as PlasmaComponents
-import org.kde.kirigami 2.6 as Kirigami
 import QtQuick.Dialogs 1.3
 
 Dialog {
     property string plasmoidTitle: ''
     property string plasmoidVersion: ''
+
+    readonly property string authorUrl: 'http://MarcinOrlowski.com/'
 
     visible: false
     title: i18n('Information')
@@ -90,20 +91,29 @@ Dialog {
                     if (currentYear != year) {
                         year += `-${currentYear}`
                     }
-                    return `&copy;${year} by Marcin Orlowski`
+                    return `&copy;${year} by <strong><u>Marcin Orlowski</u></strong>`
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: Qt.openUrlExternally(authorUrl)
                 }
             }
 
-            Kirigami.UrlButton {
-                url: plasmoidUrl
+            Item {
+                height: 20
             }
 
-//                PlasmaComponents.Label {
-//                    Layout.alignment: Qt.AlignHCenter
-//                    textFormat: Text.RichText
-//                    text: `<a href="${plasmoidUrl}">${plasmoidUrl}</a>`
-//                    onLinkActivated: Qt.openUrlExternally(link)
-//                }
+            PlasmaComponents.Label {
+                Layout.alignment: Qt.AlignHCenter
+                textFormat: Text.RichText
+                text: i18n('Visit <u>project page</u> on Github')
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        Qt.openUrlExternally(plasmoidUrl)
+                    }
+                }
+            }
         }
     }
 } // Dialog
