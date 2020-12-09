@@ -34,31 +34,31 @@ ColumnLayout {
          return osm.apiConnected && plasmoid.expanded && isCameraViewEnabled && isCameraViewPollActive()
     }
 
-	function updateSnapshot() {
+
+    property bool frontImageVisible: true
+    property bool initialLoad: true
+    readonly property string imageSourceUrl: plasmoid.configuration.cameraViewSnapshotUrl + '#'
+
+    function updateSnapshot() {
 	    if (!isSnapshotEnabled()) return
 
-        var targetImageView = (cameraViewStack.currentIndex === 0) ? cameraView0 : cameraView1
-        targetImageView.source = `${plasmoid.configuration.cameraViewSnapshotUrl}#random` + Math.floor(Math.random() * 1000)
-
-        function finishImage() {
-            if (targetImageView.status === Component.Ready) {
-                targetImageView.statusChanged.disconnect(finishImage)
-                cameraViewStack.currentIndex = (cameraViewStack.currentIndex+1) % 2
-
-                if (cameraViewStack.currentIndex === 0) {
-                    cameraView0StampMillis = Date.now()
-                } else {
-                    cameraView1StampMillis = Date.now()
-                }
-            }
+        var url = imageSourceUrl + Date.now()
+        if (initialLoad) {
+            cameraImageViewFront.source = url
+            cameraImageViewBack.source = url
+            initialLoad = false
+            return
         }
 
-        if (targetImageView.status === Component.Loading) {
-            targetImageView.statusChanged.connect(finishImage)
+        if (frontImageVisible) {
+            cameraImageViewBack.visible = true
+            showBackImageViewAnimation.start()
         } else {
-            finishImage()
+            cameraImageViewFront.visible = true
+            showFrontImageViewAnimation.start()
         }
-	}
+        frontImageVisible = !frontImageVisible
+    }
 
 	Timer {
 	    id: cameraViewSnapshotTimeUpdater
@@ -192,8 +192,160 @@ ColumnLayout {
 //        Layout.minimumWidth: fullContainer.width
 //        Layout.maximumWidth: fullContainer.width
 
+
+    readonly property int xfadeDuration: 300
+
+    ParallelAnimation {
+        id: showBackImageViewAnimation
+//        onStarted: {
+//            console.debug(`showBackImageViewAnimation: STARTED op: B: ${cameraImageViewBack.opacity}, F: ${cameraImageViewFront.opacity}`)
+//        }
+        onStopped: {
+            cameraImageViewFront.visible = false
+            cameraImageViewFront.source = imageSourceUrl + Date.now()
+//            console.debug('showBackImageViewAnimation STOPPED. Setting url for front')
+        }
+        PropertyAnimation {
+            target: cameraImageViewBack
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: xfadeDuration
+            alwaysRunToEnd: true
+        }
+        PropertyAnimation {
+            target: cameraImageViewFront
+            property: "opacity"
+            from: 1
+            to: 0
+            duration: xfadeDuration
+            alwaysRunToEnd: true
+        }
+    }
+
+    ParallelAnimation {
+        id: showFrontImageViewAnimation
+//        onStarted: {
+//            console.debug(`showFrontImageViewAnimation: STARTED op: B: ${cameraImageViewBack.opacity}, F: ${cameraImageViewFront.opacity}`)
+//        }
+        onStopped: {
+            cameraImageViewBack.visible = false
+            cameraImageViewBack.source = imageSourceUrl + Date.now()
+//            console.debug('showFrontImageViewAnimation STOPPED. Setting url for back')
+        }
+        PropertyAnimation {
+            target: cameraImageViewBack
+            property: "opacity"
+            from: 1
+            to: 0
+            duration: xfadeDuration
+            alwaysRunToEnd: true
+        }
+        PropertyAnimation {
+            target: cameraImageViewFront
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: xfadeDuration
+            alwaysRunToEnd: true
+        }
+    }
+
+    ColumnLayout {
+        width: fullContainer.width
+        Layout.minimumWidth: fullContainer.width
+        Layout.maximumWidth: fullContainer.width
+
+        anchors.top: fullStateContainerTopRow.bottom
+
+        layer.enabled: true
+
+        Image {
+            id: cameraImageViewBack
+//            width: 400
+//            height: 300
+//            Layout.minimumWidth: 400
+//            Layout.maximumWidth: 300
+//            Layout.minimumHeight: 400
+//            Layout.maximumHeight: 300
+
+            Layout.minimumWidth: parent.width
+            Layout.maximumWidth: parent.width
+//            Layout.minimumHeight: parent.width
+//            Layout.maximumHeight: parent.width
+
+//            sourceSize.width: cameraView0.width
+//            sourceSize.height: cameraView0.height
+            fillMode: Image.PreserveAspectFit;
+            horizontalAlignment: Image.AlignHCenter
+            verticalAlignment: Image.AlignVCenter
+            cache: false
+            asynchronous: true
+            Layout.alignment: Qt.AlignHCenter
+//            onStatusChanged: {
+//                var msg=`Back ${status} (op: ${opacity}): `
+//                var name='???'
+//                switch(status) {
+//                    case Image.Null: name='Null'; break
+//                    case Image.Ready: name='Ready'; break
+//                    case Image.Loading: name='Loading ' + source; break
+//                    case Image.Error: name='Error'; break
+//                }
+//                msg += name
+//                console.debug(msg)
+//            }
+//            source: 'https://www.shareicon.net/data/2016/10/20/846418_letter_512x512.png'
+            opacity: 0
+        }
+        Image {
+            id: cameraImageViewFront
+//            width: 400
+//            height: 300
+//            Layout.minimumWidth: 400
+//            Layout.maximumWidth: 300
+//            Layout.minimumHeight: 400
+//            Layout.maximumHeight: 300
+
+            Layout.minimumWidth: parent.width
+            Layout.maximumWidth: parent.width
+//            Layout.minimumHeight: parent.width
+//            Layout.maximumHeight: parent.width
+
+            // we need them overlapping
+            anchors.fill: cameraImageViewBack
+
+//            sourceSize.width: cameraView0.width
+//            sourceSize.height: cameraView0.height
+            fillMode: Image.PreserveAspectFit;
+            horizontalAlignment: Image.AlignHCenter
+            verticalAlignment: Image.AlignVCenter
+            cache: false
+            asynchronous: true
+            Layout.alignment: Qt.AlignHCenter
+//            onStatusChanged: console.debug('Front: ' + status + ' ' + getStatusName(status))
+//            onStatusChanged: {
+//                var msg=`Front ${status} (op: ${opacity}): `
+//                var name='???'
+//                switch(status) {
+//                    case Image.Null: name='Null'; break
+//                    case Image.Ready: name='Ready'; break
+//                    case Image.Loading: name='Loading ' + source; break
+//                    case Image.Error: name='Error'; break
+//                }
+//                msg += name
+//                console.debug(msg)
+//            }
+
+//            source: 'https://www.shareicon.net/data/2016/10/20/846391_alphabet-f-letter-letters-red_512x512.png'
+
+            opacity: 1
+        }
+    }
+
+
     ColumnLayout {
         id: cameraViewContainer
+
 
         StackLayout {
             id: cameraViewStack
@@ -202,7 +354,8 @@ ColumnLayout {
             Layout.minimumWidth: fullContainer.width
             Layout.maximumWidth: fullContainer.width
 
-            visible: isCameraViewEnabled
+//            visible: isCameraViewEnabled
+visible: false
             currentIndex: 0
 
             ColumnLayout {
@@ -212,6 +365,8 @@ ColumnLayout {
 
                 Image {
                     id: cameraView0
+                    width: 400
+                    height: 300
                     Layout.minimumWidth: parent.width
                     Layout.maximumWidth: parent.width
 
@@ -223,6 +378,7 @@ ColumnLayout {
                     cache: false
                     asynchronous: true
                     Layout.alignment: Qt.AlignCenter
+                    source: "camera"
                 }
                 RowLayout {
                     Layout.fillWidth: true
@@ -261,6 +417,9 @@ ColumnLayout {
                     Layout.minimumWidth: parent.width
                     Layout.maximumWidth: parent.width
 
+                    width: 400
+                    height: 300
+
                     sourceSize.width: cameraView1.width
                     sourceSize.height: cameraView1.height
                     fillMode: Image.PreserveAspectFit;
@@ -269,6 +428,7 @@ ColumnLayout {
                     cache: false
                     asynchronous: true
                     Layout.alignment: Qt.AlignCenter
+                    source: "camera"
                 }
                 RowLayout {
                     Layout.fillWidth: true

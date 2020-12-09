@@ -13,7 +13,8 @@
 # https://stackoverflow.com/questions/41409273/file-line-and-function-for-qml-files
 # https://doc.qt.io/qt-5/qtglobal.html#qSetMessagePattern
 #export QT_MESSAGE_PATTERN="[%{type}] %{appname} (%{file}:%{line}) - %{message}"
-export QT_MESSAGE_PATTERN="%{time} %{file}:%{line}: %{message}"
+#export QT_MESSAGE_PATTERN="%{time} %{file}:%{line}: %{message}"
+export QT_MESSAGE_PATTERN="%{time} L%{line} %{message}"
 
 if [[ $# -ge 1 ]]; then
   echo "Running FullRepresetaion"
