@@ -41,6 +41,9 @@ Item {
     // Debug switch to mimic API access using hardcded JSONs
     readonly property bool fakeApiAccess: false
 
+    // global debug mode switch. Controlled elsewhere :)
+    property bool debugModeEnabled: false
+
     Plasmoid.compactRepresentation: CompactRepresentation {}
     Plasmoid.fullRepresentation: FullRepresentation {}
 
@@ -120,6 +123,12 @@ Item {
             connectSource(cmd)
         }
         signal exited(string sourceName, string stdout)
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------------
+
+    Debug {
+        id: debug
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

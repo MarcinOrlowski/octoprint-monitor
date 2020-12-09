@@ -28,7 +28,14 @@ Dialog {
     Layout.minimumWidth: 600
     Layout.minimumHeight: 500
 
-//        onAccepted: visible = false
+    Timer {
+        id: debugModeTimeoutTimer
+        interval: 2 * 1000
+        repeat: true
+        running: debugModeClickCount > 0
+        triggeredOnStart: false
+        onTriggered: debugModeClickCount = 0
+    }
 
     ColumnLayout {
         anchors.centerIn: parent
@@ -41,6 +48,27 @@ Dialog {
                 Layout.alignment: Qt.AlignHCenter
                 fillMode: Image.PreserveAspectFit
                 source: plasmoid.file('', 'images/logo.png')
+
+                MouseArea {
+                    property int debugModeClickCount: 0
+
+                    anchors.fill: parent
+                    onClicked: {
+                        if (!debug.enabled) {
+                            debugModeClickCount++;
+                            if (debugModeClickCount >= 10) {
+                                debug.enabled = true;
+
+                                notificationManager.post({
+                                    'title': 'Debug Mode',
+                                    'icon': osm.octoStateIcon,
+                                    'summary': 'Debug mode enabled',
+                                    'expireTimeout': 10 * 1000,
+                                });
+                            }
+                        }
+                    }
+                }
             }
 
             // metadata access is not available until very recent Plasma
