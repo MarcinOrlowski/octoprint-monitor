@@ -47,6 +47,7 @@ Dialog {
         Layout.margins: 30
 
         Image {
+            id: aboutLogo
             Layout.alignment: Qt.AlignHCenter
             fillMode: Image.PreserveAspectFit
             source: plasmoid.file('', 'images/logo.png')
@@ -70,8 +71,8 @@ Dialog {
                         }
                     }
                 }
-            }
-        }
+            } // MouseArea
+        } // aboutLogo
 
         // metadata access is not available until very recent Plasma
         // so as a work around we have it auto-generated as JS file
