@@ -46,9 +46,6 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    JobState {
-    }
-
     property string plasmoidTitle: ''
     readonly property string plasmoidVersion: Version.version
     readonly property string plasmoidUrl: 'https://github.com/marcinorlowski/octoprint-monitor'
@@ -333,7 +330,6 @@ Item {
             xhr.send()
         }
     }
-
 
     // ------------------------------------------------------------------------------------------------------------------------
 
