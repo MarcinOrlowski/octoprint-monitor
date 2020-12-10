@@ -38,4 +38,11 @@ ConfigModel {
         icon: "configure"
         source: "configApi.qml"
     }
+    ConfigCategory {
+        name: i18n("Debug")
+        icon: "debug-run"
+        source: "configDebug.qml"
+        visible: debug.enabled
+    }
+
 }
