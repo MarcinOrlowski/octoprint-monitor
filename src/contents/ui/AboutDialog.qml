@@ -13,13 +13,9 @@ import QtQuick 2.1
 import QtQuick.Layouts 1.1
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import QtQuick.Dialogs 1.3
+import "../js/meta.js" as Meta
 
 Dialog {
-    property string plasmoidTitle: ''
-    property string plasmoidVersion: ''
-
-    readonly property string authorUrl: 'http://MarcinOrlowski.com/'
-
     visible: false
     title: i18n('Information')
     standardButtons: StandardButton.Ok
@@ -81,7 +77,7 @@ Dialog {
             textFormat: Text.PlainText
             font.bold: true
             font.pixelSize: Qt.application.font.pixelSize * 1.5
-            text: `${plasmoidTitle} v${plasmoidVersion}`
+            text: `${Meta.title} v${Meta.version}`
         }
 
         PlasmaComponents.Label {
@@ -97,7 +93,7 @@ Dialog {
             }
             MouseArea {
                 anchors.fill: parent
-                onClicked: Qt.openUrlExternally(authorUrl)
+                onClicked: Qt.openUrlExternally(Meta.authorUrl)
             }
         }
 

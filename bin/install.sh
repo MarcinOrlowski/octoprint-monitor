@@ -22,7 +22,7 @@ function installPlasmoid() {
 	local -r tmp="$(mktemp -d "/tmp/${plasmoid_file_name}.XXXXXX")"
 	cp -a "${ROOT_DIR}"/src/* "${tmp}"
 
-	dumpMeta > "${tmp}/contents/js/version.js"
+	dumpMeta > "${tmp}/contents/js/meta.js"
 
 	pushd "${tmp}" > /dev/null
 	zip -q -r "${target_plasmoid_file}" -- *

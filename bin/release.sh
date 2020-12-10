@@ -36,7 +36,7 @@ function releasePlasmoid() {
 	cat "${cfg_template_file}" | sed -e "s/{OCTOPRINT_API_URL}/${op_api_url}/g" | sed -e "s/{OCTOPRINT_API_KEY}/${op_api_key}/g" | sed -e "s/{OCTOPRINT_SNAPSHOT_URL}/${op_snapshot_url}/g" > "${cfg_config_file}"
 	rm -vf "${cfg_template_file}"
 
-	dumpMeta > "${tmp}/contents/js/version.js"
+	dumpMeta > "${tmp}/contents/js/meta.js"
 
 	zip -q -r "${target_file}" -- *
 	ls -ld "${target_file}"

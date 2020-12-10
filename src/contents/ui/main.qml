@@ -17,7 +17,7 @@ import org.kde.kirigami 2.6 as Kirigami
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
 import "../js/utils.js" as Utils
-import "../js/version.js" as Version
+import "../js/meta.js" as Meta
 import "./PrinterStateBucket.js" as Bucket
 
 Item {
@@ -49,13 +49,8 @@ Item {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
-    property string plasmoidTitle: ''
-    readonly property string plasmoidVersion: Version.version
-    readonly property string plasmoidUrl: 'https://github.com/marcinorlowski/octoprint-monitor'
-
     Component.onCompleted: {
-        plasmoidTitle = Plasmoid.title
-        plasmoid.setAction("showAboutDialog", i18n('About %1…', plasmoidTitle));
+        plasmoid.setAction("showAboutDialog", i18n('About %1…', Meta.title));
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -222,7 +217,7 @@ Item {
 
 //        console.debug(`post: ${post}, state: ${previous}=>${current}, timeout: ${expireTimeout}, body: "${body}"`)
         if (post) {
-            var title = main.plasmoidTitle
+            var title = Meta.title
             // there's system timer shown (xx ago) shown for non expiring notifications
             if (expireTimeout == 0) {
                 title += ' ' + new Date().toLocaleString(Qt.locale(), Locale.ShortFormat)
@@ -345,8 +340,6 @@ Item {
     UpdateChecker {
         id: updateChecker
         plasmoidUMetaDataUrl: 'https://raw.githubusercontent.com/MarcinOrlowski/octoprint-monitor/master/src/metadata.desktop'
-        plasmoidTitle: main.plasmoidTitle
-        plasmoidVersion: main.plasmoidVersion
     }
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -357,8 +350,6 @@ Item {
 
     AboutDialog {
         id: aboutDialog
-        plasmoidTitle: main.plasmoidTitle
-        plasmoidVersion: main.plasmoidVersion
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

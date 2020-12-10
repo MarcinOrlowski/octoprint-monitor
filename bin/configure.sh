@@ -17,7 +17,7 @@ declare -r ROOT_DIR="$(realpath "$(dirname "$(realpath "${0}")")/..")"
 source "${ROOT_DIR}/bin/common.sh"
 
 function configurePlasmoid() {
-	local -r meta="${ROOT_DIR}/src/contents/js/version.js"
+	local -r meta="${ROOT_DIR}/src/contents/js/meta.js"
 	echo "Populating ${meta}"
 	dumpMeta > "${meta}"
 

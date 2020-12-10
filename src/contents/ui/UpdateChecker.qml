@@ -11,11 +11,11 @@
 
 import QtQuick 2.0
 import Qt.labs.settings 1.0
+import "../js/meta.js" as Meta
 
 Item {
-    property string plasmoidTitle: ''
+	// URL to metadata.desktop file of recent stable public release
     property string plasmoidUMetaDataUrl: ''
-    property string plasmoidVersion: ''
 
 	Timer {
         interval: 3 * 60 * 60 * 1000
@@ -32,18 +32,8 @@ Item {
     }
 
     function checkVersion() {
-        if (plasmoidUMetaDataUrl == '') {
-            console.debug('plasmoidUMetaDataUrl is empty');
-            return
-        }
-        if (plasmoidVersion == '') {
-            console.debug('plasmoidVersion not specified');
-            return
-        }
-
         var d = new Date()
         var today = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate()
-//        console.debug(`today: ${today}, lastCheck: ${updateCheckerSettings.lastVersionCheckDate}`)
         if (today != updateCheckerSettings.lastVersionCheckDate) {
             var xhr = new XMLHttpRequest()
             xhr.open('GET', plasmoidUMetaDataUrl)
@@ -54,13 +44,13 @@ Item {
                     updateCheckerSettings.lastVersionCheckDate = today
 
                     var remoteVersion = xhr.responseText.match(/X\-KDE\-PluginInfo\-Version=(.*)/)[1]
-//                    console.debug(`remoteVersion: ${remoteVersion}, currentVersion: ${plasmoidVersion}`)
-                    if (remoteVersion != plasmoidVersion) {
+//                    console.debug(`remoteVersion: ${remoteVersion}, currentVersion: ${Meta.version}`)
+                    if (remoteVersion != Meta.version) {
                         notificationManager.post({
-                            'title': plasmoidTitle,
+                            'title': Meta.title,
 //                            'icon': main.octoStateIcon,
                             'summary': `OctoPrint Monitor ${remoteVersion} available!`,
-                            'body': `You are currently using version ${plasmoidVersion}. See project page for more information.`,
+                            'body': `You are currently using version ${Meta.version}. See project page for more information.`,
                             'expireTimeout': 0,
                         });
                     }
