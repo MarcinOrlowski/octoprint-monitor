@@ -30,18 +30,18 @@ QtObject {
 
     function fromXhr(xhr) {
         // We only care about DONE readyState.
-        if (xhr.readyState !== 4) return
+        if (xhr.readyState !== 4) throw new Error(`Job xhr.readyState not DONE (${xhr.readyState})`)
 
         if (xhr.status === 200) {
             try {
                 this.fromJson(JSON.parse(xhr.responseText))
             } catch (error) {
-//                console.debug(`ResponseText: "${xhr.responseText}"`)
+                debug.log(`ResponseText: "${xhr.responseText}"`)
                 console.debug('Error handling API job state response.')
                 console.debug(error)
             }
         } else {
-            console.debug(`Unexpected job response status code (${xhr.status}).`)
+            throw new Error(`Unexpected job response status code (${xhr.status}).`)
         }
     }
 

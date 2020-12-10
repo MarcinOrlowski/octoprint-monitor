@@ -260,7 +260,7 @@ ColumnLayout {
             anchors.fill: parent
             color: "#ff0000"
             opacity: 0.5
-            visible: debug.enabled
+            visible: debug.layoutOverlaysEnabled
         }
 
         ColumnLayout {
@@ -280,7 +280,7 @@ ColumnLayout {
                 anchors.fill: parent
                 color: "#0000ff"
                 opacity: 0.5
-                visible: debug.enabled
+                visible: debug.layoutOverlaysEnabled
             }
 
             Image {
@@ -334,7 +334,7 @@ ColumnLayout {
                 anchors.fill: parent
                 color: "#00ff00"
                 opacity: 0.5
-                visible: debug.enabled
+                visible: debug.layoutOverlaysEnabled
             }
 
             RowLayout {

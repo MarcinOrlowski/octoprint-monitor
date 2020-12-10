@@ -131,7 +131,7 @@ QtObject {
     function fromXhr(xhr) {
         switch (xhr.status) {
             case 200:
-//              console.debug(`ResponseText: "'${xhr.responseText}'"`)
+                debug.log(`ResponseText: "'${xhr.responseText}'"`)
                 try {
                     this.fromJson(JSON.parse(xhr.responseText))
                 } catch (error) {

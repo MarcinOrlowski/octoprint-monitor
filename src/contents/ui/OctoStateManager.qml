@@ -51,27 +51,41 @@ QtObject {
     // ------------------------------------------------------------------------------------------------------------------------
 
     function handleJobState(xhr) {
+        var result = false
+
         // We only care about DONE readyState.
-        if (xhr.readyState !== 4) return
+        if (xhr.readyState !== 4) {
+            debug.log(`handleJobState(): xhr.readyState !== 4. Value: ${xhr.readyState}`)
+            return result
+        }
 
         // Ensure we managed to talk to the API
         this.apiConnected = (xhr.status !== 0)
 
         if (job.handle(xhr)) {
             this.updateOctoState()
+            result = true
+        } else {
+            debug.log('handleJobState(): job.handle() call failed')
         }
+        return result
     }
 
     function handlePrinterState(xhr) {
+        var result = false
         // We only care about DONE readyState.
-        if (xhr.readyState !== 4) return
+        if (xhr.readyState !== 4) return false
 
         // Ensure we managed to talk to the API
         this.apiConnected = (xhr.status !== 0)
 
         if (printer.handle(xhr)) {
             this.updateOctoState()
+            result = true
+        } else {
+            debug.log('handlePrinterState(): printer.handle() call failed')
         }
+        return result
     }
 
     // ------------------------------------------------------------------------------------------------------------------------

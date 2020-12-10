@@ -11,6 +11,7 @@
 
 import QtQuick 2.1
 import QtQuick.Layouts 1.1
+import QtQuick.Controls 2.3
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import QtQuick.Dialogs 1.3
 import "../js/meta.js" as Meta
@@ -112,5 +113,49 @@ Dialog {
                 }
             }
         }
+
+        ColumnLayout {
+            id: debugModeButtonsContainer
+            visible: debug.enabled
+
+            Item {
+                height: 20
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+
+                CheckBox {
+                    text: i18n("Layout overlays")
+                    onCheckedChanged: debug.layoutOverlaysEnabledFlag = checked
+                    checked: debug.layoutOverlaysEnabledFlag
+                }
+                CheckBox {
+                    text: i18n("Enable logs")
+                    onCheckedChanged: debug.logsEnabledFlag = checked
+                    checked: debug.logsEnabledFlag
+
+                }
+                CheckBox {
+                    text: i18n("Fake API calls")
+                    onCheckedChanged: debug.fakeApiCallsFlag = checked
+                    checked: debug.fakeApiCallsFlag
+                }
+            }
+            Button {
+                Layout.alignment: Qt.AlignHCenter
+                text: i18n("Deactivate debug mode")
+                onClicked: {
+                    debug.enabled = false
+                    notificationManager.post({
+                        'title': Meta.title,
+                        'icon': osm.octoStateIcon,
+                        'summary': 'Debug mode OFF.',
+                        'expireTimeout': 10 * 1000,
+                    });
+                }
+            }
+        } // debugModeButtonsContainer
+
     } // aboutMainContainer
 } // Dialog

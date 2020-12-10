@@ -44,7 +44,6 @@ Item {
                     updateCheckerSettings.lastVersionCheckDate = today
 
                     var remoteVersion = xhr.responseText.match(/X\-KDE\-PluginInfo\-Version=(.*)/)[1]
-//                    console.debug(`remoteVersion: ${remoteVersion}, currentVersion: ${Meta.version}`)
                     if (remoteVersion != Meta.version) {
                         notificationManager.post({
                             'title': Meta.title,
