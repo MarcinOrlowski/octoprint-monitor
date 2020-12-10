@@ -1,70 +1,60 @@
 #!/bin/bash
 
-#  OctoPrint Monitor
+# OctoPrint Monitor
 #
-#  Updated plasmoid generated config files file based on current template,
-#  env vars and metadata.desktop file
+# Updated plasmoid generated config files file based on current template,
+# env vars and metadata.desktop file
 #
-#  @author    Marcin Orlowski <mail (#) marcinOrlowski (.) com>
-#  @copyright 2020 Marcin Orlowski
-#  @license   http://www.opensource.org/licenses/mit-license.php MIT
-#  @link      https://github.com/MarcinOrlowski/octoprint-monitor
+# @author    Marcin Orlowski <mail (#) marcinOrlowski (.) com>
+# @copyright 2020 Marcin Orlowski
+# @license   http://www.opensource.org/licenses/mit-license.php MIT
+# @link      https://github.com/MarcinOrlowski/octoprint-monitor
 
-function escape() {
-	local -r str="${1:-}"
-	echo $(echo "${str}" | sed -e 's/[]\/$*.^[]/\\&/g')
-}
+set -euo pipefail
 
 # shellcheck disable=SC2155
-declare -r ROOT_DIR="$(dirname "$(realpath "${0}")")"
-declare -r src_dir="${ROOT_DIR}/../src"
+declare -r ROOT_DIR="$(realpath "$(dirname "$(realpath "${0}")")/..")"
+source "${ROOT_DIR}/bin/common.sh"
 
-if [[ ! -d "${src_dir}" ]]; then
-	echo "*** Source dir not found: ${src_dir}"
-	exit 1
-fi
+function configurePlasmoid() {
+	local -r meta="${ROOT_DIR}/src/contents/js/version.js"
+	echo "Populating ${meta}"
+	dumpMeta > "${meta}"
 
-declare -r pkg_name=$(grep X-KDE-PluginInfo-Name < "${src_dir}/metadata.desktop" | awk '{split($0,a,"="); print a[2]}')
-declare -r base_name=$(echo "${pkg_name}" | awk '{cnt=split($0,a,"."); print a[cnt]}')
-declare -r pkg_version=$(grep X-KDE-PluginInfo-Version < "${src_dir}/metadata.desktop" | awk '{split($0,a,"="); print a[2]}')
-declare -r plasmoid_path="$(pwd)"
-declare -r plasmoid_name="${base_name}-${pkg_version}.plasmoid"
+	local -r base="${ROOT_DIR}/src/contents/config/"
+	local -r cfg_template_file="${base}/main-template.xml"
+	local -r cfg_config_file="${base}/main.xml"
 
-echo "PKG_NAME: ${pkg_name}"
-echo " VERSION: ${pkg_version}"
-echo -e "var version=\"${pkg_version}\"" > "${src_dir}/contents/js/version.js"
+	if [[ ! -s "${cfg_template_file}" ]]; then
+		echo "*** Config template file not found: ${cfg_template_file}"
+		exit 1
+	fi
 
+	local op_api_url=
+	local op_api_key=
+	local op_snapshot_url=
 
-declare -r cfg_template_file="${src_dir}/contents/config/main-template.xml"
-declare -r cfg_config_file="${src_dir}/contents/config/main.xml"
+	if [[ "$#" -eq 0 ]]; then
+		echo "Populating config with env vars: ${cfg_config_file}"
 
-if [[ ! -s "${cfg_template_file}" ]]; then
-	echo "*** Config template not found: ${cfg_template_file}"
-	exit 1
-fi
+		for name in OCTOPRINT_API_URL OCTOPRINT_API_KEY OCTOPRINT_SNAPSHOT_URL; do
+			val="$(eval echo "\${${name}}")"
+			if [[ -z "${val}" ]]; then
+				echo "*** ${name} env variable is not set properly."
+				exit 1
+			fi
 
-op_api_url=
-op_api_key=
-op_snapshot_url=
+			echo "  ${name}=\"${val}\""
+		done
 
-if [[ "$#" -eq 0 ]]; then
-	echo "Populating config with env vars: ${cfg_config_file}"
+		op_api_url=$(escape "${OCTOPRINT_API_URL}")
+		op_api_key=$(escape "${OCTOPRINT_API_KEY}")
+		op_snapshot_url=$(escape "${OCTOPRINT_SNAPSHOT_URL}")
+	else
+		echo "Creating EMPTY config file: ${cfg_config_file}"
+	fi
 
-	for name in OCTOPRINT_API_URL OCTOPRINT_API_KEY OCTOPRINT_SNAPSHOT_URL; do
-		val="$(eval echo "\${${name}}")"
-		if [[ -z "${val}" ]]; then
-			echo "*** ${name} env variable is not set properly."
-			exit 1
-		fi
+	cat "${cfg_template_file}" | sed -e "s/{OCTOPRINT_API_URL}/${op_api_url}/g" | sed -e "s/{OCTOPRINT_API_KEY}/${op_api_key}/g" | sed -e "s/{OCTOPRINT_SNAPSHOT_URL}/${op_snapshot_url}/g" > "${cfg_config_file}"
+}
 
-		echo "  ${name}=\"${val}\""
-	done
-
-	op_api_url=$(escape "${OCTOPRINT_API_URL}")
-	op_api_key=$(escape "${OCTOPRINT_API_KEY}")
-	op_snapshot_url=$(escape "${OCTOPRINT_SNAPSHOT_URL}")
-else
-	echo "Creating EMPTY config file: ${cfg_config_file}"
-fi
-
-cat "${cfg_template_file}" | sed -e "s/{OCTOPRINT_API_URL}/${op_api_url}/g" | sed -e "s/{OCTOPRINT_API_KEY}/${op_api_key}/g" | sed -e "s/{OCTOPRINT_SNAPSHOT_URL}/${op_snapshot_url}/g" > "${cfg_config_file}"
+configurePlasmoid

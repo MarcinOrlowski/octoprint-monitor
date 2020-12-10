@@ -1,50 +1,45 @@
 #!/bin/bash
 
-#  OctoPrint Monitor
+# OctoPrint Monitor
 #
-#  Packs plasmoid and installs/upgrades it locally, then restarts plasma.
+# Packs plasmoid and installs/upgrades it locally, then restarts plasma.
 #
-#  @author    Marcin Orlowski <mail (#) marcinOrlowski (.) com>
-#  @copyright 2020 Marcin Orlowski
-#  @license   http://www.opensource.org/licenses/mit-license.php MIT
-#  @link      https://github.com/MarcinOrlowski/octoprint-monitor
+# @author    Marcin Orlowski <mail (#) marcinOrlowski (.) com>
+# @copyright 2020 Marcin Orlowski
+# @license   http://www.opensource.org/licenses/mit-license.php MIT
+# @link      https://github.com/MarcinOrlowski/octoprint-monitor
+
+set -euo pipefail
 
 # shellcheck disable=SC2155
-declare -r ROOT_DIR="$(dirname "$(realpath "${0}")")"
-declare -r src_dir="${ROOT_DIR}/../src"
+declare -r ROOT_DIR="$(realpath "$(dirname "$(realpath "${0}")")/..")"
+source "${ROOT_DIR}/bin/common.sh"
 
-if [[ ! -d "${src_dir}" ]]; then
-	echo "*** Source dir not found: ${src_dir}"
-	exit 1
-fi
+function installPlasmoid() {
+	local -r plasmoid_file_name="$(getPlasmoidFileName)"
+	local -r target_plasmoid_file="$(pwd)/${plasmoid_file_name}"
 
-declare -r pkg_name=$(grep X-KDE-PluginInfo-Name < "${src_dir}/metadata.desktop" | awk '{split($0,a,"="); print a[2]}')
-declare -r base_name=$(echo "${pkg_name}" | awk '{cnt=split($0,a,"."); print a[cnt]}')
-declare -r pkg_version=$(grep X-KDE-PluginInfo-Version < "${src_dir}/metadata.desktop" | awk '{split($0,a,"="); print a[2]}')
-declare -r plasmoid_path="/tmp/"
-declare -r plasmoid_name="${base_name}-${pkg_version}.plasmoid"
+	local -r tmp="$(mktemp -d "/tmp/${plasmoid_file_name}.XXXXXX")"
+	cp -a "${ROOT_DIR}"/src/* "${tmp}"
 
-echo "PKG_NAME: ${pkg_name}"
-echo " VERSION: ${pkg_version}"
-echo "PLASMOID: ${plasmoid_name}"
+	dumpMeta > "${tmp}/contents/js/version.js"
 
-tmp="$(mktemp -d "/tmp/${base_name}.XXXXXX")"
-cp -a "${src_dir}"/* "${tmp}"
+	pushd "${tmp}" > /dev/null
+	zip -q -r "${target_plasmoid_file}" -- *
+	ls -ld "${target_plasmoid_file}"
+	popd > /dev/null
 
-echo -e "var version=\"${pkg_version}\"" > "${tmp}/contents/js/version.js"
+	local -r user_home_dir="$(eval echo "~${USER}")"
+	local -r pkg_name="$(getMetaTag "X-KDE-PluginInfo-Name")"
+	if [[ -d "${user_home_dir}/.local/share/plasma/plasmoids/${pkg_name}" ]]; then
+		kpackagetool5 --upgrade "${target_plasmoid_file}"
+	else
+		kpackagetool5 --install "${target_plasmoid_file}"
+	fi
 
-pushd "${tmp}" > /dev/null
-zip -q -r "${plasmoid_path}/${plasmoid_name}" *
-ls -ld "${plasmoid_path}/${plasmoid_name}"
-popd > /dev/null
+	kquitapp5 plasmashell
+	kstart5 plasmashell
+}
 
-declare -r user_home_dir="$(eval echo "~${USER}")"
-if [[ -d "${user_home_dir}/.local/share/plasma/plasmoids/${pkg_name}" ]]; then
-	kpackagetool5 --upgrade "${plasmoid_path}/${plasmoid_name}"
-else
-	kpackagetool5 --install "${plasmoid_path}/${plasmoid_name}"
-fi
-
-kquitapp5 plasmashell
-kstart5 plasmashell
+installPlasmoid
 

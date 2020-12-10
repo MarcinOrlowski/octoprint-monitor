@@ -7,6 +7,10 @@ Icon=printer
 Type=Service
 
 X-KDE-PluginInfo-Author=Marcin Orlowski
+
+# Artificial field
+X-KDE-PluginInfo-Author-Url=http://marcinorlowski.com/
+
 X-KDE-PluginInfo-Email=
 X-KDE-PluginInfo-License=MIT
 X-KDE-PluginInfo-Name=com.marcinorlowski.octoprint-monitor
