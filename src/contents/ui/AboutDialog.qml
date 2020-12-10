@@ -16,6 +16,8 @@ import QtQuick.Dialogs 1.3
 import "../js/meta.js" as Meta
 
 Dialog {
+    property int debugModeClickCount: 0
+
     visible: false
     title: i18n('Information')
     standardButtons: StandardButton.Ok
@@ -49,8 +51,6 @@ Dialog {
             source: plasmoid.file('', 'images/logo.png')
 
             MouseArea {
-                property int debugModeClickCount: 0
-
                 anchors.fill: parent
                 onClicked: {
                     if (!debug.enabled) {
