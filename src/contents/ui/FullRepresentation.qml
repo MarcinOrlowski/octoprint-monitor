@@ -16,8 +16,8 @@ import org.kde.plasma.components 3.0 as PlasmaComponents
 import "./PrinterStateBucket.js" as Bucket
 import "../js/utils.js" as Utils
 
-ColumnLayout {
-    id: fullContainer
+Item {
+//    id: fullContainer
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -44,17 +44,14 @@ ColumnLayout {
 
         var url = imageSourceUrl + Date.now()
         if (!cameraViewInitialized) {
-//            cameraImageViewFront.source = url
             cameraImageViewBack.source = url
             cameraViewInitialized = true
             return
         }
 
         if (frontImageVisible) {
-//            cameraImageViewBack.visible = true
             showBackImageViewAnimation.start()
         } else {
-//            cameraImageViewFront.visible = true
             showFrontImageViewAnimation.start()
         }
         cameraViewUpdateStampMillis = Date.now()
@@ -163,6 +160,11 @@ ColumnLayout {
 
     // ------------------------------------------------------------------------------------------------------------------------
 
+ColumnLayout {
+    id: fullContainer
+
+    Layout.fillWidth: true
+
     RowLayout {
         id: fullStateContainerTopRow
         Layout.fillWidth: true
@@ -250,7 +252,7 @@ ColumnLayout {
         anchors.top: fullStateContainerTopRow.bottom
         anchors.left: fullContainer.left
         anchors.right: fullContainer.right
-        anchors.bottom: fullContainer.bottom
+//        anchors.bottom: fullContainer.bottom
 
         visible: isCameraViewEnabled
 
@@ -258,7 +260,68 @@ ColumnLayout {
             anchors.fill: parent
             color: "#ff0000"
             opacity: 0.5
+            visible: debug.enabled
         }
+
+        ColumnLayout {
+            id: cameraViewImageContainer
+
+            anchors.top: cameraViewContainer.top
+            anchors.left: cameraViewContainer.left
+            anchors.right: cameraViewContainer.right
+//            anchors.bottom: cameraViewExtrasContainer.top
+
+            Layout.minimumWidth: 320
+            Layout.maximumWidth: parent.width
+            Layout.minimumHeight: 240
+            Layout.maximumHeight: parent.width
+
+            Rectangle {
+                anchors.fill: parent
+                color: "#0000ff"
+                opacity: 0.5
+                visible: debug.enabled
+            }
+
+            Image {
+                id: cameraImageViewBack
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.left: parent.left
+//                anchors.fill: parent
+//                Layout.minimumWidth: parent.width
+                Layout.maximumWidth: parent.width
+//                Layout.minimumHeight: 200
+                fillMode: Image.PreserveAspectFit;
+                horizontalAlignment: Image.AlignHCenter
+                verticalAlignment: Image.AlignVCenter
+                cache: false
+                asynchronous: true
+                opacity: 0
+            }
+            Image {
+                id: cameraImageViewFront
+                // we need them overlapping
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.left: parent.left
+
+//                anchors.fill: parent
+//                Layout.minimumWidth: 320
+//                Layout.maximumWidth: 200
+//                Layout.minimumWidth: parent.width
+                Layout.maximumWidth: parent.width
+//                Layout.minimumHeight: 200
+                fillMode: Image.PreserveAspectFit;
+                horizontalAlignment: Image.AlignHCenter
+                verticalAlignment: Image.AlignVCenter
+                cache: false
+                asynchronous: true
+                opacity: 1
+                source: plasmoid.file("", `images/logo.png`)
+            }
+        } // cameraViewImageContainer
+
 
         ColumnLayout {
             id: cameraViewExtrasContainer
@@ -271,6 +334,7 @@ ColumnLayout {
                 anchors.fill: parent
                 color: "#00ff00"
                 opacity: 0.5
+                visible: debug.enabled
             }
 
             RowLayout {
@@ -339,60 +403,10 @@ ColumnLayout {
                 }
             } // cameraViewControlButtonsContainer
         } // cameraViewExtrasContainer
-
-        ColumnLayout {
-            id: cameraViewImageContainer
-
-            anchors.top: cameraViewContainer.top
-            anchors.left: cameraViewContainer.left
-            anchors.right: cameraViewContainer.right
-//            anchors.bottom: cameraViewExtrasContainer.top
-
-            Rectangle {
-                anchors.fill: parent
-                color: "#0000ff"
-                opacity: 0.5
-            }
-
-            Image {
-                id: cameraImageViewBack
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.left: parent.left
-//                anchors.fill: parent
-                Layout.minimumWidth: parent.width
-                Layout.maximumWidth: parent.width
-                Layout.minimumHeight: 200
-                fillMode: Image.PreserveAspectFit;
-                horizontalAlignment: Image.AlignHCenter
-                verticalAlignment: Image.AlignVCenter
-                cache: false
-                asynchronous: true
-                opacity: 0
-            }
-            Image {
-                id: cameraImageViewFront
-                // we need them overlapping
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.left: parent.left
-//                anchors.fill: parent
-//                Layout.minimumWidth: 320
-//                Layout.maximumWidth: 200
-                Layout.minimumWidth: parent.width
-                Layout.maximumWidth: parent.width
-                Layout.minimumHeight: 200
-                fillMode: Image.PreserveAspectFit;
-                horizontalAlignment: Image.AlignHCenter
-                verticalAlignment: Image.AlignVCenter
-                cache: false
-                asynchronous: true
-                opacity: 1
-                source: plasmoid.file("", `images/logo.png`)
-            }
-        } // cameraViewImageContainer
-
     } // cameraViewContainer
 
     // ------------------------------------------------------------------------------------------------------------------------
-}
+
+} // fullContainer
+
+} // Item

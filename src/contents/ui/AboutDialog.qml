@@ -59,9 +59,9 @@ Dialog {
                             debug.enabled = true;
 
                             notificationManager.post({
-                                'title': 'Debug Mode',
+                                'title': Meta.title,
                                 'icon': osm.octoStateIcon,
-                                'summary': 'Debug mode enabled',
+                                'summary': 'Debug mode enabled.',
                                 'expireTimeout': 10 * 1000,
                             });
                         }
